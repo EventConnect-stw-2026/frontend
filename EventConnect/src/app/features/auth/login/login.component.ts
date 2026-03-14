@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   FormBuilder,
@@ -7,6 +7,8 @@ import {
 } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
+
+declare var google: any;
 
 @Component({
   selector: 'app-login',
@@ -27,6 +29,34 @@ export class LoginComponent {
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required]]
   });
+
+  ngOnInit(): void {
+    // Inicializar Google Sign-In
+    if (typeof google !== 'undefined') {
+      google.accounts.id.initialize({
+        client_id: '1063164198867-j2uge7o0i7dqgd14b0d2g7e377s7atik.apps.googleusercontent.com',
+        callback: (response: any) => this.handleGoogleSignIn(response)
+      });
+    }
+  }
+
+  ngAfterViewInit(): void {
+    // Renderizar botón de Google después de que el DOM esté listo
+    setTimeout(() => {
+      if (typeof google !== 'undefined') {
+        const googleButton = document.getElementById('google-signin-button');
+        if (googleButton) {
+          google.accounts.id.renderButton(googleButton, {
+            type: 'standard',
+            size: 'large',
+            text: 'signin_with',
+            theme: 'outline',
+            width: '100%'
+          });
+        }
+      }
+    }, 100);
+  }
 
   onSubmit(): void {
     if (this.loginForm.invalid) {
@@ -54,9 +84,29 @@ export class LoginComponent {
     });
   }
 
-  loginWithGoogle(): void {
-    console.log('Continuar con Google');
+  private handleGoogleSignIn(response: any): void {
+  if (!response.credential) {
+    this.errorMessage = 'Error al obtener credenciales de Google';
+    return;
   }
+
+  this.isSubmitting = true;
+  this.errorMessage = '';
+
+  this.authService.loginWithGoogle({ 
+    token: response.credential,
+    isRegistering: false  // ← Es LOGIN, no registro
+  }).subscribe({
+    next: () => {
+      this.isSubmitting = false;
+      this.router.navigate(['/home']);
+    },
+    error: (err) => {
+      this.isSubmitting = false;
+      this.errorMessage = err?.error?.message || 'Error al autenticar con Google';
+    }
+  });
+}
 
   get email() {
     return this.loginForm.get('email');

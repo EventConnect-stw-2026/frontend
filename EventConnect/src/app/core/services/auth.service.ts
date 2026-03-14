@@ -9,8 +9,14 @@ interface LoginPayload {
   password: string;
 }
 
+interface GoogleLoginPayload {
+  token: string;
+  isRegistering?: boolean; 
+}
+
 interface RegisterPayload {
   name: string;
+  username: string;
   email: string;
   password: string;
 }
@@ -21,6 +27,7 @@ interface AuthResponse {
   user: {
     _id: string;
     name: string;
+    username: string;
     email: string;
     role: string;
     isBlocked: boolean;
@@ -45,19 +52,19 @@ export class AuthService {
 
   login(payload: LoginPayload): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.apiUrl}/login`, payload).pipe(
-      tap((response) => {
-        localStorage.setItem('token', response.token);
-        localStorage.setItem('user', JSON.stringify(response.user));
-      })
+      tap((response) => this.saveAuthData(response))
+    );
+  }
+
+  loginWithGoogle(payload: GoogleLoginPayload): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.apiUrl}/google`, payload).pipe(
+      tap((response) => this.saveAuthData(response))
     );
   }
 
   register(payload: RegisterPayload): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.apiUrl}/register`, payload).pipe(
-      tap((response) => {
-        localStorage.setItem('token', response.token);
-        localStorage.setItem('user', JSON.stringify(response.user));
-      })
+      tap((response) => this.saveAuthData(response))
     );
   }
 
@@ -81,5 +88,11 @@ export class AuthService {
     if (!this.isBrowser()) return null;
     const user = localStorage.getItem('user');
     return user ? JSON.parse(user) : null;
+  }
+
+  private saveAuthData(response: AuthResponse): void {
+    if (!this.isBrowser()) return;
+    localStorage.setItem('token', response.token);
+    localStorage.setItem('user', JSON.stringify(response.user));
   }
 }
