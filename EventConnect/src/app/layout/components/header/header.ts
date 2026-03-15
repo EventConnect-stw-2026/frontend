@@ -13,4 +13,5 @@ import { AuthService } from '../../../core/services/auth.service';
 export class HeaderComponent {
   private authService = inject(AuthService);
   isLoggedIn$ = this.authService.isLoggedIn$();
+  menuOpen: boolean = false;
 }

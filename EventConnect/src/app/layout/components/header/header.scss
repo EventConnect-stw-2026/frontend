@@ -1,3 +1,5 @@
+
+
 .header{
   height:85px;
   background:#f3f4f6;
@@ -28,6 +30,7 @@
   padding:10px 28px;
   border-radius:40px;
   box-shadow:0 3px 8px rgba(0,0,0,0.05);
+  align-items:center;
 }
 
 .nav a{
@@ -38,6 +41,84 @@
 
 .nav a:hover{
   color:#2563eb;
+}
+
+.menu-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-left: 10px;
+}
+.menu-toggle .bar {
+  width: 28px;
+  height: 4px;
+  background: #2563eb;
+  margin: 4px 0;
+  border-radius: 2px;
+}
+
+@media (max-width: 900px) {
+  .header {
+    height: 60px;
+    padding: 0 10px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+  }
+  .logo {
+    font-size: 14px;
+    gap: 6px;
+    display: flex;
+    align-items: center;
+  }
+  .logo img {
+    height: 28px;
+  }
+  .menu-toggle {
+    display: flex;
+    margin-left: auto;
+    margin-right: 0;
+    z-index: 101;
+  }
+  .nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: white;
+    flex-direction: column;
+    gap: 0;
+    padding: 60px 0 0 0;
+    border-radius: 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    font-size: 15px;
+    display: none;
+    z-index: 100;
+    align-items: flex-start;
+  }
+  .nav.open {
+    display: flex;
+  }
+  .nav a, .nav .login-btn {
+    padding: 18px 24px;
+    font-size: 16px;
+    border-radius: 0;
+    margin: 0;
+    width: 100%;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+  }
+  .nav a:last-child, .nav .login-btn:last-child {
+    border-bottom: none;
+  }
 }
 
 .login-btn{

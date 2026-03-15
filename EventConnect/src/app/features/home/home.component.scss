@@ -1,9 +1,9 @@
+
 .hero{
   height:440px;
   background:
   linear-gradient(rgba(0,0,0,0.25),rgba(0,0,0,0.25)),
   url("/assets/images/zaragoza.png") center/cover no-repeat;
-
   display:flex;
   justify-content:center;
   align-items:center;
@@ -61,5 +61,38 @@
   display:grid;
   grid-template-columns:repeat(3,1fr);
   gap:30px;
+}
+
+@media (max-width: 900px) {
+  .hero {
+    height: 260px;
+    padding: 20px;
+  }
+  .hero h1 {
+    font-size: 28px;
+    margin-bottom: 18px;
+  }
+  .search input {
+    width: 100%;
+    padding: 12px;
+    font-size: 15px;
+    border-radius: 10px 0 0 10px;
+  }
+  .search button {
+    padding: 12px 18px;
+    font-size: 15px;
+    border-radius: 0 10px 10px 0;
+  }
+  .featured {
+    padding: 20px 10px;
+  }
+  .featured h2 {
+    font-size: 18px;
+    margin-bottom: 12px;
+  }
+  .events {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
 }
 
