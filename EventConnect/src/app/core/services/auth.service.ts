@@ -1,7 +1,9 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, tap } from 'rxjs';
+import { Observable, tap, BehaviorSubject } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import { map, catchError, take, defaultIfEmpty } from 'rxjs/operators';
+import { of } from 'rxjs';
 
 
 interface LoginPayload {
@@ -46,53 +48,45 @@ export class AuthService {
   private http = inject(HttpClient);
   private apiUrl = environment.apiUrl + '/auth';
 
-  private isBrowser(): boolean {
-    return typeof window !== 'undefined';
+  getProfile(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/profile`, { withCredentials: true });
+  }
+  refresh(): Observable<any> {
+    return this.http.post(`${this.apiUrl}/refresh`, {}, { withCredentials: true });
   }
 
   login(payload: LoginPayload): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.apiUrl}/login`, payload).pipe(
-      tap((response) => this.saveAuthData(response))
-    );
+    return this.http.post<AuthResponse>(`${this.apiUrl}/login`, payload, { withCredentials: true });
   }
 
   loginWithGoogle(payload: GoogleLoginPayload): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.apiUrl}/google`, payload).pipe(
-      tap((response) => this.saveAuthData(response))
-    );
+    return this.http.post<AuthResponse>(`${this.apiUrl}/google`, payload, { withCredentials: true });
   }
 
   register(payload: RegisterPayload): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.apiUrl}/register`, payload).pipe(
-      tap((response) => this.saveAuthData(response))
-    );
+    return this.http.post<AuthResponse>(`${this.apiUrl}/register`, payload, { withCredentials: true });
   }
 
   logout(): void {
-    if (!this.isBrowser()) return;
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    this.http.post(`${this.apiUrl}/logout`, {}, { withCredentials: true }).subscribe();
   }
 
-  getToken(): string | null {
-    if (!this.isBrowser()) return null;
-    return localStorage.getItem('token');
+  updateProfile(payload: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/profile`, payload, { withCredentials: true });
   }
 
-  isLoggedIn(): boolean {
-    if (!this.isBrowser()) return false;
-    return !!this.getToken();
+  isLoggedIn$(): Observable<boolean> {
+    return this.getProfile().pipe(
+      map(() => true),
+      catchError(() => of(false)),
+      take(1),
+      // Si no hay ningún valor, emitir false
+      defaultIfEmpty(false)
+    );
   }
 
   getCurrentUser() {
-    if (!this.isBrowser()) return null;
-    const user = localStorage.getItem('user');
-    return user ? JSON.parse(user) : null;
-  }
-
-  private saveAuthData(response: AuthResponse): void {
-    if (!this.isBrowser()) return;
-    localStorage.setItem('token', response.token);
-    localStorage.setItem('user', JSON.stringify(response.user));
+    // Se puede obtener el usuario desde el backend si es necesario
+    return null;
   }
 }

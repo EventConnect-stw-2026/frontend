@@ -1,19 +1,27 @@
 <header class="header">
+  <a class="logo" routerLink="/home">
+    <img src="assets/images/logo.png" alt="EventConnect">
+  </a>
 
-  <div class="logo">
-  <img src="assets/images/logo.png" alt="EventConnect">
-  </div>
+  <!-- Botón hamburguesa para móvil -->
+  <button class="menu-toggle" (click)="menuOpen = !menuOpen" aria-label="Abrir menú">
+    <span class="bar"></span>
+    <span class="bar"></span>
+    <span class="bar"></span>
+  </button>
 
-  <nav class="nav">
+  <nav class="nav" [class.open]="menuOpen">
     <a routerLink="/home">Buscar</a>
     <a routerLink="/explore">Explorar</a>
-    <a routerLink="/map">Mapa</a>
+    <a routerLink="/profile">Mapa</a>
     <a>Amigos</a>
     <a>Estadísticas</a>
   </nav>
 
-  <button class="login-btn" routerLink="/login">
+  <button class="login-btn" *ngIf="!(isLoggedIn$ | async)" routerLink="/login">
     Iniciar sesión
   </button>
-
+  <button class="login-btn" *ngIf="isLoggedIn$ | async" routerLink="/profile">
+    Perfil
+  </button>
 </header>

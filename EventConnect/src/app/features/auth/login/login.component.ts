@@ -1,4 +1,4 @@
-import { Component, inject} from '@angular/core';
+import { Component, inject, ChangeDetectorRef, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   FormBuilder,
@@ -21,6 +21,8 @@ export class LoginComponent {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
   private router = inject(Router);
+  private cdr = inject(ChangeDetectorRef);
+  private ngZone = inject(NgZone);
 
   isSubmitting = false;
   errorMessage = '';
@@ -31,17 +33,19 @@ export class LoginComponent {
   });
 
   ngOnInit(): void {
-    // Inicializar Google Sign-In
     if (typeof google !== 'undefined') {
       google.accounts.id.initialize({
         client_id: '1063164198867-j2uge7o0i7dqgd14b0d2g7e377s7atik.apps.googleusercontent.com',
-        callback: (response: any) => this.handleGoogleSignIn(response)
+        callback: (response: any) => {
+          this.ngZone.run(() => {
+            this.handleGoogleSignIn(response);
+          });
+        }
       });
     }
   }
 
   ngAfterViewInit(): void {
-    // Renderizar botón de Google después de que el DOM esté listo
     setTimeout(() => {
       if (typeof google !== 'undefined') {
         const googleButton = document.getElementById('google-signin-button');
@@ -61,11 +65,13 @@ export class LoginComponent {
   onSubmit(): void {
     if (this.loginForm.invalid) {
       this.loginForm.markAllAsTouched();
+      this.cdr.detectChanges();
       return;
     }
 
     this.isSubmitting = true;
     this.errorMessage = '';
+    this.cdr.detectChanges();
 
     const payload = {
       email: this.loginForm.value.email ?? '',
@@ -74,39 +80,55 @@ export class LoginComponent {
 
     this.authService.login(payload).subscribe({
       next: () => {
-        this.isSubmitting = false;
-        this.router.navigate(['/home']);
+        this.ngZone.run(() => {
+          this.isSubmitting = false;
+          this.cdr.detectChanges();
+          this.router.navigate(['/home']);
+        });
       },
       error: (err) => {
-        this.isSubmitting = false;
-        this.errorMessage = err?.error?.message || 'No se pudo iniciar sesión';
+        this.ngZone.run(() => {
+          this.isSubmitting = false;
+          this.errorMessage =
+            err?.error?.message || 'No se pudo iniciar sesión';
+          this.cdr.detectChanges();
+        });
       }
     });
   }
 
   private handleGoogleSignIn(response: any): void {
-  if (!response.credential) {
-    this.errorMessage = 'Error al obtener credenciales de Google';
-    return;
-  }
-
-  this.isSubmitting = true;
-  this.errorMessage = '';
-
-  this.authService.loginWithGoogle({ 
-    token: response.credential,
-    isRegistering: false  // ← Es LOGIN, no registro
-  }).subscribe({
-    next: () => {
-      this.isSubmitting = false;
-      this.router.navigate(['/home']);
-    },
-    error: (err) => {
-      this.isSubmitting = false;
-      this.errorMessage = err?.error?.message || 'Error al autenticar con Google';
+    if (!response.credential) {
+      this.errorMessage = 'Error al obtener credenciales de Google';
+      this.cdr.detectChanges();
+      return;
     }
-  });
-}
+
+    this.isSubmitting = true;
+    this.errorMessage = '';
+    this.cdr.detectChanges();
+
+    this.authService.loginWithGoogle({
+      token: response.credential,
+      isRegistering: false
+    }).subscribe({
+      next: () => {
+        this.ngZone.run(() => {
+          this.isSubmitting = false;
+          this.cdr.detectChanges();
+          this.router.navigate(['/home']);
+        });
+      },
+      error: (err) => {
+        this.ngZone.run(() => {
+          this.isSubmitting = false;
+          this.errorMessage =
+            err?.error?.message || 'Error al autenticar con Google';
+          this.cdr.detectChanges();
+        });
+      }
+    });
+  }
 
   get email() {
     return this.loginForm.get('email');

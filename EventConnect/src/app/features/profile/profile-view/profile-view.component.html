@@ -1,0 +1,78 @@
+<app-header></app-header>
+
+<main class="profile-page">
+  <section class="profile-wrapper">
+    <h1 class="page-title">Mi perfil</h1>
+
+    <article class="profile-card">
+      <div class="profile-main">
+        <div class="avatar-wrapper">
+          <img
+            [src]="user.avatarUrl || 'assets/images/default-avatar.png'"
+            [alt]="user.name"
+            class="avatar"
+          >
+        </div>
+
+        <div class="profile-info">
+          <h2>{{ user.name }}</h2>
+
+          <div class="info-row">
+            <span class="icon">✉</span>
+            <span>{{ user.email }}</span>
+          </div>
+
+          <div class="info-row" *ngIf="user.username">
+            <span class="icon">@</span>
+            <span>{{ user.username }}</span>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <section class="actions-card">
+      <button class="action-btn" (click)="goToEditProfile()">
+        <span class="action-icon">✎</span>
+        Editar perfil
+      </button>
+
+      <button class="action-btn" (click)="goToFavorites()">
+        <span class="action-icon">♡</span>
+        Tus eventos favoritos
+      </button>
+
+      <button class="action-btn" (click)="goToStats()">
+        <span class="action-icon">⌁</span>
+        Ver estadísticas
+      </button>
+
+      <button class="action-btn" (click)="goToHistory()">
+        <span class="action-icon">◷</span>
+        Tu historial
+      </button>
+    </section>
+
+      <section class="interests-card">
+        <h3>Tus intereses favoritos</h3>
+        <div class="interests-grid">
+          <div class="interest-box" *ngFor="let interest of user.interests">
+            <ng-container [ngSwitch]="interest">
+              <span *ngSwitchCase="'culture'" class="interest-emoji">🎭</span>
+              <span *ngSwitchCase="'sports'" class="interest-emoji">🏀</span>
+              <span *ngSwitchCase="'family'" class="interest-emoji">🏰</span>
+              <span *ngSwitchCase="'solidarity'" class="interest-emoji">🌍</span>
+              <span *ngSwitchCase="'education'" class="interest-emoji">🎓</span>
+              <span *ngSwitchCase="'gastronomy'" class="interest-emoji">🧑‍🍳</span>
+              <span *ngSwitchCase="'wellness'" class="interest-emoji">🙌</span>
+              <span *ngSwitchDefault class="interest-emoji">⭐</span>
+            </ng-container>
+          </div>
+        </div>
+      </section>
+
+    <button class="logout-btn" (click)="logout()">
+      <span class="logout-icon">⇦</span>
+      Cerrar sesión
+    </button>
+  </section>
+</main>
