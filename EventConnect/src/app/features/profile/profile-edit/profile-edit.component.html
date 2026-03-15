@@ -1,0 +1,188 @@
+<app-header></app-header>
+
+<main class="edit-profile-page">
+  <section class="edit-profile-wrapper">
+    <h1 class="page-title">Editar perfil</h1>
+
+    <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+      <section class="profile-card">
+        <div class="profile-main">
+          <div class="avatar-section">
+            <div class="avatar-wrapper">
+              <img
+                [src]="user.avatarUrl || 'assets/images/default-avatar.png'"
+                [alt]="profileForm.value.name || 'Usuario'"
+                class="avatar"
+              >
+            </div>
+
+            <label class="avatar-edit-btn" for="avatarInput" title="Cambiar foto">
+              📷
+            </label>
+
+            <input
+              id="avatarInput"
+              type="file"
+              accept="image/*"
+              hidden
+              (change)="onAvatarChange($event)"
+            >
+          </div>
+
+          <div class="profile-info">
+            <input
+              class="name-input"
+              type="text"
+              formControlName="name"
+              placeholder="Nombre"
+            >
+
+            <small class="error" *ngIf="name?.touched && name?.errors?.['required']">
+              El nombre es obligatorio
+            </small>
+
+            <small class="error" *ngIf="name?.touched && name?.errors?.['minlength']">
+              El nombre debe tener al menos 2 caracteres
+            </small>
+
+            <div class="info-row">
+              <span class="icon">✉</span>
+              <input
+                class="inline-input"
+                type="email"
+                formControlName="email"
+                placeholder="Correo electrónico"
+                [disabled]="true"
+              >
+            </div>
+
+            <div class="info-row username-row">
+              <span class="icon">@</span>
+
+              <ng-container *ngIf="isEditingUsername; else usernameText">
+                <input
+                  class="inline-input"
+                  type="text"
+                  formControlName="username"
+                  placeholder="Username"
+                >
+              </ng-container>
+
+              <ng-template #usernameText>
+                <span class="username-value">{{ profileForm.value.username }}</span>
+              </ng-template>
+
+              <button
+                type="button"
+                class="edit-icon-btn"
+                (click)="toggleUsernameEdit()"
+                title="Editar username"
+              >
+                ✎
+              </button>
+            </div>
+
+            <small class="error" *ngIf="username?.touched && username?.errors?.['required']">
+              El username es obligatorio
+            </small>
+
+            <small class="error" *ngIf="username?.touched && username?.errors?.['minlength']">
+              El username debe tener al menos 3 caracteres
+            </small>
+          </div>
+        </div>
+      </section>
+
+      <section class="password-card">
+        <h2>Cambiar contraseña</h2>
+
+        <div class="password-grid">
+          <div class="password-field">
+            <input
+              type="password"
+              formControlName="currentPassword"
+              placeholder="Contraseña actual"
+            >
+          </div>
+
+          <div class="password-field">
+            <input
+              type="password"
+              formControlName="newPassword"
+              placeholder="Nueva contraseña"
+            >
+          </div>
+
+          <div class="password-field">
+            <input
+              type="password"
+              formControlName="confirmCurrentPassword"
+              placeholder="Confirmar contraseña actual"
+            >
+          </div>
+
+          <div class="password-field">
+            <input
+              type="password"
+              formControlName="confirmNewPassword"
+              placeholder="Confirmar nueva contraseña"
+            >
+          </div>
+        </div>
+
+        <small
+          class="error"
+          *ngIf="newPassword?.touched && newPassword?.errors?.['minlength']"
+        >
+          La nueva contraseña debe tener al menos 6 caracteres
+        </small>
+
+        <small
+          class="error"
+          *ngIf="confirmNewPassword?.touched && profileForm.errors?.['passwordMismatch']"
+        >
+          Las nuevas contraseñas no coinciden
+        </small>
+      </section>
+
+      <section class="favorites-card">
+        <h2>Tus eventos favoritos</h2>
+
+        <div class="favorites-grid">
+          <button
+            type="button"
+            class="favorite-item"
+            *ngFor="let category of favorites"
+            [class.selected]="category.selected"
+            (click)="toggleFavorite(category)"
+            [attr.aria-label]="category.label"
+          >
+            <span class="favorite-emoji">{{ category.emoji }}</span>
+            <span
+              class="favorite-action"
+              [class.remove]="category.selected"
+              [class.add]="!category.selected"
+            >
+              {{ category.selected ? '−' : '+' }}
+            </span>
+          </button>
+        </div>
+      </section>
+
+      <div class="messages">
+        <p class="success-message" *ngIf="successMessage">{{ successMessage }}</p>
+        <p class="error-message" *ngIf="errorMessage">{{ errorMessage }}</p>
+      </div>
+
+      <div class="actions">
+        <button type="button" class="secondary-btn" (click)="goBackToProfile()">
+          Cancelar
+        </button>
+
+        <button type="submit" class="primary-btn" [disabled]="isSubmitting">
+          {{ isSubmitting ? 'Guardando...' : 'Guardar cambios' }}
+        </button>
+      </div>
+    </form>
+  </section>
+</main>

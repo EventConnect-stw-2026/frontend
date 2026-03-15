@@ -6,6 +6,7 @@ import { ExploreComponent } from './features/explore/explore.component';
 import { MapComponent } from './features/map/map.component';
 import { EventDetailComponent } from './features/event-detail/event-detail.component';
 import { ProfileViewComponent } from './features/profile/profile-view/profile-view.component';
+import { ProfileEditComponent } from './features/profile/profile-edit/profile-edit.component';
 import { authGuard } from './core/guards/auth.guard';
 
 //! Añadir el AuthGuard al final del desarrollo
@@ -18,4 +19,5 @@ export const routes: Routes = [
   { path: 'map', component: MapComponent },
   { path: 'events/:id', component: EventDetailComponent },
   { path: 'profile', component: ProfileViewComponent, canActivate: [authGuard] },
+  { path: 'profile/edit', component: ProfileEditComponent, canActivate: [authGuard] },
 ];

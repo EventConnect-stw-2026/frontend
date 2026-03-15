@@ -52,20 +52,23 @@
       </button>
     </section>
 
-    <section class="interests-card">
-      <h3>Tus intereses favoritos</h3>
-
-      <div class="interests-grid">
-        <div class="interest-box" *ngFor="let interest of user.interests">
-          <ng-container [ngSwitch]="interest">
-            <span *ngSwitchCase="'culture'" class="interest-emoji">🎭</span>
-            <span *ngSwitchCase="'sports'" class="interest-emoji">🏀</span>
-            <span *ngSwitchCase="'family'" class="interest-emoji">🏰</span>
-            <span *ngSwitchDefault class="interest-emoji">⭐</span>
-          </ng-container>
+      <section class="interests-card">
+        <h3>Tus intereses favoritos</h3>
+        <div class="interests-grid">
+          <div class="interest-box" *ngFor="let interest of user.interests">
+            <ng-container [ngSwitch]="interest">
+              <span *ngSwitchCase="'culture'" class="interest-emoji">🎭</span>
+              <span *ngSwitchCase="'sports'" class="interest-emoji">🏀</span>
+              <span *ngSwitchCase="'family'" class="interest-emoji">🏰</span>
+              <span *ngSwitchCase="'solidarity'" class="interest-emoji">🌍</span>
+              <span *ngSwitchCase="'education'" class="interest-emoji">🎓</span>
+              <span *ngSwitchCase="'gastronomy'" class="interest-emoji">🧑‍🍳</span>
+              <span *ngSwitchCase="'wellness'" class="interest-emoji">🙌</span>
+              <span *ngSwitchDefault class="interest-emoji">⭐</span>
+            </ng-container>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
 
     <button class="logout-btn" (click)="logout()">
       <span class="logout-icon">⇦</span>

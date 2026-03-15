@@ -71,6 +71,10 @@ export class AuthService {
     this.http.post(`${this.apiUrl}/logout`, {}, { withCredentials: true }).subscribe();
   }
 
+  updateProfile(payload: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/profile`, payload, { withCredentials: true });
+  }
+
   isLoggedIn$(): Observable<boolean> {
     return this.getProfile().pipe(
       map(() => true),
