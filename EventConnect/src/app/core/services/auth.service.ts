@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap, BehaviorSubject } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { map, catchError, take } from 'rxjs/operators';
+import { map, catchError, take, defaultIfEmpty } from 'rxjs/operators';
 import { of } from 'rxjs';
 
 
@@ -75,7 +75,9 @@ export class AuthService {
     return this.getProfile().pipe(
       map(() => true),
       catchError(() => of(false)),
-      take(1)
+      take(1),
+      // Si no hay ningún valor, emitir false
+      defaultIfEmpty(false)
     );
   }
 

@@ -11,8 +11,8 @@ import { authGuard } from './core/guards/auth.guard';
 //! Añadir el AuthGuard al final del desarrollo
 export const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
-  { path: 'login', component: LoginComponent },
-  { path: 'register', component: RegisterComponent },
+  { path: 'login', component: LoginComponent, canActivate: [authGuard] },
+  { path: 'register', component: RegisterComponent, canActivate: [authGuard] },
   { path: 'home', component: HomeComponent },
   { path: 'explore', component: ExploreComponent },
   { path: 'map', component: MapComponent },

@@ -1,14 +1,25 @@
 import { inject } from '@angular/core';
-import { CanActivateFn, Router } from '@angular/router';
+import { CanActivateFn, Router, ActivatedRouteSnapshot } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { map } from 'rxjs/operators';
 
-export const authGuard: CanActivateFn = () => {
+export const authGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => {
   const authService = inject(AuthService);
   const router = inject(Router);
+  const url = route.routeConfig?.path;
 
-  // isLoggedIn$ es un observable, así que devolvemos una función que resuelve el observable
   return authService.isLoggedIn$().pipe(
-    map((isLoggedIn: boolean) => isLoggedIn ? true : router.createUrlTree(['/login']))
+    map((isLoggedIn: boolean) => {
+      // Si no está autenticado, bloquear /profile
+      if (!isLoggedIn && url === 'profile') {
+        return router.createUrlTree(['/login']);
+      }
+      // Si está autenticado, bloquear /login y /register
+      if (isLoggedIn && (url === 'login' || url === 'register')) {
+        return router.createUrlTree(['/home']);
+      }
+      // Permitir el acceso en otros casos
+      return true;
+    })
   );
 };
