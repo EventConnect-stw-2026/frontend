@@ -7,6 +7,7 @@ import {
 } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
+import { finalize } from 'rxjs';
 
 declare var google: any;
 
@@ -78,17 +79,23 @@ export class LoginComponent {
       password: this.loginForm.value.password ?? ''
     };
 
-    this.authService.login(payload).subscribe({
+    this.authService.login(payload)
+    .pipe(
+      finalize(() => {
+        this.isSubmitting = false;
+        this.cdr.detectChanges();
+      })
+    )
+    .subscribe({
       next: () => {
         this.ngZone.run(() => {
-          this.isSubmitting = false;
+          this.errorMessage = '';
           this.cdr.detectChanges();
           this.router.navigate(['/home']);
         });
       },
       error: (err) => {
         this.ngZone.run(() => {
-          this.isSubmitting = false;
           this.errorMessage =
             err?.error?.message || 'No se pudo iniciar sesión';
           this.cdr.detectChanges();

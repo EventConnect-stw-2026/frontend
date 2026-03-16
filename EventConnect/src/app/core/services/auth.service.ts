@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpBackend } from '@angular/common/http';
 import { Observable, tap, BehaviorSubject } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { map, catchError, take, defaultIfEmpty } from 'rxjs/operators';
@@ -46,21 +46,24 @@ interface AuthResponse {
 })
 export class AuthService {
   private http = inject(HttpClient);
+  private httpBackend = inject(HttpBackend);
+  private rawHttp = new HttpClient(this.httpBackend);
   private apiUrl = environment.apiUrl + '/auth';
 
   getProfile(): Observable<any> {
     return this.http.get(`${this.apiUrl}/profile`, { withCredentials: true });
   }
+
   refresh(): Observable<any> {
     return this.http.post(`${this.apiUrl}/refresh`, {}, { withCredentials: true });
   }
 
   login(payload: LoginPayload): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.apiUrl}/login`, payload, { withCredentials: true });
+    return this.rawHttp.post<AuthResponse>(`${this.apiUrl}/login`, payload, { withCredentials: true });
   }
 
   loginWithGoogle(payload: GoogleLoginPayload): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.apiUrl}/google`, payload, { withCredentials: true });
+    return this.rawHttp.post<AuthResponse>(`${this.apiUrl}/google`, payload, { withCredentials: true });
   }
 
   register(payload: RegisterPayload): Observable<AuthResponse> {
@@ -89,4 +92,19 @@ export class AuthService {
     // Se puede obtener el usuario desde el backend si es necesario
     return null;
   }
+
+  forgotPassword(email: string) {
+    return this.rawHttp.post<{ message: string }>(
+      `${this.apiUrl}/forgot-password`,
+      { email }
+    );
+  }
+
+  resetPassword(token: string, password: string) {
+    return this.rawHttp.post<{ message: string }>(
+      `${this.apiUrl}/reset-password`,
+      { token, password }
+    );
+  }
+  
 }
