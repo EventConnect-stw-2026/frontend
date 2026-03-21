@@ -202,3 +202,18 @@
 .login-btn:active {
   transform: translateY(0);
 }
+
+nav a {
+  text-decoration: none;
+  font-weight: 400;
+  color: #333;
+
+  &:hover {
+    color: #2563eb;
+  }
+
+  &.active {
+    color: #2563eb;
+    font-weight: 600;
+  }
+}

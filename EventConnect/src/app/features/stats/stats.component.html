@@ -1,0 +1,106 @@
+<app-header></app-header>
+
+<div class="stats-wrapper">
+
+  <div class="tab-switcher">
+    <button [class.active]="activeTab === 'personal'" (click)="setTab('personal')">
+      Tus estadísticas
+    </button>
+    <button [class.active]="activeTab === 'global'" (click)="setTab('global')">
+      Estadísticas globales
+    </button>
+  </div>
+
+  @if (activeTab === 'global') {
+    <div class="global-stats">
+
+      <div class="chart-card">
+        <h3>Eventos por categoría</h3>
+        <div class="bar-chart">
+          @for (item of categoryStats; track item.label) {
+            <div class="bar-item">
+              <div class="bar-fill" [style.height.%]="(item.value / maxCategory) * 100" [style.background]="item.color">
+                <span class="bar-value">{{ item.value }}</span>
+              </div>
+              <span class="bar-label">{{ item.label }}</span>
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="chart-card">
+        <h3>Eventos por día de la semana</h3>
+        <div class="bar-chart">
+          @for (item of dayStats; track item.day) {
+            <div class="bar-item">
+              <div class="bar-fill" [style.height.%]="(item.count / maxDay) * 100" style="background:#2563eb">
+                <span class="bar-value">{{ item.count }}</span>
+              </div>
+              <span class="bar-label">{{ item.day }}</span>
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="chart-card top-card">
+        <h3>🏆 Top categorías</h3>
+        <div class="top-list">
+          @for (item of categoryStats.slice(0,3); track item.label; let i = $index) {
+            <div class="top-item">
+              <span class="top-rank" [class.gold]="i===0" [class.silver]="i===1" [class.bronze]="i===2">
+                {{ i === 0 ? '🥇' : i === 1 ? '🥈' : '🥉' }}
+              </span>
+              <span class="top-label">{{ item.label }}</span>
+              <div class="top-bar">
+                <div class="top-bar-fill" [style.width.%]="(item.value / maxCategory) * 100" [style.background]="item.color"></div>
+              </div>
+              <span class="top-value">{{ item.value }}</span>
+            </div>
+          }
+        </div>
+      </div>
+
+    </div>
+  }
+
+  @if (activeTab === 'personal') {
+    <div class="personal-stats">
+
+      <div class="stat-card highlight">
+        <span class="stat-icon">👥</span>
+        <p class="stat-label">Amigos conocidos</p>
+        <p class="stat-value">{{ personalStats.friendsMet }}</p>
+      </div>
+
+      <div class="stat-card highlight">
+        <span class="stat-icon">🎯</span>
+        <p class="stat-label">Tipo de evento más frecuente</p>
+        <p class="stat-value">{{ personalStats.topCategory }}</p>
+      </div>
+
+      <div class="stat-card highlight">
+        <span class="stat-icon">📅</span>
+        <p class="stat-label">Día más activo</p>
+        <p class="stat-value">{{ personalStats.busiestDay }}</p>
+      </div>
+
+      <div class="stat-card highlight">
+        <span class="stat-icon">🎟️</span>
+        <p class="stat-label">Eventos asistidos</p>
+        <p class="stat-value">{{ personalStats.eventsAttended }}</p>
+      </div>
+
+      <div class="stat-card wide empty-chart">
+        <h3>Eventos por semana</h3>
+        <p class="coming-soon">Disponible cuando registres asistencia a eventos</p>
+      </div>
+
+      <div class="stat-card wide empty-chart">
+        <h3>Tipos de evento asistidos</h3>
+        <p class="coming-soon">Disponible cuando registres asistencia a eventos</p>
+      </div>
+
+    </div>
+  }
+
+</div>

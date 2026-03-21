@@ -1,1 +1,22 @@
-<p>map works!</p>
+<app-header></app-header>
+
+<div class="map-wrapper">
+  <div id="map"></div>
+
+  @if (selectedEvent) {
+    <div class="event-panel">
+      <button class="close-btn" (click)="selectedEvent = null">✕</button>
+      <img [src]="selectedEvent.imageUrl ? 'https:' + selectedEvent.imageUrl : 'assets/images/zaragoza.png'"
+           [alt]="selectedEvent.title">
+      <div class="panel-body">
+        <span class="panel-category">{{ selectedEvent.category }}</span>
+        <h3>{{ selectedEvent.title }}</h3>
+        @if (selectedEvent.startDate) {
+          <p class="panel-date">🕐 {{ selectedEvent.startDate | date:'dd MMM · HH:mm' }}</p>
+        }
+        <p class="panel-location">📍 {{ selectedEvent.locationName }}</p>
+        <a [routerLink]="['/events', selectedEvent._id]" class="panel-link">Ver más →</a>
+      </div>
+    </div>
+  }
+</div>

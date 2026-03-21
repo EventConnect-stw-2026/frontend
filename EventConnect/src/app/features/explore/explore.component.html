@@ -1,1 +1,72 @@
-<p>explore works!</p>
+<app-header></app-header>
+
+<div class="explore-wrapper">
+
+  <div class="filters-bar">
+    <div class="filters-top">
+      <div class="search-box">
+        <input [(ngModel)]="searchText" (keyup.enter)="onSearch()" placeholder="Busca eventos por su nombre">
+        <button (click)="onSearch()">🔍</button>
+      </div>
+
+      <div class="date-filters">
+        <div class="date-input">
+            <label>Desde</label>
+            <input type="date" [(ngModel)]="dateFrom" (change)="onDateChange()" onkeydown="return false">
+        </div>
+        <div class="date-separator">→</div>
+        <div class="date-input">
+            <label>Hasta</label>
+            <input type="date" [(ngModel)]="dateTo" (change)="onDateChange()" onkeydown="return false">
+        </div>
+        @if (dateFrom || dateTo) {
+          <button class="clear-dates" (click)="clearDates()">✕ Limpiar</button>
+        }
+      </div>
+    </div>
+
+    <div class="categories">
+      @for (cat of categories; track cat) {
+        <button class="cat-btn" [class.active]="selectedCategory === cat" (click)="selectCategory(cat)">
+          {{ cat }}
+        </button>
+      }
+    </div>
+  </div>
+
+  @if (loading) {
+    <div class="loading-state"><div class="spinner"></div></div>
+  } @else if (error) {
+    <div class="empty-state"><p>Error al cargar los eventos.</p></div>
+  } @else if (events.length === 0) {
+    <div class="empty-state"><p>No se encontraron eventos con estos filtros.</p></div>
+  } @else {
+    <div class="events-grid">
+      @for (event of events; track event._id) {
+        <a class="event-card" [routerLink]="['/events', event._id]">
+          <div class="card-image">
+            <img [src]="event.imageUrl ? 'https:' + event.imageUrl : 'assets/images/zaragoza.png'" [alt]="event.title">
+            <span class="card-category">{{ event.category }}</span>
+            @if (event.isFree) { <span class="card-free">Gratis</span> }
+          </div>
+          <div class="card-body">
+            <h3>{{ event.title }}</h3>
+            @if (event.startDate) {
+              <p class="card-date">🕐 {{ event.startDate | date:'dd MMM · HH:mm' }}</p>
+            }
+            <p class="card-location">📍 {{ event.locationName }}</p>
+            <p class="card-desc">{{ event.description | stripHtml }}</p>
+            <span class="card-link">Ver más →</span>
+          </div>
+        </a>
+      }
+    </div>
+
+    <div class="pagination">
+      <button (click)="prevPage()" [disabled]="page === 1">← Anterior</button>
+      <span>Página {{ page }} de {{ totalPages }}</span>
+      <button (click)="nextPage()" [disabled]="page === totalPages">Siguiente →</button>
+    </div>
+  }
+
+</div>

@@ -9,9 +9,9 @@ import { ProfileViewComponent } from './features/profile/profile-view/profile-vi
 import { ProfileEditComponent } from './features/profile/profile-edit/profile-edit.component';
 import { ForgotPasswordComponent } from './features/auth/forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './features/auth/reset-password/reset-password.component';
+import { StatsComponent } from './features/stats/stats.component';
 import { authGuard } from './core/guards/auth.guard';
 
-//! Añadir el AuthGuard al final del desarrollo
 export const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
   { path: 'login', component: LoginComponent, canActivate: [authGuard] },
@@ -24,4 +24,5 @@ export const routes: Routes = [
   { path: 'profile/edit', component: ProfileEditComponent, canActivate: [authGuard] },
   { path: 'forgot-password', component: ForgotPasswordComponent },
   { path: 'reset-password', component: ResetPasswordComponent },
+  { path: 'stats', component: StatsComponent },
 ];
