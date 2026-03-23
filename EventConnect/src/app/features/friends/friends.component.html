@@ -1,0 +1,285 @@
+<app-header></app-header>
+
+<div class="friends-page">
+  <div class="friends-shell">
+    <section class="friends-hero">
+      <div class="hero-text">
+        <span class="hero-badge">Comunidad EventConnect</span>
+        <h1>Conecta con tus amigos</h1>
+        <p>
+          Gestiona tus amistades, revisa solicitudes pendientes y descubre personas
+          con las que compartir próximos eventos.
+        </p>
+      </div>
+
+      <div class="hero-stats">
+        <div class="stat-card">
+          <span class="stat-value">{{ filteredFriends.length }}</span>
+          <span class="stat-label">Amigos</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value">{{ pendingRequests.length }}</span>
+          <span class="stat-label">Solicitudes</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value">{{ suggestedUsers.length }}</span>
+          <span class="stat-label">Sugerencias</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Modal confirmación eliminar amigo -->
+    <div class="feedback-modal-overlay" *ngIf="showConfirmDelete">
+      <div class="confirm-modal-content">
+        <div class="confirm-modal-icon">
+          <span class="material-symbols-rounded">delete</span>
+        </div>
+        <h3>Eliminar amigo</h3>
+        <p>
+          ¿Seguro que quieres eliminar a <strong>{{ friendToDeleteName }}</strong> de tu lista de amigos?
+        </p>
+        <div class="confirm-modal-actions">
+          <button class="secondary-btn" (click)="closeDeleteConfirm()">Cancelar</button>
+          <button class="danger-btn" (click)="confirmRemoveFriend()">Eliminar</button>
+        </div>
+      </div>
+    </div>
+
+    <section class="pending-section" *ngIf="pendingRequests.length > 0">
+      <div class="section-header">
+        <div>
+          <p class="section-eyebrow">Invitaciones</p>
+          <h2>Solicitudes pendientes</h2>
+        </div>
+        <span class="count">{{ pendingRequests.length }}</span>
+      </div>
+
+      <div class="pending-list">
+        <div *ngFor="let request of pendingRequests" class="pending-card">
+          <div class="pending-info">
+            <img
+              [src]="request.fromUser.avatarUrl"
+              [alt]="request.fromUser.name"
+              class="avatar"
+            />
+            <div class="pending-details">
+              <p class="name">{{ request.fromUser.name }}</p>
+              <p class="username">@{{ request.fromUser.username }}</p>
+              <p class="card-subtitle">Quiere conectar contigo</p>
+            </div>
+          </div>
+
+          <div class="pending-actions">
+            <button
+              class="action-btn accept-btn"
+              (click)="acceptRequest(request._id)"
+              [disabled]="acceptingRequestIds.has(request._id)"
+            >
+              {{ acceptingRequestIds.has(request._id) ? 'Aceptando...' : 'Aceptar' }}
+            </button>
+            <button
+              class="action-btn reject-btn"
+              (click)="rejectRequest(request._id)"
+              [disabled]="rejectingRequestIds.has(request._id)"
+            >
+              {{ rejectingRequestIds.has(request._id) ? 'Rechazando...' : 'Rechazar' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="friends-grid">
+      <section class="panel friends-section">
+        <div class="section-header">
+          <div>
+            <p class="section-eyebrow">Tu red</p>
+            <h2>Tus amigos</h2>
+          </div>
+          <span class="count">{{ filteredFriends.length }}</span>
+        </div>
+
+        <div class="toolbar">
+          <div class="search-box">
+            <span class="search-icon material-symbols-rounded">search</span>
+            <input
+              type="text"
+              [(ngModel)]="searchTerm"
+              placeholder="Buscar por nombre o usuario"
+              class="search-input"
+            />
+          </div>
+
+          <button class="add-friend-btn" (click)="openAddFriendModal()">
+            <span class="btn-plus">+</span>
+            <span>Añadir amigo</span>
+          </button>
+        </div>
+
+        <div class="panel-body">
+          <div *ngIf="isLoading" class="loading-state">
+            <div class="spinner"></div>
+            <p>Cargando amigos...</p>
+          </div>
+
+          <div *ngIf="!isLoading && filteredFriends.length === 0" class="empty-state">
+            <div class="empty-icon"></div>
+            <h3>Aún no tienes amigos</h3>
+            <p>
+              Empieza buscando personas de la comunidad para enviar tu primera
+              solicitud.
+            </p>
+          </div>
+
+          <div *ngIf="!isLoading && filteredFriends.length > 0" class="friends-list">
+            <div *ngFor="let friend of filteredFriends" class="friend-card">
+              <div class="friend-info">
+                <img [src]="friend.avatarUrl" [alt]="friend.name" class="avatar" />
+                <div class="friend-details">
+                  <p class="name">{{ friend.name }}</p>
+                  <p class="username">@{{ friend.username }}</p>
+                  <p class="card-subtitle">Disponible para planes y eventos</p>
+                </div>
+              </div>
+
+              <div class="friend-actions">
+                <button class="icon-btn message-btn" title="Mensaje">
+                  <span class="material-symbols-rounded">chat</span>
+                </button>
+                <button
+                  class="icon-btn delete-btn"
+                  (click)="openDeleteConfirm(friend._id, friend.name)"
+                  title="Eliminar amigo"
+                >
+                  <span class="material-symbols-rounded">delete</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel suggestions-section">
+        <div class="section-header">
+          <div>
+            <p class="section-eyebrow">Descubre</p>
+            <h2>Quizás conozcas a</h2>
+          </div>
+          <button class="organize-btn">Organizar quedada</button>
+        </div>
+
+        <div class="panel-body">
+          <div *ngIf="suggestedUsers.length === 0" class="empty-state compact">
+            <div class="empty-icon"></div>
+            <h3>No hay sugerencias ahora mismo</h3>
+            <p>Cuando crezca tu red, aquí aparecerán nuevas recomendaciones.</p>
+          </div>
+
+          <div *ngIf="suggestedUsers.length > 0" class="suggestions-list">
+            <div *ngFor="let user of suggestedUsers" class="suggestion-card">
+              <div class="suggestion-info">
+                <img [src]="user.avatarUrl" [alt]="user.name" class="avatar" />
+                <div class="suggestion-details">
+                  <p class="name">{{ user.name }}</p>
+                  <p class="username">@{{ user.username }}</p>
+                  <p class="mutual-friend" *ngIf="user.mutualFriends">
+                    Amigo en común: {{ user.mutualFriends }}
+                  </p>
+                  <p class="card-subtitle" *ngIf="!user.mutualFriends">
+                    Usuario recomendado para tu red
+                  </p>
+                </div>
+              </div>
+
+              <div class="suggestion-actions">
+                <button class="icon-btn message-btn" title="Mensaje">
+                  <span class="material-symbols-rounded">chat</span>
+                </button>
+                <button
+                  class="action-btn request-btn"
+                  (click)="sendFriendRequest(user._id)"
+                  [disabled]="sendingRequestIds.has(user._id)"
+                  title="Enviar solicitud de amistad"
+                >
+                  {{ sendingRequestIds.has(user._id) ? 'Enviando...' : 'Solicitar' }}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- Modal añadir amigo -->
+  <div
+    class="modal-overlay"
+    *ngIf="showAddFriendModal"
+    (click)="closeAddFriendModal()"
+  >
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <div>
+          <p class="section-eyebrow">Nueva amistad</p>
+          <h3>Buscar personas</h3>
+        </div>
+        <button class="close-btn" (click)="closeAddFriendModal()">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="modal-search-box">
+          <span class="search-icon material-symbols-rounded">search</span>
+          <input
+            type="text"
+            [(ngModel)]="searchAddFriendTerm"
+            (input)="onSearchAddFriend()"
+            placeholder="Busca por nombre, usuario o email"
+            class="modal-search-input"
+          />
+        </div>
+
+        <div class="modal-users-list">
+          <div *ngIf="!typingStarted && !isSearchingUsers" class="empty-state compact">
+            <div class="empty-icon">
+              <span class="material-symbols-rounded">person_search</span>
+            </div>
+            <h3>Empieza a escribir</h3>
+            <p>Busca por nombre, usuario o email y te irán saliendo resultados en tiempo real.</p>
+          </div>
+
+          <div *ngIf="isSearchingUsers" class="empty-state compact">
+            <div class="spinner"></div>
+            <h3>Buscando usuarios...</h3>
+          </div>
+
+          <div *ngIf="typingStarted && !isSearchingUsers && filteredAddFriendUsers.length === 0" class="empty-state compact">
+            <div class="empty-icon">
+              <span class="material-symbols-rounded">search_off</span>
+            </div>
+            <h3>No hay coincidencias</h3>
+            <p>Prueba con otro texto.</p>
+          </div>
+
+          <div *ngFor="let user of filteredAddFriendUsers" class="modal-user-card">
+            <div class="user-info">
+              <img [src]="user.avatarUrl" [alt]="user.name" class="avatar" />
+              <div class="user-details">
+                <p class="name">{{ user.name }}</p>
+                <p class="username">@{{ user.username }}</p>
+                <p class="card-subtitle">{{ user.email }}</p>
+              </div>
+            </div>
+
+            <button
+              class="action-btn request-btn"
+              (click)="sendFriendRequest(user._id)"
+              [disabled]="sendingRequestIds.has(user._id)"
+            >
+              {{ sendingRequestIds.has(user._id) ? 'Enviando...' : 'Solicitar' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

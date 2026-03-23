@@ -10,6 +10,7 @@ import { ProfileEditComponent } from './features/profile/profile-edit/profile-ed
 import { ForgotPasswordComponent } from './features/auth/forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './features/auth/reset-password/reset-password.component';
 import { StatsComponent } from './features/stats/stats.component';
+import { FriendsComponent } from './features/friends/friends.component';
 import { authGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
@@ -25,4 +26,5 @@ export const routes: Routes = [
   { path: 'forgot-password', component: ForgotPasswordComponent },
   { path: 'reset-password', component: ResetPasswordComponent },
   { path: 'stats', component: StatsComponent },
+  { path: 'friends', component: FriendsComponent, canActivate: [authGuard] },
 ];
