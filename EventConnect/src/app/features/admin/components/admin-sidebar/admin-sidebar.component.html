@@ -1,0 +1,22 @@
+<aside class="sidebar">
+  <div class="brand">
+    <span class="brand-icon">📊</span>
+    <span class="brand-text">Admin</span>
+  </div>
+
+  <nav class="menu">
+    <a
+      *ngFor="let item of menuItems"
+      [routerLink]="item.route"
+      routerLinkActive="active"
+      class="menu-item"
+    >
+      <span class="menu-left">
+        <span class="menu-icon">{{ item.icon }}</span>
+        <span>{{ item.label }}</span>
+      </span>
+
+      <span *ngIf="item.badge" class="badge">{{ item.badge }}</span>
+    </a>
+  </nav>
+</aside>

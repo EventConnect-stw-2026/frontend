@@ -87,11 +87,12 @@ export class LoginComponent {
       })
     )
     .subscribe({
-      next: () => {
+      next: (response) => {
         this.ngZone.run(() => {
           this.errorMessage = '';
           this.cdr.detectChanges();
-          this.router.navigate(['/home']);
+          const targetRoute = response.user.role === 'admin' ? '/admin/dashboard' : '/home';
+          this.router.navigate([targetRoute]);
         });
       },
       error: (err) => {
@@ -119,11 +120,12 @@ export class LoginComponent {
       token: response.credential,
       isRegistering: false
     }).subscribe({
-      next: () => {
+      next: (authResponse) => {
         this.ngZone.run(() => {
           this.isSubmitting = false;
           this.cdr.detectChanges();
-          this.router.navigate(['/home']);
+          const targetRoute = authResponse.user.role === 'admin' ? '/admin/dashboard' : '/home';
+          this.router.navigate([targetRoute]);
         });
       },
       error: (err) => {

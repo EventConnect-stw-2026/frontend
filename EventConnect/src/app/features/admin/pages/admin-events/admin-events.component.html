@@ -1,0 +1,77 @@
+<app-admin-topbar title="Gestión de Eventos"></app-admin-topbar>
+
+<section class="events-panel">
+  <div class="panel-header">
+    <h2>Eventos</h2>
+
+    <button type="button" class="create-btn" (click)="createEvent()">
+      + Crear Evento
+    </button>
+  </div>
+
+  <div class="filters">
+    <input
+      type="text"
+      [(ngModel)]="search"
+      placeholder="Buscar evento..."
+    >
+
+    <select [(ngModel)]="selectedStatus">
+      <option value="Todos">Todos</option>
+      <option value="Activo">Activo</option>
+      <option value="Pendiente">Pendiente</option>
+    </select>
+
+    <button type="button" class="filter-btn">🔎 Filtrar</button>
+  </div>
+
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Evento</th>
+          <th>Fecha</th>
+          <th>Inscritos</th>
+          <th>Categoría</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let event of filteredEvents">
+          <td>{{ event.name }}</td>
+          <td>{{ event.date }}</td>
+          <td>{{ event.enrolled }}</td>
+          <td>{{ event.category }}</td>
+          <td>
+            <span
+              class="status"
+              [class.active]="event.status === 'Activo'"
+              [class.pending]="event.status === 'Pendiente'"
+            >
+              {{ event.status }}
+            </span>
+          </td>
+          <td>
+            <div class="actions">
+              <button type="button" (click)="editEvent(event)" title="Editar">
+                ✏
+              </button>
+              <button type="button" (click)="viewEvent(event)" title="Ver">
+                👁
+              </button>
+              <button type="button" (click)="deleteEvent(event)" title="Eliminar">
+                🗑
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="pagination">
+    Mostrando 1-8 de 45 eventos &lt; 1 2 3 &gt;
+  </p>
+</section>

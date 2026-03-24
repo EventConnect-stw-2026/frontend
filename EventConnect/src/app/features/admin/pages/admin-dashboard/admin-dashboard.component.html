@@ -1,0 +1,66 @@
+<app-admin-topbar title="Dashboard Principal"></app-admin-topbar>
+
+
+<ng-container *ngIf="dashboard$ | async as dashboard">
+  <section class="panel" *ngIf="dashboard.isLoading">
+    <p>Cargando datos del dashboard...</p>
+  </section>
+
+  <section class="panel" *ngIf="dashboard.errorMessage">
+    <p>{{ dashboard.errorMessage }}</p>
+  </section>
+
+  <section class="stats-grid">
+    <article class="stat-card" *ngFor="let stat of dashboard.stats">
+      <div class="stat-icon">{{ stat.icon }}</div>
+      <div class="stat-value">{{ stat.value }}</div>
+      <div class="stat-label">{{ stat.label }}</div>
+      <div class="stat-detail">{{ stat.detail }}</div>
+    </article>
+  </section>
+
+<section class="panel">
+  <h2>📈 Actividad Última Semana</h2>
+  <div class="chart-placeholder">[Gráfico de línea con datos de actividad]</div>
+</section>
+
+<section class="panel">
+  <h2>⚠ Moderación Pendiente (8 items)</h2>
+
+  <div class="moderation-box">
+    <p><strong>Comentario flagueado</strong></p>
+    <p>Usuario: Juan García | En: Rock en el Parque Grande</p>
+    <p><em>"Este evento es una pérdida de tiempo..."</em></p>
+    <p>Reportado por 3 usuarios | Razón: Contenido ofensivo</p>
+  </div>
+</section>
+
+<section class="panel">
+  <h2>📅 Próximos Eventos</h2>
+
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Evento</th>
+          <th>Fecha</th>
+          <th>Inscritos</th>
+          <th>Estado</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let event of dashboard.upcomingEvents">
+          <td>{{ event.name }}</td>
+          <td>{{ event.date }}</td>
+          <td>{{ event.enrolled }}</td>
+          <td>
+            <span class="status active">{{ event.status }}</span>
+          </td>
+        </tr>
+        <tr *ngIf="!dashboard.upcomingEvents.length">
+          <td colspan="4">No hay próximos eventos.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
