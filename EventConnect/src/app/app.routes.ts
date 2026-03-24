@@ -11,6 +11,7 @@ import { ForgotPasswordComponent } from './features/auth/forgot-password/forgot-
 import { ResetPasswordComponent } from './features/auth/reset-password/reset-password.component';
 import { StatsComponent } from './features/stats/stats.component';
 import { FriendsComponent } from './features/friends/friends.component';
+import { ChatDetailComponent } from './features/chat-detail/chat-detail.component';
 import { authGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
@@ -27,4 +28,5 @@ export const routes: Routes = [
   { path: 'reset-password', component: ResetPasswordComponent },
   { path: 'stats', component: StatsComponent },
   { path: 'friends', component: FriendsComponent, canActivate: [authGuard] },
+  { path: 'chat/:conversationId', component: ChatDetailComponent, canActivate: [authGuard] }
 ];

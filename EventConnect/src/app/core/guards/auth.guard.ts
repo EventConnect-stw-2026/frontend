@@ -10,7 +10,7 @@ export const authGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => {
   
   // Lista de rutas permitidas para usuarios autenticados
   const authenticatedRoutes = [
-    'home', 'explore', 'map', 'events/:id', 'profile', 'profile/edit', 'favorites', 'stats', 'history', 'friends'
+    'home', 'explore', 'map', 'events/:id', 'profile', 'profile/edit', 'favorites', 'stats', 'history', 'friends', 'chat/:conversationId'
   ];
   // Lista de rutas permitidas para no autenticados
   const unauthenticatedRoutes = [

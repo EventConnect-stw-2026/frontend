@@ -2,8 +2,11 @@ import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { finalize } from 'rxjs/operators';
+import { Router } from '@angular/router';
+
 import { FriendsService } from '../../core/services/friends.service';
 import { AuthService } from '../../core/services/auth.service';
+import { ChatService } from '../../core/services/chat.service';
 import { HeaderComponent } from '../../layout/components/header/header';
 
 @Component({
@@ -13,10 +16,11 @@ import { HeaderComponent } from '../../layout/components/header/header';
   styleUrl: './friends.component.scss',
   imports: [CommonModule, FormsModule, HeaderComponent]
 })
-
 export class FriendsComponent implements OnInit {
   private friendsService = inject(FriendsService);
   private authService = inject(AuthService);
+  private chatService = inject(ChatService);
+  private router = inject(Router);
   private cdr = inject(ChangeDetectorRef);
 
   friends: any[] = [];
@@ -43,6 +47,7 @@ export class FriendsComponent implements OnInit {
   rejectingRequestIds = new Set<string>();
   removingFriendIds = new Set<string>();
   cancellingRequestIds = new Set<string>();
+  openingChatIds = new Set<string>();
 
   ngOnInit(): void {
     const user = this.authService.getCurrentUser() as any;
@@ -57,8 +62,7 @@ export class FriendsComponent implements OnInit {
     return users.filter((user: any) =>
       user._id !== this.currentUserId &&
       !this.friends.find(f => f._id === user._id) &&
-      !this.pendingRequests.find(p => p.fromUser._id === user._id) //&&
-      //!this.sentRequests.find(s => s.toUser._id === user._id)
+      !this.pendingRequests.find(p => p.fromUser._id === user._id)
     );
   }
 
@@ -133,7 +137,6 @@ export class FriendsComponent implements OnInit {
         next: () => {
           this.suggestedUsers = this.suggestedUsers.filter(u => u._id !== friendId);
           this.loadSentRequests();
-          // Actualizar allUsers: marcar como pendiente en vez de quitar
           this.allUsers = this.allUsers.map(u =>
             u._id === friendId ? { ...u, requestSent: true } : u
           );
@@ -241,6 +244,34 @@ export class FriendsComponent implements OnInit {
       });
   }
 
+  openChat(friendId: string): void {
+    if (!friendId) return;
+    if (this.openingChatIds.has(friendId)) return;
+
+    this.openingChatIds = new Set(this.openingChatIds).add(friendId);
+    this.cdr.detectChanges();
+
+    this.chatService.createOrGetConversation(friendId)
+      .pipe(
+        finalize(() => {
+          const next = new Set(this.openingChatIds);
+          next.delete(friendId);
+          this.openingChatIds = next;
+          this.cdr.detectChanges();
+        })
+      )
+      .subscribe({
+        next: (res) => {
+          const conversationId = res?.conversation?._id;
+          if (!conversationId) return;
+          this.router.navigate(['/chat', conversationId]);
+        },
+        error: (err) => {
+          console.error('Error al abrir chat:', err);
+        }
+      });
+  }
+
   get filteredFriends() {
     return this.friends.filter(friend =>
       friend.name.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
@@ -288,7 +319,7 @@ export class FriendsComponent implements OnInit {
           this.allUsers = this.filterAvailableUsers(res.users || []).map(u => ({
             ...u,
             requestSent: this.sentRequests.some(s => s.toUser._id === u._id)
-                         || this.sentRequests.some(s => s.toUser === u._id)
+              || this.sentRequests.some(s => s.toUser === u._id)
           }));
           this.isSearchingUsers = false;
           this.cdr.detectChanges();

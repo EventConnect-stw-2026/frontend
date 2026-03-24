@@ -1,0 +1,63 @@
+<app-header></app-header>
+
+<div class="chat-page">
+  <div class="chat-shell" *ngIf="conversation; else loadingTpl">
+    
+    <div class="chat-header">
+      <img
+        class="avatar"
+        [src]="conversation.otherUser?.avatarUrl || 'assets/default-avatar.png'"
+        [alt]="conversation.otherUser?.name || 'Usuario'"
+      />
+
+      <div class="chat-user-info">
+        <h2>{{ conversation.otherUser?.name }}</h2>
+        <p>@{{ conversation.otherUser?.username }}</p>
+      </div>
+    </div>
+
+    <div class="chat-messages" *ngIf="!isLoading; else loadingMessagesTpl">
+      <div *ngIf="messages.length === 0" class="empty-chat">
+        Todavía no hay mensajes. Empieza la conversación.
+      </div>
+
+      <div
+        *ngFor="let msg of messages"
+        class="message-row"
+        [class.own]="isOwnMessage(msg)"
+      >
+        <div class="message-bubble">
+          <p>{{ msg.content }}</p>
+          <span class="message-time">
+            {{ msg.createdAt | date:'shortTime' }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="chat-input-bar">
+      <input
+        type="text"
+        [(ngModel)]="newMessage"
+        placeholder="Escribe un mensaje..."
+        (keyup.enter)="sendMessage()"
+      />
+
+      <button
+        type="button"
+        (click)="sendMessage()"
+        [disabled]="!newMessage.trim()"
+      >
+        Enviar
+      </button>
+    </div>
+  </div>
+</div>
+
+<ng-template #loadingTpl>
+  <div class="loading-chat">Cargando conversación...</div>
+</ng-template>
+
+<ng-template #loadingMessagesTpl>
+  <div class="loading-chat">Cargando mensajes...</div>
+</ng-template>

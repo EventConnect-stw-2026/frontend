@@ -179,8 +179,15 @@
               </div>
 
               <div class="friend-actions">
-                <button class="icon-btn message-btn" title="Mensaje">
-                  <span class="material-symbols-rounded">chat</span>
+                <button
+                  class="icon-btn message-btn"
+                  title="Mensaje"
+                  (click)="openChat(friend._id)"
+                  [disabled]="openingChatIds.has(friend._id)"
+                >
+                  <span class="material-symbols-rounded">
+                    {{ openingChatIds.has(friend._id) ? 'hourglass_top' : 'chat' }}
+                  </span>
                 </button>
                 <button
                   class="icon-btn delete-btn"
