@@ -61,7 +61,7 @@
 
         <!-- MINI MAPA -->
         <div class="mini-map-card">
-          @if (event.latitude && event.longitude) {
+       @if (event.latitude != null && event.longitude != null) {
             <div id="mini-map"></div>
           } @else {
             <div class="no-map">
