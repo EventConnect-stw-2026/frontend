@@ -1,0 +1,11 @@
+<header class="topbar">
+  <h1>{{ title }}</h1>
+
+  <div class="admin-chip" (click)="toggleMenu()" tabindex="0">
+    <span class="avatar">A</span>
+    <span>Admin</span>
+    <div class="admin-menu" *ngIf="showMenu" (click)="$event.stopPropagation()">
+      <button (click)="logout(); closeMenu()">Cerrar sesión</button>
+    </div>
+  </div>
+</header>

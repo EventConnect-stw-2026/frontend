@@ -1,0 +1,71 @@
+.sidebar {
+  width: 240px;
+  min-height: 100vh;
+  background: #1f3f9d;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  padding: 18px 0;
+  box-sizing: border-box;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  z-index: 100;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 22px 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+  font-weight: 700;
+  font-size: 1.2rem;
+}
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  padding-top: 14px;
+}
+
+.menu-item {
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 18px;
+  color: #dfe7ff;
+  text-decoration: none;
+  font-size: 0.96rem;
+  transition: background 0.15s ease;
+}
+
+.menu-item:hover,
+.menu-item.active {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.menu-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.menu-icon {
+  width: 18px;
+  text-align: center;
+}
+
+.badge {
+  min-width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: #ff4a4a;
+  color: white;
+  font-size: 0.75rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
