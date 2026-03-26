@@ -19,7 +19,6 @@
 
     <div class="detail-layout">
 
-      <!-- COLUMNA IZQUIERDA -->
       <div class="left-col">
         <div class="event-image">
           <img [src]="event.imageUrl ? 'https:' + event.imageUrl : 'assets/images/zaragoza.png'"
@@ -37,8 +36,7 @@
                 }
               </div>
             </div>
-            <button class="attend-btn">Asistir</button>
-          </div>
+            </div>
 
           @if (event.startDate) {
             <div class="meta-row">
@@ -56,12 +54,25 @@
         </div>
       </div>
 
-      <!-- COLUMNA DERECHA -->
       <div class="right-col">
 
-        <!-- MINI MAPA -->
+        <div class="action-buttons" style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;">
+          <button 
+            class="attend-btn" 
+            [class.active]="isAttending" 
+            (click)="onAttendClick()">
+            {{ isAttending ? 'Ya estás apuntado' : 'Apuntarme al evento' }}
+          </button>
+          
+          @if (event.sourceUrl) {
+            <a [href]="event.sourceUrl" target="_blank" class="source-btn" style="text-align: center;">
+              Ver fuente oficial →
+            </a>
+          }
+        </div>
+
         <div class="mini-map-card">
-       @if (event.latitude != null && event.longitude != null) {
+          @if (event.latitude != null && event.longitude != null) {
             <div id="mini-map"></div>
           } @else {
             <div class="no-map">
@@ -71,7 +82,6 @@
           }
         </div>
 
-        <!-- CHAT -->
         <div class="chat-card">
           <div class="chat-tabs">
             <button class="chat-tab" [class.active]="activeTab === 'chat'" (click)="activeTab = 'chat'">Chat</button>
