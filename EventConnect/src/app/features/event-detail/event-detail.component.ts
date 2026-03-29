@@ -92,6 +92,10 @@ onAttendClick() {
     }, 100);
   }
 
+  onImgError(event: any) {
+    event.target.src = 'assets/images/placeholder.svg';
+  }
+
   getEmoji(category: string): string {
     const map: any = {
       'Deporte': '⚽',

@@ -214,6 +214,21 @@
   p { font-size: 13px; text-align: center; padding: 0 16px; margin: 0; }
 }
 
+.no-map-title {
+  font-weight: 600;
+  color: #1a1a2e;
+  margin: 0 0 4px;
+  font-size: 14px;
+  text-align: center;
+}
+
+.no-map-sub {
+  font-size: 12px;
+  color: #aaa;
+  margin: 0;
+  text-align: center;
+}
+
 .chat-card {
   background: white;
   border-radius: 16px;

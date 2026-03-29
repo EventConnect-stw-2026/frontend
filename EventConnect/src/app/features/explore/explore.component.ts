@@ -24,7 +24,24 @@ export class ExploreComponent implements OnInit {
   page = 1;
   totalPages = 1;
 
-  categories = ['Cultural', 'Deportivo', 'Empresarial', 'Social', 'Educativo', 'Gastronómico', 'Religioso'];
+  categories = [
+    'Deporte',
+    'Música',
+    'Teatro y Artes Escénicas',
+    'Artes plásticas',
+    'Cursos y Talleres',
+    'Formación',
+    'Ocio y Juegos',
+    'Turismo',
+    'Gastronomía',
+    'Aire Libre y Excursiones',
+    'Medio Ambiente y Naturaleza',
+    'Conferencias y Congresos',
+    'Imagen y sonido',
+    'Idiomas',
+    'Desarrollo personal',
+    'Otros',
+  ];
 
   private eventService = inject(EventService);
   private platformId = inject(PLATFORM_ID);
@@ -44,10 +61,12 @@ export class ExploreComponent implements OnInit {
 
     this.eventService.getEvents(this.page, 9, filters).subscribe({
       next: (res) => {
-        this.events = res.data;
-        this.totalPages = res.totalPages;
-        this.loading = false;
-        this.cdr.detectChanges();
+        setTimeout(() => {
+          this.events = res.data;
+          this.totalPages = res.totalPages;
+          this.loading = false;
+          this.cdr.detectChanges();
+        }, 0);
       },
       error: () => {
         this.error = true;

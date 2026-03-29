@@ -2,7 +2,8 @@
 
 <section class="hero">
   <div class="hero-content">
-    <h1>Descubre qué hacer<br>hoy en Zaragoza</h1>    <div class="search">
+    <h1>Descubre qué hacer<br>hoy en Zaragoza</h1>
+    <div class="search">
       <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="11" cy="11" r="8"></circle>
         <path d="m21 21-4.35-4.35"></path>
@@ -16,46 +17,73 @@
 <section class="featured">
   <h2>Eventos destacados</h2>
 
-  <p *ngIf="loading">Cargando eventos...</p>
-  <p *ngIf="error">Error al cargar los eventos.</p>
+  @if (loading) { <p>Cargando eventos...</p> }
+  @if (error) { <p>Error al cargar los eventos.</p> }
 
-  <div class="events" *ngIf="!loading && !error">
-    <app-event-card
-      *ngFor="let event of events"
-      [event]="event">
-    </app-event-card>
-  </div>
-
+  @if (!loading && !error) {
+    <div class="events">
+      @for (event of events; track event._id) {
+        <app-event-card [event]="event"></app-event-card>
+      }
+    </div>
+  }
 </section>
 
 <section class="advisor">
   <div class="advisor-card">
 
+    <img src="assets/images/Spike.svg" alt="Spike" class="advisor-avatar">
+
     <div class="advisor-content">
       <h2>SpAlk te aconseja, ¿qué buscas?</h2>
 
-      <p class="question">¿Qué tipo de quedada quieres?</p>
+      @if (!selectedCompanion) {
+        <p class="question">¿Con quién vas?</p>
+        <div class="options">
+          @for (opt of companions; track opt.value) {
+            <button (click)="selectCompanion(opt)">{{ opt.label }}</button>
+          }
+        </div>
+      }
 
-      <div class="options">
-        <button 
-          *ngFor="let option of options"
-          [class.active]="selectedOption === option"
-          (click)="selectOption(option)">
-          {{ option.label }}
-        </button>
-      </div>
+      @if (selectedCompanion && !selectedVibe && !advisorLoading && recommendedEvents.length === 0) {
+        <p class="question">Vas <strong>{{ selectedCompanion.label }}</strong> — ¿qué buscas?</p>
+        <div class="options">
+          @for (opt of vibes; track opt.value) {
+            <button (click)="selectVibe(opt)">{{ opt.label }}</button>
+          }
+        </div>
+      }
 
-      <p class="response" *ngIf="response">
-        {{ response }}
-      </p>
+      @if (advisorLoading) {
+        <div class="advisor-loading">
+          <div class="advisor-spinner"></div>
+          <span>Buscando planes para ti...</span>
+        </div>
+      }
 
-      <button class="cta" *ngIf="response" (click)="goToActivity()">
-        Ir a la actividad
-      </button>
+      @if (advisorError) {
+        <p class="advisor-error">No se pudo generar la recomendación 😔</p>
+      }
+
+      @if (recommendedEvents.length > 0) {
+        <p class="question">
+          Planes para ir <strong>{{ selectedCompanion.label }}</strong>
+          buscando <strong>{{ selectedVibe.label }}</strong>:
+        </p>
+      }
     </div>
 
-    <!-- Avatar -->
-    <img src="/assets/images/Spike.svg" class="advisor-avatar" />
-
   </div>
+
+  @if (recommendedEvents.length > 0) {
+    <div class="advisor-results">
+      <div class="advisor-events">
+        @for (event of recommendedEvents; track event._id) {
+          <app-event-card [event]="event"></app-event-card>
+        }
+      </div>
+      <button class="advisor-reset" (click)="resetAdvisor()">🔄 Buscar otro plan</button>
+    </div>
+  }
 </section>
