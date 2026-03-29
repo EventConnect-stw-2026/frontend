@@ -49,6 +49,34 @@ export interface AdminEventsResponse {
   events: AdminEvent[];
 }
 
+export interface AdminReport {
+  id: string;
+  type: string;
+  involvedUser: string;
+  involvedUsername: string;
+  description: string;
+  reportedBy: string;
+  reason: string;
+  date: string;
+  category: 'Contenido' | 'Usuarios' | 'Eventos';
+  status: string;
+}
+
+export interface AdminReportsResponse {
+  reports: AdminReport[];
+}
+
+export interface AdminReportsSummary {
+  totalReports: number;
+  contentReports: number;
+  userReports: number;
+  eventReports: number;
+}
+
+export interface AdminReportsSummaryResponse {
+  summary: AdminReportsSummary;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -70,6 +98,22 @@ export class AdminService {
 
   getEvents(): Observable<AdminEventsResponse> {
     return this.http.get<AdminEventsResponse>(`${this.apiUrl}/events`, {
+      withCredentials: true
+    });
+  }
+
+  getReportsSummary(): Observable<AdminReportsSummaryResponse> {
+    return this.http.get<AdminReportsSummaryResponse>(`${this.apiUrl}/reports/summary`, {
+      withCredentials: true
+    });
+  }
+
+  getReports(category?: string): Observable<AdminReportsResponse> {
+    const url = category 
+      ? `${this.apiUrl}/reports?category=${category}` 
+      : `${this.apiUrl}/reports`;
+    
+    return this.http.get<AdminReportsResponse>(url, {
       withCredentials: true
     });
   }

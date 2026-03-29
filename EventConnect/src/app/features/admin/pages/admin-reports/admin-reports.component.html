@@ -1,0 +1,123 @@
+<app-admin-topbar title="Reportes"></app-admin-topbar>
+
+<ng-container *ngIf="summary$ | async as summaryData">
+  <section class="summary-grid">
+    <article
+      class="summary-card"
+      *ngFor="let card of summaryData.summaryCards"
+      [class.danger]="card.variant === 'danger'"
+      [class.warning]="card.variant === 'warning'"
+      [class.soft-warning]="card.variant === 'soft-warning'"
+    >
+      <div class="summary-icon">{{ card.icon }}</div>
+      <div>
+        <div class="summary-value">{{ card.value }}</div>
+        <div class="summary-label">{{ card.label }}</div>
+      </div>
+    </article>
+  </section>
+</ng-container>
+
+<ng-container *ngIf="reports$ | async as data">
+  <section class="reports-panel" *ngIf="data.isLoading">
+    <p>Cargando reportes...</p>
+  </section>
+
+  <section class="reports-panel" *ngIf="data.errorMessage">
+    <p>{{ data.errorMessage }}</p>
+  </section>
+
+  <section class="reports-panel" *ngIf="!data.isLoading && !data.errorMessage">
+    <div class="tabs">
+      <button
+        type="button"
+        class="tab-btn"
+        [class.active]="activeTab === 'Contenido'"
+        (click)="setTab('Contenido')"
+      >
+        Contenido
+      </button>
+
+      <button
+        type="button"
+        class="tab-btn"
+        [class.active]="activeTab === 'Usuarios'"
+        (click)="setTab('Usuarios')"
+      >
+        Usuarios
+      </button>
+
+      <button
+        type="button"
+        class="tab-btn"
+        [class.active]="activeTab === 'Eventos'"
+        (click)="setTab('Eventos')"
+      >
+        Eventos
+      </button>
+    </div>
+
+    <div class="filters">
+      <input
+        type="text"
+        [(ngModel)]="search"
+        placeholder="Buscar reporte..."
+      >
+
+      <select [(ngModel)]="selectedFilter">
+        <option value="Todos">Todos</option>
+        <option value="Spam">Spam</option>
+        <option value="Contenido ofensivo">Contenido ofensivo</option>
+        <option value="Necesita revisión urgente">Necesita revisión urgente</option>
+      </select>
+
+      <button type="button" class="filter-btn">🔎 Filtrar</button>
+    </div>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Tipo</th>
+            <th>Usuario Involucrado</th>
+            <th>Descripción</th>
+            <th>Reportado Por</th>
+            <th>Razón</th>
+            <th>Fecha</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let report of getFilteredReports(data.reports)">
+            <td class="strong-cell">{{ report.type }}</td>
+
+            <td>
+              <div class="user-cell">
+                <span class="user-name">{{ report.involvedUser }}</span>
+                <span class="user-username">{{ report.involvedUsername }}</span>
+              </div>
+            </td>
+
+            <td>{{ report.description }}</td>
+            <td>{{ report.reportedBy }}</td>
+            <td>{{ report.reason }}</td>
+            <td>{{ report.date }}</td>
+            <td>
+              <button type="button" class="view-btn" (click)="viewReport(report)">
+                ▶ Ver
+              </button>
+            </td>
+          </tr>
+          <tr *ngIf="!getFilteredReports(data.reports).length">
+            <td colspan="7">No hay reportes para mostrar.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="pagination">
+      Mostrando {{ getFilteredReports(data.reports).length }} de {{ data.reports.length }} reportes
+    </p>
+  </section>
+</ng-container>
