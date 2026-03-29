@@ -13,13 +13,13 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './event-detail.component.html',
   styleUrl: './event-detail.component.scss',
 })
-export class EventDetailComponent implements OnInit, AfterViewInit {
 
+export class EventDetailComponent implements OnInit, AfterViewInit {
   event: any = null;
   loading = true;
   error = false;
+  isAttending = false; 
   activeTab: 'chat' | 'amigos' = 'chat';
-
   private mapInitialized = false;
 
   private route = inject(ActivatedRoute);
@@ -50,6 +50,26 @@ export class EventDetailComponent implements OnInit, AfterViewInit {
         });
       }
     }
+  }
+
+onAttendClick() {
+    if (!this.event || !this.event._id) return;
+
+    this.eventService.toggleAttend(this.event._id).subscribe({
+      next: (res) => {
+        this.isAttending = res.isAttending; 
+        this.cdr.detectChanges();
+        alert(res.message); 
+      },
+      error: (err) => {
+        console.error('Error al apuntarse al evento:', err);
+        if (err.status === 401) {
+          alert('Tienes que iniciar sesión para apuntarte.');
+        } else {
+          alert('Hubo un problema al apuntarte. Inténtalo de nuevo.');
+        }
+      }
+    });
   }
 
   async ngAfterViewInit() {
