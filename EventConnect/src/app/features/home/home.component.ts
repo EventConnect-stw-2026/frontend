@@ -1,16 +1,16 @@
 import { Component, OnInit, PLATFORM_ID, inject, ChangeDetectorRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { EventCardComponent } from '../../shared/components/event-card/event-card';
 import { EventService } from '../../core/services/event.service';
 import { HeaderComponent } from '../../layout/components/header/header';
-import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
+import { RouterLink } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, EventCardComponent, HeaderComponent, HttpClientModule],
+  imports: [CommonModule, EventCardComponent, HeaderComponent, RouterLink, HttpClientModule],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
@@ -19,20 +19,35 @@ export class HomeComponent implements OnInit {
   loading = true;
   error = false;
 
-  options = [
-  { label: 'Una que hacer solo', value: 'solo' },
-  { label: 'Una que hacer en pareja', value: 'pareja' },
-  { label: 'Una que hacer en grupo', value: 'grupo' }
-];
+  // Chatbot
+  companions = [
+    { label: '👤 Solo',       value: 'solo' },
+    { label: '❤️ En pareja',  value: 'pareja' },
+    { label: '👥 En grupo',   value: 'grupo' },
+    { label: '👨‍👩‍👧 Familia',   value: 'familia' },
+  ];
 
-  selectedOption: any = null;
-  response: string = '';
+  vibes = [
+    { label: '😌 Algo tranquilo',    value: 'tranquilo' },
+    { label: '⚡ Algo emocionante',  value: 'emocionante' },
+    { label: '🌿 Al aire libre',     value: 'exterior' },
+    { label: '🏛️ Bajo techo',        value: 'interior' },
+    { label: '🍽️ Con buena comida',  value: 'gastronomico' },
+    { label: '🎨 Algo cultural',     value: 'cultural' },
+  ];
+
+  selectedCompanion: any = null;
+  selectedVibe: any = null;
+  recommendedEvents: any[] = [];
+  advisorLoading = false;
+  advisorError = false;
 
   private platformId = inject(PLATFORM_ID);
   private cdr = inject(ChangeDetectorRef);
 
-  constructor(private eventService: EventService,
-              private http: HttpClient  
+  constructor(
+    private eventService: EventService,
+    private http: HttpClient
   ) {}
 
   ngOnInit() {
@@ -41,7 +56,7 @@ export class HomeComponent implements OnInit {
         next: (res) => {
           this.events = res.data;
           this.loading = false;
-          this.cdr.detectChanges(); // ← fuerza actualización de la vista
+          this.cdr.detectChanges();
         },
         error: () => {
           this.error = true;
@@ -52,27 +67,44 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  selectOption(option: any) {
-  this.selectedOption = option;
-  this.fetchRecommendation(option.value);
-}
+  selectCompanion(option: any) {
+    this.selectedCompanion = option;
+    this.selectedVibe = null;
+    this.recommendedEvents = [];
+    this.advisorError = false;
+  }
 
-  fetchRecommendation(type: string) {
-    this.http.post<any>('http://localhost:3000/api/recommend', { type })
+  selectVibe(option: any) {
+    this.selectedVibe = option;
+    this.fetchRecommendation(this.selectedCompanion.value, option.value);
+  }
+
+  fetchRecommendation(companion: string, vibe: string) {
+    this.advisorLoading = true;
+    this.recommendedEvents = [];
+    this.advisorError = false;
+
+    this.http.post<any>('http://localhost:3000/api/recommend', { companion, vibe })
       .subscribe({
         next: (res) => {
-          this.response = res.message;
-          this.cdr.detectChanges(); // importante en tu caso (SSR)
+          setTimeout(() => {
+            this.recommendedEvents = res.events || [];
+            this.advisorLoading = false;
+            this.cdr.detectChanges();
+          }, 0);
         },
         error: () => {
-          this.response = 'Error generando recomendación';
+          this.advisorError = true;
+          this.advisorLoading = false;
           this.cdr.detectChanges();
         }
       });
   }
 
-  goToActivity() {
-    console.log('Ir a actividad');
+  resetAdvisor() {
+    this.selectedCompanion = null;
+    this.selectedVibe = null;
+    this.recommendedEvents = [];
+    this.advisorError = false;
   }
-
 }
