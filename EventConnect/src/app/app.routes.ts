@@ -18,6 +18,10 @@ import { AdminLayoutComponent } from './features/admin/layout/admin-layout.compo
 import { AdminDashboardComponent } from './features/admin/pages/admin-dashboard/admin-dashboard.component';
 import { AdminUsersComponent } from './features/admin/pages/admin-users/admin-users.component';
 import { AdminEventsComponent } from './features/admin/pages/admin-events/admin-events.component';
+import { AdminReportsComponent } from './features/admin/pages/admin-reports/admin-reports.component';
+import { AdminSettingsComponent } from './features/admin/pages/admin-settings/admin-settings.component';
+
+
 
 
 export const routes: Routes = [
@@ -38,6 +42,8 @@ export const routes: Routes = [
   { path: 'admin', component: AdminLayoutComponent, canActivate: [authGuard, adminGuard], canActivateChild: [adminGuard], children: [
     { path: 'dashboard', component: AdminDashboardComponent },
     { path: 'users', component: AdminUsersComponent },
-    { path: 'events', component: AdminEventsComponent }
+    { path: 'events', component: AdminEventsComponent },
+    { path: 'reports', component: AdminReportsComponent },
+    { path: 'settings', component: AdminSettingsComponent }
   ] }
 ];

@@ -1,10 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
-import { Observable, of } from 'rxjs';
-import { catchError, map, startWith } from 'rxjs/operators';
+import { Component, inject, OnInit } from '@angular/core';
+import { Observable, of, BehaviorSubject } from 'rxjs';
+import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { FormsModule } from '@angular/forms';
 import { AdminTopbarComponent } from '../../components/admin-topbar/admin-topbar.component';
-import { AdminService, AdminUser } from '../../../../core/services/admin.service';
+import { AdminService, AdminUser, AdminUserDetail } from '../../../../core/services/admin.service';
 
 interface AdminUserView {
   id: string;
@@ -21,39 +21,86 @@ interface AdminUserView {
   templateUrl: './admin-users.component.html',
   styleUrl: './admin-users.component.scss'
 })
-export class AdminUsersComponent {
+export class AdminUsersComponent implements OnInit {
   private adminService = inject(AdminService);
 
   search = '';
   selectedRole = 'Todos';
 
+  // Modal state
+  showDetailModal = false;
+  selectedUserId: string | null = null;
+  loadingDetail = false;
+  errorDetail = '';
+
+  // Action states
+  blockingUserId: string | null = null;
+  unblockingUserId: string | null = null;
+  deletingUserId: string | null = null;
+
+  // Messages
+  successMessage = '';
+  errorMessage = '';
+
+  private refreshTrigger$ = new BehaviorSubject<void>(void 0);
+  private userDetailTrigger$ = new BehaviorSubject<string | null>(null);
+
+  userDetail$ = this.userDetailTrigger$.pipe(
+    switchMap((userId) => {
+      if (!userId) {
+        return of(null);
+      }
+      this.loadingDetail = true;
+      return this.adminService.getUserDetail(userId).pipe(
+        map((response) => response.user),
+        catchError((error) => {
+          this.errorDetail = error?.error?.message || 'Error al cargar detalles del usuario';
+          this.loadingDetail = false;
+          return of(null);
+        }),
+        map((user) => {
+          this.loadingDetail = false;
+          return user;
+        })
+      );
+    })
+  );
+
   users$: Observable<{
     users: AdminUserView[];
     isLoading: boolean;
     errorMessage: string;
-  }> = this.adminService.getUsers().pipe(
-    map((response) => ({
-      users: response.users.map((user: AdminUser) => ({
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        role: user.role === 'admin' ? 'Admin' as 'Admin' : 'Usuario' as 'Usuario',
-        status: user.isBlocked ? 'Baneado' as 'Baneado' : 'Activo' as 'Activo'
-      })),
-      isLoading: false,
-      errorMessage: ''
-    })),
+  }> = this.refreshTrigger$.pipe(
+    switchMap(() =>
+      this.adminService.getUsers().pipe(
+        map((response) => ({
+          users: response.users.map((user: AdminUser) => ({
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            role: user.role === 'admin' ? 'Admin' as 'Admin' : 'Usuario' as 'Usuario',
+            status: user.isBlocked ? 'Baneado' as 'Baneado' : 'Activo' as 'Activo'
+          })),
+          isLoading: false,
+          errorMessage: ''
+        })),
+        catchError((error) => of({
+          users: [],
+          isLoading: false,
+          errorMessage: error?.error?.message || 'No se pudo cargar la lista de usuarios'
+        }))
+      )
+    ),
     startWith({
       users: [],
       isLoading: true,
       errorMessage: ''
-    }),
-    catchError((error) => of({
-      users: [],
-      isLoading: false,
-      errorMessage: error?.error?.message || 'No se pudo cargar la lista de usuarios'
-    }))
+    })
   );
+
+  ngOnInit(): void {
+    this.refreshTrigger$.next();
+  }
 
   filteredUsers(users: AdminUserView[]): AdminUserView[] {
     return users.filter((user) => {
@@ -66,15 +113,82 @@ export class AdminUsersComponent {
     });
   }
 
-  editUser(user: AdminUserView): void {
-    console.log('Editar usuario', user);
+  viewUserDetail(user: AdminUserView): void {
+    this.selectedUserId = user.id;
+    this.showDetailModal = true;
+    this.errorDetail = '';
+    this.userDetailTrigger$.next(user.id);
   }
 
-  changeRole(user: AdminUserView): void {
-    console.log('Cambiar rol', user);
+  closeDetailModal(): void {
+    this.showDetailModal = false;
+    this.selectedUserId = null;
+    this.userDetailTrigger$.next(null);
   }
 
-  deleteUser(user: AdminUserView): void {
-    console.log('Eliminar usuario', user);
+  blockUserAction(userId: string): void {
+    if (!userId) return;
+
+    this.blockingUserId = userId;
+    this.adminService.blockUser(userId).subscribe({
+      next: () => {
+        this.successMessage = 'Usuario bloqueado exitosamente';
+        this.blockingUserId = null;
+        setTimeout(() => {
+          this.successMessage = '';
+          this.closeDetailModal();
+          this.refreshTrigger$.next();
+        }, 2000);
+      },
+      error: (error) => {
+        this.errorDetail = error?.error?.message || 'Error al bloquear usuario';
+        this.blockingUserId = null;
+      }
+    });
+  }
+
+  unblockUserAction(userId: string): void {
+    if (!userId) return;
+
+    this.unblockingUserId = userId;
+    this.adminService.unblockUser(userId).subscribe({
+      next: () => {
+        this.successMessage = 'Usuario desbloqueado exitosamente';
+        this.unblockingUserId = null;
+        setTimeout(() => {
+          this.successMessage = '';
+          this.closeDetailModal();
+          this.refreshTrigger$.next();
+        }, 2000);
+      },
+      error: (error) => {
+        this.errorDetail = error?.error?.message || 'Error al desbloquear usuario';
+        this.unblockingUserId = null;
+      }
+    });
+  }
+
+  deleteUserAction(userId: string): void {
+    if (!userId) return;
+    
+    const confirmed = confirm('¿Estás seguro de que quieres eliminar este usuario? Esta acción no se puede deshacer.');
+    if (!confirmed) return;
+
+    this.deletingUserId = userId;
+    this.adminService.deleteUser(userId).subscribe({
+      next: () => {
+        this.successMessage = 'Usuario eliminado exitosamente';
+        this.deletingUserId = null;
+        setTimeout(() => {
+          this.successMessage = '';
+          this.closeDetailModal();
+          this.refreshTrigger$.next();
+        }, 2000);
+      },
+      error: (error) => {
+        this.errorDetail = error?.error?.message || 'Error al eliminar usuario';
+        this.deletingUserId = null;
+      }
+    });
   }
 }

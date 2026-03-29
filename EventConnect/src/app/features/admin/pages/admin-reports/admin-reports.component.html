@@ -1,0 +1,298 @@
+<app-admin-topbar title="Reportes"></app-admin-topbar>
+
+<!-- Mensajes globales -->
+<div *ngIf="successMessage" style="background: #d4edda; color: #155724; padding: 12px; border-radius: 8px; margin-bottom: 16px; position: fixed; top: 20px; right: 20px; z-index: 1000;">
+  ✅ {{ successMessage }}
+</div>
+
+<!-- Resumen -->
+<ng-container *ngIf="summary$ | async as summaryData">
+  <section class="summary-grid">
+    <article
+      class="summary-card"
+      *ngFor="let card of summaryData.summaryCards"
+      [class.danger]="card.variant === 'danger'"
+      [class.warning]="card.variant === 'warning'"
+      [class.soft-warning]="card.variant === 'soft-warning'"
+    >
+      <div class="summary-icon">{{ card.icon }}</div>
+      <div>
+        <div class="summary-value">{{ card.value }}</div>
+        <div class="summary-label">{{ card.label }}</div>
+      </div>
+    </article>
+  </section>
+</ng-container>
+
+<!-- Lista de reportes -->
+<ng-container *ngIf="reports$ | async as data">
+  <section class="reports-panel" *ngIf="data.isLoading">
+    <p>Cargando reportes...</p>
+  </section>
+
+  <section class="reports-panel" *ngIf="data.errorMessage">
+    <p>{{ data.errorMessage }}</p>
+  </section>
+
+  <section class="reports-panel" *ngIf="!data.isLoading && !data.errorMessage">
+    <div class="tabs">
+      <button
+        type="button"
+        class="tab-btn"
+        [class.active]="activeTab === 'Contenido'"
+        (click)="setTab('Contenido')"
+      >
+        Contenido
+      </button>
+
+      <button
+        type="button"
+        class="tab-btn"
+        [class.active]="activeTab === 'Usuarios'"
+        (click)="setTab('Usuarios')"
+      >
+        Usuarios
+      </button>
+
+      <button
+        type="button"
+        class="tab-btn"
+        [class.active]="activeTab === 'Eventos'"
+        (click)="setTab('Eventos')"
+      >
+        Eventos
+      </button>
+    </div>
+
+    <div class="filters">
+      <input
+        type="text"
+        [(ngModel)]="search"
+        placeholder="Buscar reporte..."
+      >
+
+      <select [(ngModel)]="selectedFilter">
+        <option value="Todos">Todos</option>
+        <option value="Spam">Spam</option>
+        <option value="Contenido ofensivo">Contenido ofensivo</option>
+        <option value="Necesita revisión urgente">Necesita revisión urgente</option>
+      </select>
+
+      <button type="button" class="filter-btn" (click)="applyFilter()">🔎 Filtrar</button>
+    </div>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Tipo</th>
+            <th>Usuario Involucrado</th>
+            <th>Descripción</th>
+            <th>Reportado Por</th>
+            <th>Razón</th>
+            <th>Fecha</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let report of getFilteredReports(data.reports)">
+            <td class="strong-cell">{{ report.type }}</td>
+
+            <td>
+              <div class="user-cell">
+                <span class="user-name">{{ report.involvedUser }}</span>
+                <span class="user-username">@{{ report.involvedUsername }}</span>
+              </div>
+            </td>
+
+            <td>{{ report.description.substring(0, 50) }}...</td>
+            <td>{{ report.reportedBy }}</td>
+            <td>{{ report.reason }}</td>
+            <td>{{ report.date }}</td>
+            <td>
+              <span class="status-badge" [class]="'status-' + report.status">
+                {{ report.status }}
+              </span>
+            </td>
+            <td>
+              <button type="button" class="view-btn" (click)="viewReportDetail(report)">
+                👁 Ver
+              </button>
+            </td>
+          </tr>
+          <tr *ngIf="!getFilteredReports(data.reports).length">
+            <td colspan="8">No hay reportes para mostrar.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="pagination">
+      Mostrando {{ getFilteredReports(data.reports).length }} de {{ data.reports.length }} reportes
+    </p>
+  </section>
+</ng-container>
+
+<!-- Modal de detalles -->
+<div class="modal-overlay" *ngIf="showDetailModal" (click)="closeDetailModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>Detalles del Reporte</h2>
+      <button type="button" class="close-btn" (click)="closeDetailModal()">✕</button>
+    </div>
+
+    <div *ngIf="loadingDetail" class="modal-body">
+      <p>Cargando detalles...</p>
+    </div>
+
+    <div *ngIf="errorDetail && !loadingDetail" class="modal-body">
+      <p style="color: #721c24;">❌ {{ errorDetail }}</p>
+    </div>
+
+    <ng-container *ngIf="reportDetail$ | async as detail">
+      <div *ngIf="detail && !loadingDetail" class="modal-body">
+        <!-- Información básica del reporte -->
+        <div class="detail-section">
+          <h3>📋 Información del Reporte</h3>
+          <div class="detail-grid">
+            <div class="detail-item">
+              <label>Tipo:</label>
+              <span>{{ detail.type }}</span>
+            </div>
+            <div class="detail-item">
+              <label>Categoría:</label>
+              <span>{{ detail.category }}</span>
+            </div>
+            <div class="detail-item">
+              <label>Estado:</label>
+              <span class="status-badge" [class]="'status-' + detail.status">{{ detail.status }}</span>
+            </div>
+            <div class="detail-item">
+              <label>Razón:</label>
+              <span>{{ detail.reason }}</span>
+            </div>
+            <div class="detail-item">
+              <label>Fecha de Reporte:</label>
+              <span>{{ detail.createdAt | date: 'dd/MM/yyyy HH:mm' }}</span>
+            </div>
+          </div>
+          <div class="detail-item full">
+            <label>Descripción:</label>
+            <p>{{ detail.description }}</p>
+          </div>
+        </div>
+
+        <!-- Usuario involucrado -->
+        <div class="detail-section">
+          <h3>👤 Usuario Involucrado</h3>
+          <div class="detail-grid">
+            <div class="detail-item">
+              <label>Nombre:</label>
+              <span>{{ detail.involvedUser }}</span>
+            </div>
+            <div class="detail-item">
+              <label>Usuario:</label>
+              <span>@{{ detail.involvedUsername }}</span>
+            </div>
+            <div class="detail-item">
+              <label>Email:</label>
+              <span>{{ detail.involvedUserEmail }}</span>
+            </div>
+            <div class="detail-item">
+              <label>Rol:</label>
+              <span>{{ detail.involvedUserRole }}</span>
+            </div>
+            <div class="detail-item">
+              <label>Estado:</label>
+              <span [class]="detail.involvedUserBlocked ? 'status-blocked' : 'status-active'">
+                {{ detail.involvedUserBlocked ? '🚫 Bloqueado' : '✅ Activo' }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Persona que reporta -->
+        <div class="detail-section">
+          <h3>🚩 Reportado Por</h3>
+          <div class="detail-grid">
+            <div class="detail-item">
+              <label>Nombre:</label>
+              <span>{{ detail.reportedBy }}</span>
+            </div>
+            <div class="detail-item">
+              <label>Usuario:</label>
+              <span>@{{ detail.reportedByUsername }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Acciones -->
+        <div class="detail-section actions-section">
+          <h3>⚡ Acciones</h3>
+          
+          <div *ngIf="detail.status === 'pending' || detail.status === 'under_review'" class="action-group">
+            <div class="form-group">
+              <label>Resolución:</label>
+              <textarea [(ngModel)]="resolutionText" placeholder="Escribe la resolución del reporte..." rows="3"></textarea>
+            </div>
+
+            <label class="checkbox-item">
+              <input type="checkbox" [(ngModel)]="bandUser">
+              Banear usuario
+            </label>
+
+            <div class="button-group">
+              <button 
+                type="button" 
+                class="btn btn-success"
+                (click)="resolveReport()"
+                [disabled]="resolvingReportId !== null"
+              >
+                {{ resolvingReportId === selectedReportId ? '⏳ Resolviendo...' : '✅ Resolver Reporte' }}
+              </button>
+
+              <button 
+                type="button" 
+                class="btn btn-secondary"
+                (click)="markUnderReview()"
+                [disabled]="reviewingReportId !== null || detail.status === 'under_review'"
+              >
+                {{ reviewingReportId === selectedReportId ? '⏳ Procesando...' : '🔍 Bajo Revisión' }}
+              </button>
+            </div>
+          </div>
+
+          <div class="action-group">
+            <div class="form-group">
+              <label>Motivo de Rechazo:</label>
+              <textarea [(ngModel)]="rejectReason" placeholder="Escribe por qué se rechaza este reporte..." rows="2"></textarea>
+            </div>
+
+            <button 
+              type="button" 
+              class="btn btn-danger"
+              (click)="rejectReportAction()"
+              [disabled]="rejectingReportId !== null"
+            >
+              {{ rejectingReportId === selectedReportId ? '⏳ Rechazando...' : '❌ Rechazar' }}
+            </button>
+          </div>
+
+          <div *ngIf="detail.status === 'resolved' || detail.status === 'rejected'" class="info-box">
+            <p><strong>Resolución:</strong> {{ detail.resolution }}</p>
+            <p *ngIf="detail.resolvedBy"><strong>Resuelto por:</strong> {{ detail.resolvedBy }}</p>
+            <p *ngIf="detail.resolvedAt"><strong>Fecha de Resolución:</strong> {{ detail.resolvedAt | date: 'dd/MM/yyyy HH:mm' }}</p>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" (click)="closeDetailModal()">
+        Cerrar
+      </button>
+    </div>
+  </div>
+</div>

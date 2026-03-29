@@ -1,0 +1,207 @@
+<app-admin-topbar title="Configuración General"></app-admin-topbar>
+
+<!-- Mensajes de estado -->
+<div *ngIf="successMessage" style="background: #d4edda; color: #155724; padding: 12px; border-radius: 8px; margin-bottom: 16px;">
+  ✅ {{ successMessage }}
+</div>
+
+<div *ngIf="errorMessage" style="background: #f8d7da; color: #721c24; padding: 12px; border-radius: 8px; margin-bottom: 16px;">
+  ❌ {{ errorMessage }}
+</div>
+
+<ng-container *ngIf="settings$ | async as settingsData">
+  <div *ngIf="settingsData.isLoading" style="text-align: center; padding: 40px; color: #666;">
+    ⏳ Cargando configuración...
+  </div>
+
+  <section class="settings-stack" *ngIf="!settingsData.isLoading">
+    <section class="settings-card">
+      <h2>📋 Información General de la Aplicación</h2>
+
+      <form [formGroup]="generalForm" class="settings-form">
+        <div class="form-row">
+          <label>Nombre de la aplicación</label>
+          <input type="text" formControlName="appName">
+        </div>
+
+        <div class="form-row">
+          <label>Descripción</label>
+          <input type="text" formControlName="description">
+        </div>
+
+        <div class="form-row">
+          <label>Email de contacto</label>
+          <input type="email" formControlName="contactEmail">
+        </div>
+
+        <div class="form-row">
+          <label>Teléfono de contacto</label>
+          <input type="text" formControlName="contactPhone">
+        </div>
+
+        <div class="form-row">
+          <label>Zona horaria</label>
+          <input type="text" formControlName="timezone">
+        </div>
+
+        <div class="form-row">
+          <label>Idioma por defecto</label>
+          <input type="text" formControlName="defaultLanguage">
+        </div>
+
+        <div class="action-row">
+          <button type="button" class="primary-btn" (click)="saveGeneral()" [disabled]="savingGeneral">
+            {{ savingGeneral ? '⏳ Guardando...' : '💾 Guardar Cambios' }}
+          </button>
+          <button type="button" class="secondary-btn" (click)="cancelGeneral()">
+            ⟲ Cancelar
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <section class="settings-card">
+      <h2>🔒 Políticas de Moderación</h2>
+
+      <form [formGroup]="moderationForm" class="settings-form">
+        <label class="checkbox-row">
+          <input type="checkbox" formControlName="requireEventApproval">
+          Requerir aprobación de nuevos eventos de público
+        </label>
+
+        <label class="checkbox-row">
+          <input type="checkbox" formControlName="autoDetectWords">
+          Filtrar palabras prohibidas automáticamente
+        </label>
+
+        <label class="checkbox-row">
+          <input type="checkbox" formControlName="autoBanAfterReports">
+          Banear usuarios tras 5 reportes acumulados
+        </label>
+
+        <label class="checkbox-row">
+          <input type="checkbox" formControlName="notifyModeratorsOnReports">
+          Notificar admins cuando un evento supere el contenido
+        </label>
+
+        <div class="form-column">
+          <label>Palabras prohibidas</label>
+          <input
+            type="text"
+            formControlName="bannedWords"
+            placeholder="Agregar palabras separadas por comas..."
+          >
+          <small>Ejemplo: spam, ofertas, impulsado</small>
+        </div>
+
+        <div class="action-row">
+          <button type="button" class="primary-btn" (click)="saveModeration()" [disabled]="savingModeration">
+            {{ savingModeration ? '⏳ Guardando...' : '💾 Guardar Cambios' }}
+          </button>
+          <button type="button" class="secondary-btn" (click)="cancelModeration()">
+            ⟲ Cancelar
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <section class="settings-card">
+      <h2>🔔 Notificaciones</h2>
+
+      <form [formGroup]="notificationsForm" class="settings-form">
+        <label class="checkbox-row">
+          <input type="checkbox" formControlName="notifyReportedUsers">
+          Enviar alertas de usuarios reportados
+        </label>
+
+        <label class="checkbox-row">
+          <input type="checkbox" formControlName="notifyFlaggedContent">
+          Notificar cuando hay contenido flaggeado
+        </label>
+
+        <label class="checkbox-row">
+          <input type="checkbox" formControlName="weeklySummary">
+          Resumen semanal de actividad (lunes a las 9:00)
+        </label>
+
+        <label class="checkbox-row">
+          <input type="checkbox" formControlName="systemAlerts">
+          Alertas de errores del sistema
+        </label>
+
+        <div class="action-row">
+          <button type="button" class="primary-btn" (click)="saveNotifications()" [disabled]="savingNotifications">
+            {{ savingNotifications ? '⏳ Guardando...' : '💾 Guardar Cambios' }}
+          </button>
+        </div>
+      </form>
+    </section>
+
+  <ng-container *ngIf="systemStatus$ | async as systemData">
+    <section class="settings-card" *ngIf="!systemData.isLoading && !systemData.errorMessage">
+      <h2>🗄 Respaldo y Datos</h2>
+
+      <div class="info-box">
+        <p><strong>Último respaldo automático:</strong> {{ systemData.status.lastBackup }}</p>
+        <p><strong>Próximo respaldo programado:</strong> {{ systemData.status.nextBackup }}</p>
+        <p><strong>Frecuencia:</strong> {{ systemData.status.backupFrequency === 'daily' ? 'Diariamente a las 3:00 AM' : systemData.status.backupFrequency }}</p>
+      </div>
+
+      <div class="tool-actions">
+        <button type="button" class="primary-btn" (click)="downloadManualBackup()">
+          ⬇ Descargar Respaldo Manual
+        </button>
+        <button type="button" class="secondary-btn">
+          🧹 Limpiar Datos Antiguos
+        </button>
+      </div>
+
+      <small class="note">
+        Consejo: Los respaldos se almacenan en servidor seguro durante 90 días. Los datos se purifican automáticamente según la política de privacidad.
+      </small>
+    </section>
+
+    <section class="settings-card" *ngIf="!systemData.isLoading && !systemData.errorMessage">
+      <h2>🛠 Mantenimiento</h2>
+
+      <div class="info-box">
+        <p><strong>Estado del sistema:</strong> {{ systemData.status.isOperational ? '✅ Operativo' : '❌ No Operativo' }}</p>
+        <p><strong>Carga del sistema:</strong> {{ systemData.status.systemLoad }}</p>
+        <p><strong>Última actualización:</strong> {{ systemData.status.lastUpdateDate }}</p>
+      </div>
+
+      <div class="tool-actions">
+        <button type="button" class="secondary-btn" (click)="clearCache()">
+          🧽 Limpiar Caché
+        </button>
+        <button type="button" class="secondary-btn" (click)="optimizeDatabase()">
+          ⚙ Optimizar Base de Datos
+        </button>
+        <button type="button" class="secondary-btn" (click)="viewLogs()">
+          📄 Ver Logs del Sistema
+        </button>
+      </div>
+
+      <small class="note">
+        El mantenimiento se realiza automáticamente cada noche a las 02:00 AM. No es necesario hacerlo manualmente excepto en caso de problemas.
+      </small>
+    </section>
+  </ng-container>
+
+  <section class="settings-card">
+    <h2>🔐 Seguridad</h2>
+
+    <div class="tool-actions">
+      <button type="button" class="secondary-btn" (click)="changeAdminPassword()">
+        🔑 Cambiar Contraseña Admin
+      </button>
+      <button type="button" class="secondary-btn" (click)="resetSessionTokens()">
+        ♻ Restablecer Tokens de Sesión
+      </button>
+      <button type="button" class="secondary-btn" (click)="viewAccessLogs()">
+        📜 Ver Logs de Acceso
+      </button>
+    </div>
+  </section>
+  </section>
+</ng-container>

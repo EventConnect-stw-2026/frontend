@@ -1,77 +1,353 @@
 <app-admin-topbar title="Gestión de Eventos"></app-admin-topbar>
 
-<section class="events-panel">
-  <div class="panel-header">
-    <h2>Eventos</h2>
+<!-- Mensajes globales -->
+<div *ngIf="successMessage" style="background: #d4edda; color: #155724; padding: 12px; border-radius: 8px; margin-bottom: 16px; position: fixed; top: 20px; right: 20px; z-index: 1000;">
+  ✅ {{ successMessage }}
+</div>
 
-    <button type="button" class="create-btn" (click)="createEvent()">
-      + Crear Evento
-    </button>
-  </div>
+<ng-container *ngIf="events$ | async as data">
+  <section class="events-panel" *ngIf="data.isLoading">
+    <p>Cargando eventos...</p>
+  </section>
 
-  <div class="filters">
-    <input
-      type="text"
-      [(ngModel)]="search"
-      placeholder="Buscar evento..."
-    >
+  <section class="events-panel" *ngIf="data.errorMessage">
+    <p>{{ data.errorMessage }}</p>
+  </section>
 
-    <select [(ngModel)]="selectedStatus">
-      <option value="Todos">Todos</option>
-      <option value="Activo">Activo</option>
-      <option value="Pendiente">Pendiente</option>
-    </select>
+  <section class="events-panel" *ngIf="!data.isLoading && !data.errorMessage">
+    <div class="panel-header">
+      <h2>Eventos</h2>
 
-    <button type="button" class="filter-btn">🔎 Filtrar</button>
-  </div>
+      <button type="button" class="create-btn" (click)="openCreateModal()">
+        + Crear Evento
+      </button>
+    </div>
 
-  <div class="table-wrapper">
-    <table>
-      <thead>
-        <tr>
-          <th>Evento</th>
-          <th>Fecha</th>
-          <th>Inscritos</th>
-          <th>Categoría</th>
-          <th>Estado</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
+    <div class="filters">
+      <input
+        type="text"
+        [(ngModel)]="search"
+        placeholder="Buscar evento..."
+      >
 
-      <tbody>
-        <tr *ngFor="let event of filteredEvents">
-          <td>{{ event.name }}</td>
-          <td>{{ event.date }}</td>
-          <td>{{ event.enrolled }}</td>
-          <td>{{ event.category }}</td>
-          <td>
-            <span
-              class="status"
-              [class.active]="event.status === 'Activo'"
-              [class.pending]="event.status === 'Pendiente'"
-            >
-              {{ event.status }}
-            </span>
-          </td>
-          <td>
-            <div class="actions">
-              <button type="button" (click)="editEvent(event)" title="Editar">
-                ✏
-              </button>
-              <button type="button" (click)="viewEvent(event)" title="Ver">
-                👁
-              </button>
-              <button type="button" (click)="deleteEvent(event)" title="Eliminar">
-                🗑
-              </button>
+      <select [(ngModel)]="selectedStatus">
+        <option value="Todos">Todos</option>
+        <option value="Activo">Activo</option>
+        <option value="Pendiente">Pendiente</option>
+      </select>
+
+      <button type="button" class="filter-btn">🔎 Filtrar</button>
+    </div>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Evento</th>
+            <th>Fecha</th>
+            <th>Inscritos</th>
+            <th>Categoría</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let event of getFilteredEvents(data.events)">
+            <td>{{ event.name }}</td>
+            <td>{{ event.date }}</td>
+            <td>{{ event.enrolled }}</td>
+            <td>{{ event.category }}</td>
+            <td>
+              <span
+                class="status"
+                [class.active]="event.status === 'Activo'"
+                [class.pending]="event.status === 'Pendiente'"
+              >
+                {{ event.status }}
+              </span>
+            </td>
+            <td>
+              <div class="actions">
+                <button 
+                  type="button" 
+                  title="Ver"
+                  (click)="viewEventDetail(event)"
+                >
+                  👁
+                </button>
+                <button 
+                  type="button" 
+                  title="Editar"
+                  (click)="openEditModalDirect(event)"
+                >
+                  ✏
+                </button>
+                <button 
+                  type="button" 
+                  title="Eliminar"
+                  (click)="deleteEventAction(event.id)"
+                  [disabled]="deletingEventId === event.id"
+                >
+                  🗑
+                </button>
+              </div>
+            </td>
+          </tr>
+          <tr *ngIf="!getFilteredEvents(data.events).length">
+            <td colspan="6">No hay eventos para mostrar.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="pagination">
+      Mostrando {{ getFilteredEvents(data.events).length }} de {{ data.events.length }} eventos
+    </p>
+  </section>
+</ng-container>
+
+<!-- Modal de detalles del evento -->
+<div class="modal-overlay" *ngIf="showDetailModal" (click)="closeDetailModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>Detalles del Evento</h2>
+      <button type="button" class="close-btn" (click)="closeDetailModal()">✕</button>
+    </div>
+
+    <div *ngIf="loadingDetail" class="modal-body">
+      <p>Cargando detalles...</p>
+    </div>
+
+    <div *ngIf="errorDetail && !loadingDetail" class="modal-body">
+      <p style="color: #dc3545;">{{ errorDetail }}</p>
+    </div>
+
+    <ng-container *ngIf="!loadingDetail && (eventDetail$ | async) as event">
+      <div class="modal-body">
+        <!-- Información del evento -->
+        <div class="detail-section">
+          <h3>Información General</h3>
+          <div class="detail-grid">
+            <div class="detail-item full">
+              <strong>Título:</strong>
+              <span>{{ event.title }}</span>
             </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+            <div class="detail-item full">
+              <strong>Descripción:</strong>
+              <span>{{ event.description }}</span>
+            </div>
+            <div class="detail-item">
+              <strong>Categoría:</strong>
+              <span>{{ event.category }}</span>
+            </div>
+            <div class="detail-item">
+              <strong>Ubicación:</strong>
+              <span>{{ event.location }}</span>
+            </div>
+          </div>
+        </div>
 
-  <p class="pagination">
-    Mostrando 1-8 de 45 eventos &lt; 1 2 3 &gt;
-  </p>
-</section>
+        <!-- Fechas e Inscritos -->
+        <div class="detail-section">
+          <h3>Detalles</h3>
+          <div class="detail-grid">
+            <div class="detail-item">
+              <strong>Fecha Inicio:</strong>
+              <span>{{ event.startDate | date: 'dd/MM/yyyy HH:mm' }}</span>
+            </div>
+            <div class="detail-item">
+              <strong>Fecha Fin:</strong>
+              <span>{{ event.endDate | date: 'dd/MM/yyyy HH:mm' }}</span>
+            </div>
+            <div class="detail-item">
+              <strong>Inscritos:</strong>
+              <span>{{ event.enrolled }}</span>
+            </div>
+            <div class="detail-item">
+              <strong>Tipo:</strong>
+              <span>{{ event.isFree ? 'Gratuito' : 'Pago' }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Estado -->
+        <div class="detail-section">
+          <h3>Estado</h3>
+          <div class="detail-grid">
+            <div class="detail-item full">
+              <strong>Estado:</strong>
+              <span class="status-badge" [class]="'status-' + (event.status === 'active' ? 'active' : 'pending')">
+                {{ event.status === 'active' ? 'Activo' : 'Pendiente' }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Acciones -->
+        <div class="detail-section">
+          <h3>Acciones</h3>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <button 
+              type="button" 
+              class="btn btn-primary"
+              (click)="openEditModal(event)"
+            >
+              ✏ Editar Evento
+            </button>
+
+            <button 
+              type="button" 
+              class="btn btn-danger"
+              (click)="deleteEventAction(event.id)"
+              [disabled]="deletingEventId === event.id"
+            >
+              {{ deletingEventId === event.id ? 'Eliminando...' : '🗑 Eliminar Evento' }}
+            </button>
+
+            <button 
+              type="button" 
+              class="btn btn-secondary"
+              (click)="closeDetailModal()"
+            >
+              Cerrar
+            </button>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" (click)="closeDetailModal()">
+        Cerrar
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de crear/editar evento -->
+<div class="modal-overlay" *ngIf="showCreateEditModal" (click)="closeCreateEditModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>{{ isEditMode ? 'Editar Evento' : 'Crear Nuevo Evento' }}</h2>
+      <button type="button" class="close-btn" (click)="closeCreateEditModal()">✕</button>
+    </div>
+
+    <div class="modal-body">
+      <!-- Errores de validación -->
+      <div *ngIf="formErrors.length > 0" style="background: #f8d7da; color: #721c24; padding: 12px; border-radius: 8px; margin-bottom: 16px;">
+        <strong>Errores:</strong>
+        <ul style="margin: 8px 0 0 20px;">
+          <li *ngFor="let error of formErrors">{{ error }}</li>
+        </ul>
+      </div>
+
+      <form (ngSubmit)="submitForm()">
+        <div class="form-group">
+          <label>Título *</label>
+          <input 
+            type="text" 
+            [(ngModel)]="eventForm.title" 
+            name="title"
+            placeholder="Título del evento"
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label>Descripción *</label>
+          <textarea 
+            [(ngModel)]="eventForm.description" 
+            name="description"
+            placeholder="Descripción del evento"
+            required
+          ></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Categoría *</label>
+            <input 
+              type="text" 
+              [(ngModel)]="eventForm.category" 
+              name="category"
+              placeholder="Categoría"
+              required
+            >
+          </div>
+
+          <div class="form-group">
+            <label>Ubicación *</label>
+            <input 
+              type="text" 
+              [(ngModel)]="eventForm.location" 
+              name="location"
+              placeholder="Ubicación"
+              required
+            >
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Fecha Inicio</label>
+            <input 
+              type="datetime-local" 
+              [(ngModel)]="eventForm.startDate" 
+              name="startDate"
+            >
+          </div>
+
+          <div class="form-group">
+            <label>Fecha Fin</label>
+            <input 
+              type="datetime-local" 
+              [(ngModel)]="eventForm.endDate" 
+              name="endDate"
+            >
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Estado</label>
+            <select [(ngModel)]="eventForm.status" name="status">
+              <option value="active">Activo</option>
+              <option value="pending">Pendiente</option>
+              <option value="cancelled">Cancelado</option>
+            </select>
+          </div>
+
+          <div class="form-group checkbox-group">
+            <label>
+              <input 
+                type="checkbox" 
+                [(ngModel)]="eventForm.isFree" 
+                name="isFree"
+              >
+              Evento Gratuito
+            </label>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button 
+            type="submit" 
+            class="btn btn-primary"
+            [disabled]="submittingForm"
+          >
+            {{ submittingForm ? 'Guardando...' : (isEditMode ? 'Actualizar' : 'Crear') }}
+          </button>
+          <button 
+            type="button" 
+            class="btn btn-secondary"
+            (click)="closeCreateEditModal()"
+            [disabled]="submittingForm"
+          >
+            Cancelar
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
