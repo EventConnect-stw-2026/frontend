@@ -1,5 +1,10 @@
 <app-admin-topbar title="Gestión de Usuarios"></app-admin-topbar>
 
+<!-- Mensajes globales -->
+<div *ngIf="successMessage" style="background: #d4edda; color: #155724; padding: 12px; border-radius: 8px; margin-bottom: 16px; position: fixed; top: 20px; right: 20px; z-index: 1000;">
+  ✅ {{ successMessage }}
+</div>
+
 <ng-container *ngIf="users$ | async as data">
   <section class="panel" *ngIf="data.isLoading">
     <p>Cargando usuarios...</p>
@@ -9,7 +14,7 @@
     <p>{{ data.errorMessage }}</p>
   </section>
 
-  <section class="panel">
+  <section class="panel" *ngIf="!data.isLoading && !data.errorMessage">
   <h2>Buscar y Filtrar</h2>
 
   <div class="filters">
@@ -56,9 +61,30 @@
           </td>
           <td>
             <div class="actions">
-              <button type="button" (click)="editUser(user)">✏</button>
-              <button type="button" (click)="changeRole(user)">👁</button>
-              <button type="button" (click)="deleteUser(user)">🗑</button>
+              <button 
+                type="button" 
+                title="Ver detalles"
+                (click)="viewUserDetail(user)"
+              >
+                👁
+              </button>
+              <button 
+                type="button" 
+                title="Cambiar estado"
+                (click)="user.status === 'Activo' ? blockUserAction(user.id) : unblockUserAction(user.id)"
+                [disabled]="blockingUserId === user.id || unblockingUserId === user.id"
+              >
+                {{ user.status === 'Activo' ? '🔒' : '🟢' }}
+              </button>
+              <button 
+                type="button" 
+                title="Eliminar"
+                (click)="deleteUserAction(user.id)"
+                [disabled]="deletingUserId === user.id"
+                [class.disabled]="user.role === 'Admin'"
+              >
+                🗑
+              </button>
             </div>
           </td>
         </tr>
@@ -74,3 +100,129 @@
     </p>
   </section>
 </ng-container>
+
+<!-- Modal de detalles -->
+<div class="modal-overlay" *ngIf="showDetailModal" (click)="closeDetailModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>Detalles del Usuario</h2>
+      <button type="button" class="close-btn" (click)="closeDetailModal()">✕</button>
+    </div>
+
+    <div *ngIf="loadingDetail" class="modal-body">
+      <p>Cargando detalles...</p>
+    </div>
+
+    <div *ngIf="errorDetail && !loadingDetail" class="modal-body">
+      <p style="color: #dc3545;">{{ errorDetail }}</p>
+    </div>
+
+    <ng-container *ngIf="!loadingDetail && (userDetail$ | async) as user">
+      <div class="modal-body">
+        <!-- Información del usuario -->
+        <div class="detail-section">
+          <h3>Información Personal</h3>
+          <div class="detail-grid">
+            <div class="detail-item">
+              <strong>Nombre:</strong>
+              <span>{{ user.name }}</span>
+            </div>
+            <div class="detail-item">
+              <strong>Usuario:</strong>
+              <span>@{{ user.username }}</span>
+            </div>
+            <div class="detail-item full">
+              <strong>Email:</strong>
+              <span>{{ user.email }}</span>
+            </div>
+            <div class="detail-item" *ngIf="user.bio">
+              <strong>Bio:</strong>
+              <span>{{ user.bio }}</span>
+            </div>
+            <div class="detail-item" *ngIf="user.location">
+              <strong>Ubicación:</strong>
+              <span>{{ user.location }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Estado y Rol -->
+        <div class="detail-section">
+          <h3>Configuración</h3>
+          <div class="detail-grid">
+            <div class="detail-item">
+              <strong>Rol:</strong>
+              <span 
+                [style.backgroundColor]="user.role === 'admin' ? '#e3f2fd' : '#f5f5f5'"
+                [style.padding]="'4px 8px'"
+                [style.borderRadius]="'4px'"
+              >
+                {{ user.role === 'admin' ? 'Administrador' : 'Usuario' }}
+              </span>
+            </div>
+            <div class="detail-item">
+              <strong>Estado:</strong>
+              <span class="status-badge" [class]="'status-' + (user.isBlocked ? 'blocked' : 'active')">
+                {{ user.isBlocked ? 'Bloqueado' : 'Activo' }}
+              </span>
+            </div>
+            <div class="detail-item full">
+              <strong>Fecha de Registro:</strong>
+              <span>{{ user.createdAt | date: 'dd/MM/yyyy HH:mm' }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Acciones -->
+        <div class="detail-section">
+          <h3>Acciones</h3>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <button 
+              *ngIf="!user.isBlocked && user.role !== 'admin'"
+              type="button" 
+              class="btn btn-danger"
+              (click)="blockUserAction(user.id)"
+              [disabled]="blockingUserId === user.id"
+            >
+              {{ blockingUserId === user.id ? 'Bloqueando...' : '🔒 Bloquear Usuario' }}
+            </button>
+
+            <button 
+              *ngIf="user.isBlocked"
+              type="button" 
+              class="btn btn-success"
+              (click)="unblockUserAction(user.id)"
+              [disabled]="unblockingUserId === user.id"
+            >
+              {{ unblockingUserId === user.id ? 'Desbloqueando...' : '🟢 Desbloquear Usuario' }}
+            </button>
+
+            <button 
+              *ngIf="user.role !== 'admin'"
+              type="button" 
+              class="btn btn-danger"
+              (click)="deleteUserAction(user.id)"
+              [disabled]="deletingUserId === user.id"
+            >
+              {{ deletingUserId === user.id ? 'Eliminando...' : '🗑 Eliminar Usuario' }}
+            </button>
+
+            <button 
+              type="button" 
+              class="btn btn-secondary"
+              (click)="closeDetailModal()"
+            >
+              Cerrar
+            </button>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" (click)="closeDetailModal()">
+        Cerrar
+      </button>
+    </div>
+  </div>
+</div>

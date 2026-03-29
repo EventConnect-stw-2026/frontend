@@ -32,6 +32,23 @@ export interface AdminUser {
   createdAt: string;
 }
 
+export interface AdminUserDetail {
+  id: string;
+  name: string;
+  email: string;
+  username: string;
+  role: 'user' | 'admin';
+  isBlocked: boolean;
+  bio: string;
+  location: string;
+  avatarUrl: string;
+  createdAt: string;
+}
+
+export interface AdminUserDetailResponse {
+  user: AdminUserDetail;
+}
+
 export interface AdminUsersResponse {
   users: AdminUser[];
 }
@@ -60,6 +77,33 @@ export interface AdminReport {
   date: string;
   category: 'Contenido' | 'Usuarios' | 'Eventos';
   status: string;
+}
+
+export interface AdminReportDetail {
+  id: string;
+  type: string;
+  involvedUser: string;
+  involvedUserId: string;
+  involvedUsername: string;
+  involvedUserEmail: string;
+  involvedUserRole: string;
+  involvedUserBlocked: boolean;
+  involvedUserCreatedAt: string;
+  description: string;
+  reportedBy: string;
+  reportedByUsername: string;
+  reason: string;
+  reasonRaw: string;
+  category: 'Contenido' | 'Usuarios' | 'Eventos';
+  status: string;
+  resolution: string | null;
+  resolvedBy: string | null;
+  createdAt: string;
+  resolvedAt: string | null;
+}
+
+export interface AdminReportDetailResponse {
+  report: AdminReportDetail;
 }
 
 export interface AdminReportsResponse {
@@ -140,6 +184,30 @@ export class AdminService {
     });
   }
 
+  getUserDetail(id: string): Observable<AdminUserDetailResponse> {
+    return this.http.get<AdminUserDetailResponse>(`${this.apiUrl}/users/${id}`, {
+      withCredentials: true
+    });
+  }
+
+  blockUser(id: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/users/${id}/block`, {}, {
+      withCredentials: true
+    });
+  }
+
+  unblockUser(id: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/users/${id}/unblock`, {}, {
+      withCredentials: true
+    });
+  }
+
+  deleteUser(id: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/users/${id}`, {
+      withCredentials: true
+    });
+  }
+
   getEvents(): Observable<AdminEventsResponse> {
     return this.http.get<AdminEventsResponse>(`${this.apiUrl}/events`, {
       withCredentials: true
@@ -160,6 +228,32 @@ export class AdminService {
     return this.http.get<AdminReportsResponse>(url, {
       withCredentials: true
     });
+  }
+
+  getReportDetail(id: string): Observable<AdminReportDetailResponse> {
+    return this.http.get<AdminReportDetailResponse>(`${this.apiUrl}/reports/${id}`, {
+      withCredentials: true
+    });
+  }
+
+  resolveReport(id: string, resolution: string, action?: 'ban' | 'none'): Observable<any> {
+    return this.http.post(`${this.apiUrl}/reports/${id}/resolve`, 
+      { resolution, action: action || 'none' },
+      { withCredentials: true }
+    );
+  }
+
+  rejectReport(id: string, reason: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/reports/${id}/reject`,
+      { reason },
+      { withCredentials: true }
+    );
+  }
+
+  markReportUnderReview(id: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/reports/${id}/review`, {},
+      { withCredentials: true }
+    );
   }
 
   getSettings(): Observable<AdminSettingsResponse> {
