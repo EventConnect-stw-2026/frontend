@@ -8,6 +8,7 @@ import { FriendsService } from '../../core/services/friends.service';
 import { EventService } from '../../core/services/event.service';
 import { MeetupService } from '../../core/services/meetup.service';
 import { StripHtmlPipe } from '../../shared/pipes/strip-html.pipe';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   standalone: true,
@@ -21,6 +22,8 @@ export class MeetupsComponent implements OnInit {
   private eventService = inject(EventService);
   private meetupService = inject(MeetupService);
   private cdr = inject(ChangeDetectorRef);
+  private authService = inject(AuthService);
+  currentUserId = '';
 
   friends: any[] = [];
   events: any[] = [];
@@ -67,6 +70,9 @@ export class MeetupsComponent implements OnInit {
   ];
 
   ngOnInit(): void {
+    const user = this.authService.getCurrentUser() as any;
+    this.currentUserId = user?._id || '';
+
     this.loadFriends();
     this.loadEvents();
     this.loadOrganizedMeetups();
@@ -271,9 +277,13 @@ export class MeetupsComponent implements OnInit {
     return !!this.selectedEventId && this.selectedFriendIds.size > 0;
   }
 
-  getParticipantResponse(meetup: any, currentUserId?: string): string {
-    if (!currentUserId) return '';
-    const participant = meetup?.participants?.find((p: any) => p.user?._id === currentUserId);
+  getParticipantResponse(meetup: any): string {
+    if (!this.currentUserId) return '';
+
+    const participant = meetup?.participants?.find(
+      (p: any) => (p.user?._id || p.user) === this.currentUserId
+    );
+
     return participant?.response || 'pending';
   }
 }

@@ -205,9 +205,19 @@
               </span>
             </div>
 
-            <div class="meetup-actions" *ngIf="meetup.status === 'active'">
+            <div class="meetup-actions" *ngIf="meetup.status === 'active' && getParticipantResponse(meetup) === 'pending'">
               <button class="accept-btn" (click)="respondToMeetup(meetup._id, 'accepted')">Aceptar</button>
               <button class="reject-btn" (click)="respondToMeetup(meetup._id, 'rejected')">Rechazar</button>
+            </div>
+
+            <div class="meetup-actions" *ngIf="meetup.status === 'active' && getParticipantResponse(meetup) !== 'pending'">
+              <span
+                class="participant-status"
+                [class.accepted]="getParticipantResponse(meetup) === 'accepted'"
+                [class.rejected]="getParticipantResponse(meetup) === 'rejected'"
+              >
+                {{ getParticipantResponse(meetup) === 'accepted' ? 'Has aceptado esta quedada' : 'Has rechazado esta quedada' }}
+              </span>
             </div>
           </div>
         </div>
