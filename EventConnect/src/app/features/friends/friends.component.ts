@@ -390,4 +390,8 @@ export class FriendsComponent implements OnInit {
   get filteredAddFriendUsers() {
     return this.allUsers;
   }
+
+  goToMeetups(): void {
+    this.router.navigate(['/meetups']);
+  }
 }

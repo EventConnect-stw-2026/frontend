@@ -1,0 +1,248 @@
+<app-header></app-header>
+
+<div class="meetups-page">
+  <div class="meetups-shell">
+    <section class="meetups-hero">
+      <div>
+        <span class="hero-badge">EventConnect</span>
+        <h1>Quedadas</h1>
+        <p>Invita a tus amigos, elige un evento y organiza el punto de encuentro.</p>
+      </div>
+
+      <button
+        class="create-btn"
+        [disabled]="!canOpenCreateModal"
+        (click)="openCreateModal()"
+      >
+        Crear quedada
+      </button>
+    </section>
+
+    <div class="tabs">
+      <button [class.active]="activeTab === 'create'" (click)="activeTab = 'create'">Crear</button>
+      <button [class.active]="activeTab === 'organized'" (click)="activeTab = 'organized'">Organizadas</button>
+      <button [class.active]="activeTab === 'invited'" (click)="activeTab = 'invited'">Invitaciones</button>
+    </div>
+
+    <ng-container *ngIf="activeTab === 'create'">
+      <div class="selection-summary">
+        <div class="summary-card">
+          <span class="summary-value">{{ selectedFriendsCount }}</span>
+          <span class="summary-label">Amigos seleccionados</span>
+        </div>
+        <div class="summary-card">
+          <span class="summary-value">{{ selectedEventId ? '1' : '0' }}</span>
+          <span class="summary-label">Evento seleccionado</span>
+        </div>
+      </div>
+
+      <div class="meetups-grid">
+        <section class="panel">
+          <div class="section-header">
+            <div>
+              <p class="section-eyebrow">Paso 1</p>
+              <h2>Selecciona amigos</h2>
+            </div>
+          </div>
+
+          <div class="friends-toolbar">
+            <input
+              type="text"
+              [(ngModel)]="searchFriendTerm"
+              placeholder="Buscar amigo por nombre o usuario"
+            />
+          </div>
+
+          <div *ngIf="loadingFriends" class="empty-state">Cargando amigos...</div>
+
+          <div *ngIf="!loadingFriends && filteredFriends.length === 0" class="empty-state">
+            No tienes amigos disponibles para invitar.
+          </div>
+
+          <div *ngIf="!loadingFriends && filteredFriends.length > 0" class="friends-list">
+            <button
+              type="button"
+              *ngFor="let friend of filteredFriends"
+              class="friend-card"
+              [class.selected]="selectedFriendIds.has(friend._id)"
+              (click)="toggleFriendSelection(friend._id)"
+            >
+              <img [src]="friend.avatarUrl" [alt]="friend.name" class="avatar" />
+              <div class="friend-details">
+                <p class="name">{{ friend.name }}</p>
+                <p class="username">@{{ friend.username }}</p>
+              </div>
+              <span class="checkmark" *ngIf="selectedFriendIds.has(friend._id)">✓</span>
+            </button>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="section-header">
+            <div>
+              <p class="section-eyebrow">Paso 2</p>
+              <h2>Selecciona un evento</h2>
+            </div>
+          </div>
+
+          <div class="categories">
+            <button
+              *ngFor="let cat of categories"
+              class="cat-btn"
+              [class.active]="selectedCategory === cat"
+              (click)="selectCategory(cat)"
+            >
+              {{ cat }}
+            </button>
+          </div>
+
+          <div *ngIf="loadingEvents" class="empty-state">Cargando eventos...</div>
+
+          <div *ngIf="!loadingEvents && events.length === 0" class="empty-state">
+            No hay eventos para esta categoría.
+          </div>
+
+          <div *ngIf="!loadingEvents && events.length > 0" class="events-list">
+            <button
+              type="button"
+              *ngFor="let event of events"
+              class="event-card"
+              [class.selected]="selectedEventId === event._id"
+              (click)="selectEvent(event._id)"
+            >
+              <div class="event-top">
+                <span class="event-category">{{ event.category }}</span>
+                <span class="event-selected" *ngIf="selectedEventId === event._id">Seleccionado</span>
+              </div>
+
+              <h3>{{ event.title }}</h3>
+              <p class="event-date">{{ event.startDate | date:'dd/MM/yyyy HH:mm' }}</p>
+              <p class="event-location">{{ event.locationName }}</p>
+              <p class="event-desc">{{ event.description | stripHtml }}</p>
+            </button>
+          </div>
+
+          <div class="pagination">
+            <button (click)="prevPage()" [disabled]="eventPage === 1">← Anterior</button>
+            <span>Página {{ eventPage }} de {{ eventTotalPages }}</span>
+            <button (click)="nextPage()" [disabled]="eventPage === eventTotalPages">Siguiente →</button>
+          </div>
+        </section>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="activeTab === 'organized'">
+      <section class="panel">
+        <div class="section-header">
+          <div>
+            <p class="section-eyebrow">Tus quedadas</p>
+            <h2>Organizadas por ti</h2>
+          </div>
+        </div>
+
+        <div *ngIf="loadingOrganized" class="empty-state">Cargando quedadas...</div>
+
+        <div *ngIf="!loadingOrganized && organizedMeetups.length === 0" class="empty-state">
+          Aún no has organizado ninguna quedada.
+        </div>
+
+        <div *ngIf="!loadingOrganized && organizedMeetups.length > 0" class="meetup-list">
+          <div *ngFor="let meetup of organizedMeetups" class="meetup-card">
+            <div class="meetup-card-top">
+              <div>
+                <h3>{{ meetup.event?.title }}</h3>
+                <p>{{ meetup.meetupDateTime | date:'dd/MM/yyyy HH:mm' }} · {{ meetup.meetupPlace }}</p>
+              </div>
+
+              <span class="status" [class.cancelled]="meetup.status === 'cancelled'">
+                {{ meetup.status === 'cancelled' ? 'Cancelada' : 'Activa' }}
+              </span>
+            </div>
+
+            <div class="participants">
+              <div class="participant-row" *ngFor="let participant of meetup.participants">
+                <span>{{ participant.user?.name }} (@{{ participant.user?.username }})</span>
+                <span class="participant-status" [class.accepted]="participant.response === 'accepted'" [class.rejected]="participant.response === 'rejected'">
+                  {{ participant.response }}
+                </span>
+              </div>
+            </div>
+
+            <div class="meetup-actions" *ngIf="meetup.status === 'active'">
+              <button class="danger-btn" (click)="cancelMeetup(meetup._id)">Cancelar quedada</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </ng-container>
+
+    <ng-container *ngIf="activeTab === 'invited'">
+      <section class="panel">
+        <div class="section-header">
+          <div>
+            <p class="section-eyebrow">Invitaciones</p>
+            <h2>Quedadas a las que te han invitado</h2>
+          </div>
+        </div>
+
+        <div *ngIf="loadingInvited" class="empty-state">Cargando invitaciones...</div>
+
+        <div *ngIf="!loadingInvited && invitedMeetups.length === 0" class="empty-state">
+          No tienes invitaciones a quedadas.
+        </div>
+
+        <div *ngIf="!loadingInvited && invitedMeetups.length > 0" class="meetup-list">
+          <div *ngFor="let meetup of invitedMeetups" class="meetup-card">
+            <div class="meetup-card-top">
+              <div>
+                <h3>{{ meetup.event?.title }}</h3>
+                <p>Organiza: {{ meetup.organizer?.name }}</p>
+                <p>{{ meetup.meetupDateTime | date:'dd/MM/yyyy HH:mm' }} · {{ meetup.meetupPlace }}</p>
+              </div>
+
+              <span class="status" [class.cancelled]="meetup.status === 'cancelled'">
+                {{ meetup.status === 'cancelled' ? 'Cancelada' : 'Activa' }}
+              </span>
+            </div>
+
+            <div class="meetup-actions" *ngIf="meetup.status === 'active'">
+              <button class="accept-btn" (click)="respondToMeetup(meetup._id, 'accepted')">Aceptar</button>
+              <button class="reject-btn" (click)="respondToMeetup(meetup._id, 'rejected')">Rechazar</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </ng-container>
+  </div>
+
+  <div class="modal-overlay" *ngIf="showCreateModal" (click)="closeCreateModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <div>
+          <p class="section-eyebrow">Confirmar quedada</p>
+          <h3>Configura la quedada</h3>
+        </div>
+        <button class="close-btn" (click)="closeCreateModal()">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <label>Fecha y hora de la quedada</label>
+        <input type="datetime-local" [(ngModel)]="meetupDateTime" />
+
+        <label>Lugar de la quedada</label>
+        <input
+          type="text"
+          [(ngModel)]="meetupPlace"
+          placeholder="Ej: Entrada principal"
+        />
+
+        <div class="modal-actions">
+          <button class="secondary-btn" (click)="closeCreateModal()">Cancelar</button>
+          <button class="primary-btn" [disabled]="creatingMeetup" (click)="createMeetup()">
+            {{ creatingMeetup ? 'Creando...' : 'Confirmar quedada' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
