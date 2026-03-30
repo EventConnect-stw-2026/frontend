@@ -21,7 +21,14 @@
     <div class="tabs">
       <button [class.active]="activeTab === 'create'" (click)="activeTab = 'create'">Crear</button>
       <button [class.active]="activeTab === 'organized'" (click)="activeTab = 'organized'">Organizadas</button>
-      <button [class.active]="activeTab === 'invited'" (click)="activeTab = 'invited'">Invitaciones</button>
+      <button
+        [class.active]="activeTab === 'invited'"
+        (click)="activeTab = 'invited'"
+        class="tab-with-dot"
+      >
+        <span>Invitaciones</span>
+        <span *ngIf="hasPendingMeetupInvitations" class="nav-notification-dot"></span>
+      </button>
     </div>
 
     <ng-container *ngIf="activeTab === 'create'">

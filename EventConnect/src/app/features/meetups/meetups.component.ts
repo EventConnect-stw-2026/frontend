@@ -9,6 +9,7 @@ import { EventService } from '../../core/services/event.service';
 import { MeetupService } from '../../core/services/meetup.service';
 import { StripHtmlPipe } from '../../shared/pipes/strip-html.pipe';
 import { AuthService } from '../../core/services/auth.service';
+import { NotificationsService } from '../../core/services/notifications.service';
 
 @Component({
   standalone: true,
@@ -23,6 +24,10 @@ export class MeetupsComponent implements OnInit {
   private meetupService = inject(MeetupService);
   private cdr = inject(ChangeDetectorRef);
   private authService = inject(AuthService);
+  private notificationsService = inject(NotificationsService);
+
+  hasPendingMeetupInvitations = false;
+  pendingMeetupInvitationsCount = 0;
   currentUserId = '';
 
   friends: any[] = [];
@@ -77,6 +82,28 @@ export class MeetupsComponent implements OnInit {
     this.loadEvents();
     this.loadOrganizedMeetups();
     this.loadInvitedMeetups();
+
+    this.notificationsService.meetupInvitations$.subscribe(data => {
+      this.hasPendingMeetupInvitations = data?.hasPending || false;
+      this.pendingMeetupInvitationsCount = data?.count || 0;
+      this.cdr.detectChanges();
+    });
+
+    this.loadPendingMeetupInvitations();
+  }
+
+  loadPendingMeetupInvitations(): void {
+    this.meetupService.getPendingInvitationsCount().subscribe({
+      next: (res) => {
+        this.notificationsService.setMeetupInvitations({
+          hasPending: !!res?.hasPendingMeetupInvitations,
+          count: res?.pendingInvitationsCount || 0
+        });
+      },
+      error: (err) => {
+        console.error('Error al cargar invitaciones pendientes de quedadas:', err);
+      }
+    });
   }
 
   loadFriends(): void {
@@ -240,6 +267,7 @@ export class MeetupsComponent implements OnInit {
     this.meetupService.respondToMeetup(meetupId, response).subscribe({
       next: () => {
         this.loadInvitedMeetups();
+        this.notificationsService.refreshAllFriendsNotifications();
       },
       error: (err) => {
         console.error('Error al responder quedada:', err);

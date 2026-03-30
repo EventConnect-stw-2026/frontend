@@ -10,6 +10,7 @@ import { AuthService } from '../../core/services/auth.service';
 import { ChatService } from '../../core/services/chat.service';
 import { HeaderComponent } from '../../layout/components/header/header';
 import { NotificationsService } from '../../core/services/notifications.service';
+import { MeetupService } from '../../core/services/meetup.service';
 
 @Component({
   standalone: true,
@@ -25,6 +26,9 @@ export class FriendsComponent implements OnInit {
   private router = inject(Router);
   private cdr = inject(ChangeDetectorRef);
   private notificationsService = inject(NotificationsService);
+  private meetupService = inject(MeetupService);
+
+  hasPendingMeetupInvitations = false;
 
   friends: any[] = [];
   pendingRequests: any[] = [];
@@ -62,7 +66,12 @@ export class FriendsComponent implements OnInit {
     this.loadSentRequests();
     this.loadSuggestedUsers();
     this.loadUnreadMessages();
-  }
+    this.notificationsService.meetupInvitations$.subscribe(data => {
+      this.hasPendingMeetupInvitations = data?.hasPending || false;
+      this.cdr.detectChanges();
+    });
+
+  this.notificationsService.refreshAllFriendsNotifications();  }
 
   private filterAvailableUsers(users: any[]): any[] {
     return users.filter((user: any) =>
@@ -140,27 +149,7 @@ export class FriendsComponent implements OnInit {
 
 
   refreshHeaderNotifications(): void {
-    forkJoin({
-      pending: this.friendsService.getPendingRequests(),
-      unread: this.chatService.getUnreadCountsByFriend()
-    }).subscribe({
-      next: ({ pending, unread }: any) => {
-        const pendingCount = pending?.pendingRequests?.length || 0;
-
-        const unreadMap = unread?.unreadMessagesByFriend || {};
-        const unreadTotal = Object.values(unreadMap).reduce(
-          (sum: number, count: any) => sum + Number(count || 0),
-          0
-        );
-
-        this.notificationsService.setHasFriendsNotifications(
-          pendingCount > 0 || unreadTotal > 0
-        );
-      },
-      error: (err) => {
-        console.error('Error al refrescar notificaciones del header:', err);
-      }
-    });
+    this.notificationsService.refreshAllFriendsNotifications();
   }
 
   sendFriendRequest(friendId: string): void {

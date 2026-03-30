@@ -52,4 +52,14 @@ export class MeetupService {
       { withCredentials: true }
     );
   }
+
+  getPendingInvitationsCount() {
+    return this.http.get<{
+      pendingInvitationsCount: number;
+      hasPendingMeetupInvitations: boolean;
+    }>(
+      `${this.apiUrl}/pending-invitations-count`,
+      { withCredentials: true }
+    );
+  }
 }

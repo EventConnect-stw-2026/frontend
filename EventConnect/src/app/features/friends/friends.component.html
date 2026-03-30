@@ -215,8 +215,9 @@
             <p class="section-eyebrow">Descubre</p>
             <h2>Quizás conozcas a</h2>
           </div>
-          <button class="organize-btn" (click)="goToMeetups()">
-            Organizar quedada
+          <button class="organize-btn has-dot" (click)="goToMeetups()">
+            <span>Organizar quedada</span>
+            <span *ngIf="hasPendingMeetupInvitations" class="nav-notification-dot"></span>
           </button>
         </div>
 
