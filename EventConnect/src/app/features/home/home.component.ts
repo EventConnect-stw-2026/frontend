@@ -24,6 +24,12 @@ export class HomeComponent implements OnInit {
   aiError = false;
   selectedCategory: string = 'all';
   selectedRange: string = 'today';
+  sections: any = {
+    featured: [],
+    today: [],
+    week: [],
+    recent: []
+  };
 
   getFilteredEvents() {
     let filtered = [...this.events];
@@ -110,18 +116,28 @@ export class HomeComponent implements OnInit {
 
   ngOnInit() {
     if (isPlatformBrowser(this.platformId)) {
-      this.eventService.getEvents(1, 15).subscribe({
-        next: (res) => {
-          this.events = res.data;
-          this.loading = false;
-          this.cdr.detectChanges();
-        },
-        error: () => {
-          this.error = true;
-          this.loading = false;
-          this.cdr.detectChanges();
-        }
-      });
+      this.http.get<any>('http://localhost:3000/api/events/sections')
+        .subscribe({
+          next: (res) => {
+            this.sections = res.data;
+    console.log("SECTIONS:", res);
+
+            // 👇 IMPORTANTE: mantener compatibilidad con AI
+            this.events = [
+              ...res.data.featured,
+              ...res.data.today,
+              ...res.data.week
+            ];
+
+            this.loading = false;
+            this.cdr.detectChanges();
+          },
+          error: () => {
+            this.error = true;
+            this.loading = false;
+            this.cdr.detectChanges();
+          }
+        });
     }
   }
 

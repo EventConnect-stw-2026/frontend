@@ -19,11 +19,46 @@
 
   @if (loading) { <p>Cargando eventos...</p> }
   @if (error) { <p>Error al cargar los eventos.</p> }
-  
 
   @if (!loading && !error) {
     <div class="events">
-      @for (event of events; track event._id) {
+      @for (event of sections.featured; track event._id) {
+        <app-event-card [event]="event"></app-event-card>
+      }
+    </div>
+  }
+</section>
+
+<section class="featured">
+  <h2>Hoy</h2>
+
+  @if (!loading && !error) {
+    <div class="events">
+      @for (event of sections.today; track event._id) {
+        <app-event-card [event]="event"></app-event-card>
+      }
+    </div>
+  }
+</section>
+
+<section class="featured">
+  <h2>Esta semana</h2>
+
+  @if (!loading && !error) {
+    <div class="events">
+      @for (event of sections.week; track event._id) {
+        <app-event-card [event]="event"></app-event-card>
+      }
+    </div>
+  }
+</section>
+
+<section class="featured">
+  <h2>Recientes</h2>
+
+  @if (!loading && !error) {
+    <div class="events">
+      @for (event of sections.recent; track event._id) {
         <app-event-card [event]="event"></app-event-card>
       }
     </div>
