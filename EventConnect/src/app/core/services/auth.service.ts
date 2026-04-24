@@ -107,6 +107,14 @@ export class AuthService {
     return this.currentUserSubject.getValue();
   }
 
+  getHistory(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/history`, { withCredentials: true });
+  }
+
+  getAttending(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/attending`, { withCredentials: true });
+  }
+
   forgotPassword(email: string) {
     return this.rawHttp.post<{ message: string }>(
       `${this.apiUrl}/forgot-password`,
