@@ -1,9 +1,10 @@
-import { Component, OnInit, inject, PLATFORM_ID, ChangeDetectorRef, AfterViewInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, PLATFORM_ID, ChangeDetectorRef, AfterViewInit } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { EventService } from '../../core/services/event.service';
 import { AuthService } from '../../core/services/auth.service';
+import { EventChatService } from '../../core/services/event-chat.service';
 import { HeaderComponent } from '../../layout/components/header/header';
 import { StripHtmlPipe } from '../../shared/pipes/strip-html.pipe';
 import { FormsModule } from '@angular/forms';
@@ -15,12 +16,27 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './event-detail.component.html',
   styleUrl: './event-detail.component.scss',
 })
-export class EventDetailComponent implements OnInit, AfterViewInit {
+export class EventDetailComponent implements OnInit, AfterViewInit, OnDestroy {
   event: any = null;
   loading = true;
   error = false;
   isAttending = false;
   activeTab: 'chat' | 'amigos' = 'chat';
+
+  currentUserId      = '';
+  // Chat
+  messages: any[]    = [];
+  newMessage         = '';
+  sendingMessage     = false;
+  private pollTimer: any;
+
+  // Amigos
+  friendsAttending: any[] = [];
+  loadingFriends          = false;
+  toastVisible  = false;
+  toastMessage  = '';
+  toastType: 'success' | 'error' = 'success';
+  private toastTimer: any;
   private mapInitialized = false;
 
   private route = inject(ActivatedRoute);
@@ -28,7 +44,8 @@ export class EventDetailComponent implements OnInit, AfterViewInit {
   private eventService = inject(EventService);
   private platformId = inject(PLATFORM_ID);
   private cdr = inject(ChangeDetectorRef);
-  private http = inject(HttpClient);
+  private http            = inject(HttpClient);
+  private eventChatService = inject(EventChatService);
 
   ngOnInit() {
     if (isPlatformBrowser(this.platformId)) {
@@ -39,6 +56,13 @@ export class EventDetailComponent implements OnInit, AfterViewInit {
             this.event = res.data;
             this.loading = false;
             this.cdr.detectChanges();
+            // Comprobar si el usuario ya está apuntado
+            this.checkAttendance(id);
+            // Guardar ID del usuario para distinguir mensajes propios
+            const cached = this.authService.getCurrentUser();
+            if (cached) this.currentUserId = cached._id ?? cached.sub ?? '';
+            this.loadMessages();
+            this.startPolling();
           },
           error: () => {
             this.error = true;
@@ -50,25 +74,135 @@ export class EventDetailComponent implements OnInit, AfterViewInit {
     }
   }
 
+  private checkAttendance(eventId: string) {
+    // Usamos el perfil cacheado si existe, sino lo pedimos
+    const cached = this.authService.getCurrentUser();
+    if (cached) {
+      this.isAttending = (cached.attendedEvents ?? [])
+        .some((id: any) => id.toString() === eventId);
+      this.cdr.detectChanges();
+    } else {
+      // No hay caché → pedir perfil (solo si hay sesión)
+      this.authService.getProfile().subscribe({
+        next: (profile: any) => {
+          this.isAttending = (profile.attendedEvents ?? [])
+            .some((id: any) => id.toString() === eventId);
+          this.cdr.detectChanges();
+        },
+        error: () => {} // no logueado → isAttending queda false
+      });
+    }
+  }
+
+  // ── Tab change ────────────────────────────────────────────────────────────
+  switchTab(tab: 'chat' | 'amigos') {
+    this.activeTab = tab;
+    if (tab === 'chat' && this.event?._id) {
+      this.loadMessages();
+    } else if (tab === 'amigos' && this.event?._id) {
+      this.loadFriendsAttending();
+    }
+  }
+
+  // ── Chat ──────────────────────────────────────────────────────────────────
+  loadMessages() {
+    if (!this.event?._id) return;
+    this.eventChatService.getMessages(this.event._id).subscribe({
+        next: (res) => {
+          this.messages = res.data ?? [];
+          this.cdr.detectChanges();
+        },
+        error: () => {}
+      });
+  }
+
+  startPolling() {
+    this.stopPolling();
+    this.pollTimer = setInterval(() => {
+      if (this.activeTab === 'chat') this.loadMessages();
+    }, 5000);
+  }
+
+  stopPolling() {
+    if (this.pollTimer) clearInterval(this.pollTimer);
+  }
+
+  sendMessage() {
+    const content = this.newMessage.trim();
+    if (!content || this.sendingMessage || !this.event?._id) return;
+
+    this.sendingMessage = true;
+    this.eventChatService.sendMessage(this.event._id, content).subscribe({
+      next: (res) => {
+        this.messages = [...this.messages, res.data];
+        this.newMessage    = '';
+        this.sendingMessage = false;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        this.sendingMessage = false;
+        if (err.status === 401) this.showToast('Inicia sesión para escribir en el chat', 'error');
+      }
+    });
+  }
+
+  onEnter(e: KeyboardEvent) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      this.sendMessage();
+    }
+  }
+
+  // ── Amigos ────────────────────────────────────────────────────────────────
+  loadFriendsAttending() {
+    if (!this.event?._id) return;
+    this.loadingFriends = true;
+    this.eventChatService.getFriendsAttending(this.event._id).subscribe({
+      next: (res) => {
+        this.friendsAttending = res.data ?? [];
+        this.loadingFriends   = false;
+        this.cdr.detectChanges();
+      },
+      error: () => { this.loadingFriends = false; }
+    });
+  }
+
+  showToast(message: string, type: 'success' | 'error' = 'success') {
+    clearTimeout(this.toastTimer);
+    this.toastMessage = message;
+    this.toastType    = type;
+    this.toastVisible = true;
+    this.cdr.detectChanges();
+    this.toastTimer = setTimeout(() => {
+      this.toastVisible = false;
+      this.cdr.detectChanges();
+    }, 3000);
+  }
+
   onAttendClick() {
     if (!this.event || !this.event._id) return;
     this.eventService.toggleAttend(this.event._id).subscribe({
       next: (res: any) => {
         this.isAttending = res.isAttending;
         this.cdr.detectChanges();
-        alert(res.message);
+        this.showToast(res.message, res.isAttending ? 'success' : 'error');
         // Refrescar el perfil para que currentUser$ emita con los attendedEvents actualizados
         // Esto hace que el home reaccione y muestre/oculte la sección de recomendaciones
         this.authService.getProfile().subscribe();
       },
       error: (err: any) => {
         if (err.status === 401) {
-          alert('Tienes que iniciar sesión para apuntarte.');
+          this.showToast('Tienes que iniciar sesión para apuntarte.', 'error');
         } else {
-          alert('Hubo un problema al apuntarte. Inténtalo de nuevo.');
+          this.showToast('Hubo un problema al apuntarte. Inténtalo de nuevo.', 'error');
         }
       }
     });
+  }
+
+  ngOnDestroy() {
+    this.stopPolling();
+    clearTimeout(this.toastTimer);
   }
 
   async ngAfterViewInit() {
