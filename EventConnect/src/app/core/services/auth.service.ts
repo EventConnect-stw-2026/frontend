@@ -107,6 +107,13 @@ export class AuthService {
     return this.currentUserSubject.getValue();
   }
 
+  getRecommendations(limit = 10): Observable<any> {
+    return this.http.get(`${this.apiUrl}/recommendations`, {
+      params: { limit: limit.toString() },
+      withCredentials: true
+    });
+  }
+
   getHistory(): Observable<any> {
     return this.http.get(`${this.apiUrl}/history`, { withCredentials: true });
   }

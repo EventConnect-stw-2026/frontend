@@ -7,15 +7,30 @@ import { HttpClient } from '@angular/common/http';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { RouterLink } from '@angular/router';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, EventCardComponent, HeaderComponent, HttpClientModule, FormsModule],
+  imports: [CommonModule, RouterLink, EventCardComponent, HeaderComponent, HttpClientModule, FormsModule],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
 export class HomeComponent implements OnInit, OnDestroy {
+  // ── Basado en tus eventos ──────────────────────────────────────────────
+  forYouEvents: any[]  = [];
+  forYouIndex          = 0;
+  loadingForYou        = false;
+  showPersonalized     = false;
+  readonly VISIBLE     = 4;
+
+  get forYouVisible() { return this.forYouEvents.slice(this.forYouIndex, this.forYouIndex + this.VISIBLE); }
+  forYouNext() { if (this.forYouIndex < this.forYouEvents.length - this.VISIBLE) this.forYouIndex++; }
+  forYouPrev() { if (this.forYouIndex > 0) this.forYouIndex--; }
+
   events: any[] = [];
   loading = true;
   error = false;
@@ -98,7 +113,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   advisorLoading = false;
   advisorError = false;
 
-  private platformId = inject(PLATFORM_ID);
+  private platformId   = inject(PLATFORM_ID);
+  private authService  = inject(AuthService);
   private cdr = inject(ChangeDetectorRef);
   private ngZone = inject(NgZone);
 
@@ -110,6 +126,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   ngOnInit() {
     if (isPlatformBrowser(this.platformId)) {
       this.startCarousel();
+      this.loadForYou();
       this.eventService.getEvents(1, 15).subscribe({
         next: (res) => {
           this.events = res.data;
@@ -123,6 +140,35 @@ export class HomeComponent implements OnInit, OnDestroy {
         }
       });
     }
+  }
+
+  private loadForYou() {
+    this.authService.currentUser$.subscribe((profile: any) => {
+      if (!profile || (profile.attendedEvents ?? []).length === 0) {
+        this.showPersonalized = false;
+        this.cdr.detectChanges();
+        return;
+      }
+
+      this.loadingForYou   = true;
+      this.showPersonalized = true;
+      this.cdr.detectChanges();
+
+      this.authService.getRecommendations(10)
+        .pipe(catchError(() => of({ data: [] })))
+        .subscribe((res: any) => {
+          const events = res.data ?? [];
+          this.loadingForYou = false;
+          if (events.length === 0) {
+            this.showPersonalized = false;
+          } else {
+            this.forYouEvents     = events;
+            this.forYouIndex      = 0;
+            this.showPersonalized = true;
+          }
+          this.cdr.detectChanges();
+        });
+    });
   }
 
   ngOnDestroy() {

@@ -3,6 +3,7 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { EventService } from '../../core/services/event.service';
+import { AuthService } from '../../core/services/auth.service';
 import { HeaderComponent } from '../../layout/components/header/header';
 import { StripHtmlPipe } from '../../shared/pipes/strip-html.pipe';
 import { FormsModule } from '@angular/forms';
@@ -23,6 +24,7 @@ export class EventDetailComponent implements OnInit, AfterViewInit {
   private mapInitialized = false;
 
   private route = inject(ActivatedRoute);
+  private authService = inject(AuthService);
   private eventService = inject(EventService);
   private platformId = inject(PLATFORM_ID);
   private cdr = inject(ChangeDetectorRef);
@@ -55,6 +57,9 @@ export class EventDetailComponent implements OnInit, AfterViewInit {
         this.isAttending = res.isAttending;
         this.cdr.detectChanges();
         alert(res.message);
+        // Refrescar el perfil para que currentUser$ emita con los attendedEvents actualizados
+        // Esto hace que el home reaccione y muestre/oculte la sección de recomendaciones
+        this.authService.getProfile().subscribe();
       },
       error: (err: any) => {
         if (err.status === 401) {

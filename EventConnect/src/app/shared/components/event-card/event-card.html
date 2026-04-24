@@ -4,6 +4,9 @@
     <img [src]="getImage(event)"
          (error)="onImageError($event)"
          [alt]="event?.title">
+    @if (event?.category) {
+      <span class="card-category">{{ event.category }}</span>
+    }
   </div>
 
   <div class="info">

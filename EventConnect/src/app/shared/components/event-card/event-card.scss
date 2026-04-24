@@ -20,6 +20,7 @@ $t:         0.2s ease;
   color: inherit;
   display: flex;
   flex-direction: column;
+  height: 100%;          // ocupa toda la celda del grid
   box-shadow: 0 1px 4px rgba(0,0,0,0.07);
   transition: transform $t, box-shadow $t, border-color $t;
   cursor: pointer;
@@ -49,6 +50,20 @@ $t:         0.2s ease;
     transition: transform 0.4s ease;
   }
 }
+
+.card-category {
+  position: absolute;
+  top: 12px; left: 12px;
+  background: $blue;
+  color: white;
+  padding: 4px 12px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
 
 .info {
   padding: 18px 20px 20px;
