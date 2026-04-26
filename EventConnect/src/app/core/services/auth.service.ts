@@ -107,6 +107,21 @@ export class AuthService {
     return this.currentUserSubject.getValue();
   }
 
+  getRecommendations(limit = 10): Observable<any> {
+    return this.http.get(`${this.apiUrl}/recommendations`, {
+      params: { limit: limit.toString() },
+      withCredentials: true
+    });
+  }
+
+  getHistory(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/history`, { withCredentials: true });
+  }
+
+  getAttending(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/attending`, { withCredentials: true });
+  }
+
   forgotPassword(email: string) {
     return this.rawHttp.post<{ message: string }>(
       `${this.apiUrl}/forgot-password`,

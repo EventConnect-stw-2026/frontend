@@ -4,13 +4,31 @@
     <img [src]="getImage(event)"
          (error)="onImageError($event)"
          [alt]="event?.title">
+    @if (event?.category) {
+      <span class="card-category">{{ event.category }}</span>
+    }
   </div>
 
   <div class="info">
     <h3>{{ event?.title }}</h3>
-    <p class="date">{{ event?.startDate | date:'dd/MM/yyyy HH:mm' }}</p>
-    <p class="location">{{ event?.locationName }}</p>
-    <p class="description">{{ event?.description | stripHtml }}...</p>
+
+    <p class="date">
+      <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+      </svg>
+      {{ event?.startDate | date:'dd/MM/yyyy HH:mm' }}
+    </p>
+
+    <p class="location">
+      <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+      </svg>
+      {{ event?.locationName }}
+    </p>
+
+    <p class="description">{{ event?.description | stripHtml }}</p>
+
+    <span class="card-link">Ver más →</span>
   </div>
 
 </a>

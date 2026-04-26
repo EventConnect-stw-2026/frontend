@@ -16,12 +16,10 @@ export class StatsComponent implements OnInit {
   private eventService = inject(EventService);
   private cdr = inject(ChangeDetectorRef);
 
-  // Inicializamos las globales vacías
   categoryStats: any[] = [];
   dayStats: any[] = [];
 
-  // Inicializamos las personales a cero
-  personalStats: any = {
+  personalStats = {
     friendsMet: 0,
     eventsAttended: 0,
     topCategory: null,
@@ -30,11 +28,20 @@ export class StatsComponent implements OnInit {
     dayStats: [],
   };
 
-  get maxCategory() { 
-    return this.categoryStats.length ? Math.max(...this.categoryStats.map(c => c.value)) : 1; 
+  /** Categorías ordenadas de mayor a menor valor, para el gráfico de barras */
+  get sortedCategoryStats() {
+    const white = ['white', '#fff', '#ffffff'];
+    return [...this.categoryStats]
+      .filter(c => !white.includes(c.color?.toLowerCase()))
+      .sort((a, b) => b.value - a.value);
   }
-  get maxDay() { 
-    return this.dayStats.length ? Math.max(...this.dayStats.map(d => d.count)) : 1; 
+
+  get maxCategory() {
+    return this.categoryStats.length ? Math.max(...this.categoryStats.map(c => c.value)) : 1;
+  }
+
+  get maxDay() {
+    return this.dayStats.length ? Math.max(...this.dayStats.map(d => d.count)) : 1;
   }
 
   ngOnInit() {

@@ -11,14 +11,18 @@
   </div>
 
   @if (activeTab === 'global') {
-    <div class="global-grid">
-      <div class="chart-card">
+    <div class="global-stats">
+
+      <!-- Eventos por categoría -->
+      <div class="chart-card col-span-2">
         <h3>Eventos por categoría</h3>
         <div class="bar-chart">
-          @for (item of categoryStats; track item.label) {
+          @for (item of sortedCategoryStats.slice(0, 10); track item.label) {
             <div class="bar-item">
-              <div class="bar-fill" [style.height.%]="(item.value / maxCategory) * 100" [style.background]="item.color">
-                <span class="bar-value">{{ item.value }}</span>
+              <span class="bar-value">{{ item.value }}</span>
+              <div class="bar-fill"
+                   [style.height.%]="(item.value / maxCategory) * 100"
+                   [style.background]="item.color">
               </div>
               <span class="bar-label">{{ item.label }}</span>
             </div>
@@ -26,13 +30,43 @@
         </div>
       </div>
 
+      <!-- Top categorías -->
       <div class="chart-card">
+        <h3>🏆 Top categorías</h3>
+        <div class="top-list">
+          @for (item of sortedCategoryStats.slice(0,3); track item.label; let i = $index) {
+            <div class="top-item">
+              <span class="top-rank">
+                {{ i === 0 ? '🥇' : i === 1 ? '🥈' : '🥉' }}
+              </span>
+
+              <div class="top-info">
+                <div class="top-header">
+                  <span class="top-label">{{ item.label }}</span>
+                  <span class="top-value">{{ item.value }}</span>
+                </div>
+
+                <div class="top-bar">
+                  <div class="top-bar-fill"
+                       [style.width.%]="(item.value / maxCategory) * 100"
+                       [style.background]="item.color">
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Eventos por día -->
+      <div class="chart-card col-span-3">
         <h3>Eventos por día de la semana</h3>
-        <div class="bar-chart">
+        <div class="bar-chart bar-chart--days">
           @for (item of dayStats; track item.day) {
             <div class="bar-item">
-              <div class="bar-fill" [style.height.%]="(item.count / maxDay) * 100" style="background:#2563eb">
-                <span class="bar-value">{{ item.count }}</span>
+              <span class="bar-value">{{ item.count }}</span>
+              <div class="bar-fill bar-fill--blue"
+                   [style.height.%]="(item.count / maxDay) * 100">
               </div>
               <span class="bar-label">{{ item.day }}</span>
             </div>
@@ -40,21 +74,6 @@
         </div>
       </div>
 
-      <div class="chart-card top-card">
-        <h3>Top categorías</h3>
-        <div class="top-list">
-          @for (item of categoryStats.slice(0,3); track item.label; let i = $index) {
-            <div class="top-item">
-              <span class="top-rank">{{ i === 0 ? '🥇' : i === 1 ? '🥈' : '🥉' }}</span>
-              <span class="top-label">{{ item.label }}</span>
-              <div class="top-bar">
-                <div class="top-bar-fill" [style.width.%]="(item.value / maxCategory) * 100" [style.background]="item.color"></div>
-              </div>
-              <span class="top-value">{{ item.value }}</span>
-            </div>
-          }
-        </div>
-      </div>
     </div>
   }
 
@@ -73,25 +92,28 @@
         <p class="stat-value">{{ personalStats.friendsMet }}</p>
       </div>
 
-      <div class="stat-card">
-        <span class="stat-icon">🏷️</span>
-        <p class="stat-label">Categoría favorita</p>
-        <p class="stat-value text-val">{{ personalStats.topCategory ?? '—' }}</p>
+      <div class="stat-card highlight">
+        <span class="stat-icon">🎯</span>
+        <p class="stat-label">Tipo de evento más frecuente</p>
+        <p class="stat-value stat-value--sm">{{ personalStats.topCategory }}</p>
       </div>
 
       <div class="stat-card">
         <span class="stat-icon">📅</span>
         <p class="stat-label">Día más activo</p>
-        <p class="stat-value text-val">{{ personalStats.busiestDay ?? '—' }}</p>
+        <p class="stat-value stat-value--sm">{{ personalStats.busiestDay }}</p>
       </div>
 
       @if (personalStats.categoryStats?.length) {
+
         <div class="chart-card wide">
           <h3>Tus eventos por categoría</h3>
           <div class="bar-chart">
             @for (item of personalStats.categoryStats; track item.label) {
               <div class="bar-item">
-                <div class="bar-fill" [style.height.%]="(item.value / maxPersonalCategory) * 100" [style.background]="item.color">
+                <div class="bar-fill"
+                     [style.height.%]="(item.value / maxPersonalCategory) * 100"
+                     [style.background]="item.color">
                   <span class="bar-value">{{ item.value }}</span>
                 </div>
                 <span class="bar-label">{{ item.label }}</span>
@@ -105,7 +127,9 @@
           <div class="bar-chart">
             @for (item of personalStats.dayStats; track item.day) {
               <div class="bar-item">
-                <div class="bar-fill" [style.height.%]="(item.count / maxPersonalDay) * 100" style="background:#6366f1">
+                <div class="bar-fill"
+                     [style.height.%]="(item.count / maxPersonalDay) * 100"
+                     style="background:#6366f1">
                   <span class="bar-value">{{ item.count }}</span>
                 </div>
                 <span class="bar-label">{{ item.day }}</span>
@@ -113,10 +137,13 @@
             }
           </div>
         </div>
+
       } @else {
+
         <div class="chart-card wide empty-card">
           <p>Asiste a eventos para ver tus gráficas aquí</p>
         </div>
+
       }
 
     </div>

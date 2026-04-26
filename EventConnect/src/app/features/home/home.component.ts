@@ -1,21 +1,36 @@
-import { Component, OnInit, PLATFORM_ID, inject, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, PLATFORM_ID, inject, ChangeDetectorRef, NgZone } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { EventCardComponent } from '../../shared/components/event-card/event-card';
 import { EventService } from '../../core/services/event.service';
 import { HeaderComponent } from '../../layout/components/header/header';
 import { HttpClient } from '@angular/common/http';
-import { RouterLink } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import { Subscription } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { RouterLink } from '@angular/router';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, EventCardComponent, HeaderComponent, HttpClientModule, FormsModule],
+  imports: [CommonModule, RouterLink, EventCardComponent, HeaderComponent, HttpClientModule, FormsModule],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy {
+  // ── Basado en tus eventos ──────────────────────────────────────────────
+  forYouEvents: any[]  = [];
+  forYouIndex          = 0;
+  loadingForYou        = false;
+  showPersonalized     = false;
+  readonly VISIBLE     = 4;
+
+  get forYouVisible() { return this.forYouEvents.slice(this.forYouIndex, this.forYouIndex + this.VISIBLE); }
+  forYouNext() { if (this.forYouIndex < this.forYouEvents.length - this.VISIBLE) this.forYouIndex++; }
+  forYouPrev() { if (this.forYouIndex > 0) this.forYouIndex--; }
+
   events: any[] = [];
   loading = true;
   error = false;
@@ -49,7 +64,6 @@ export class HomeComponent implements OnInit {
       const now = new Date();
       const weekLater = new Date();
       weekLater.setDate(now.getDate() + 7);
-
       filtered = filtered.filter(e => {
         const d = new Date(e.startDate);
         return d >= now && d <= weekLater;
@@ -59,12 +73,12 @@ export class HomeComponent implements OnInit {
     return filtered;
   }
 
- generateSummary() {
-  this.aiLoading = true;
-  this.aiError = false;
-  this.aiSummary = null;
+  generateSummary() {
+    this.aiLoading = true;
+    this.aiError = false;
+    this.aiSummary = null;
 
-  const filtered = this.getFilteredEvents();
+    const filtered = this.getFilteredEvents();
 
     this.http.post<any>('http://localhost:3000/api/ai/summary', {
       events: filtered
@@ -81,7 +95,6 @@ export class HomeComponent implements OnInit {
       }
     });
   }
-
 
   // Chatbot
   companions = [
@@ -106,8 +119,10 @@ export class HomeComponent implements OnInit {
   advisorLoading = false;
   advisorError = false;
 
-  private platformId = inject(PLATFORM_ID);
+  private platformId   = inject(PLATFORM_ID);
+  private authService  = inject(AuthService);
   private cdr = inject(ChangeDetectorRef);
+  private ngZone = inject(NgZone);
 
   constructor(
     private eventService: EventService,
@@ -115,7 +130,9 @@ export class HomeComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    if (isPlatformBrowser(this.platformId)) {
+    if (isPlatformBrowser(this.platformId)) {  
+      this.startCarousel();
+      this.loadForYou();
       this.http.get<any>('http://localhost:3000/api/events/sections')
         .subscribe({
           next: (res) => {
@@ -139,6 +156,39 @@ export class HomeComponent implements OnInit {
           }
         });
     }
+  }
+
+  private loadForYou() {
+    this.authService.currentUser$.subscribe((profile: any) => {
+      if (!profile || (profile.attendedEvents ?? []).length === 0) {
+        this.showPersonalized = false;
+        this.cdr.detectChanges();
+        return;
+      }
+
+      this.loadingForYou   = true;
+      this.showPersonalized = true;
+      this.cdr.detectChanges();
+
+      this.authService.getRecommendations(10)
+        .pipe(catchError(() => of({ data: [] })))
+        .subscribe((res: any) => {
+          const events = res.data ?? [];
+          this.loadingForYou = false;
+          if (events.length === 0) {
+            this.showPersonalized = false;
+          } else {
+            this.forYouEvents     = events;
+            this.forYouIndex      = 0;
+            this.showPersonalized = true;
+          }
+          this.cdr.detectChanges();
+        });
+    });
+  }
+
+  ngOnDestroy() {
+    this.stopCarousel();
   }
 
   selectCompanion(option: any) {
@@ -180,5 +230,54 @@ export class HomeComponent implements OnInit {
     this.selectedVibe = null;
     this.recommendedEvents = [];
     this.advisorError = false;
+  }
+
+  // Carousel
+  slides = [
+    { img: 'assets/images/Zaragoza.jpg',  position: 'center 20%' },
+    { img: 'assets/images/Zaragoza2.jpg', position: 'center 20%' },
+    { img: 'assets/images/Zaragoza3.webp', position: 'center bottom' },
+  ];
+  currentSlide = 0;
+  private carouselSub: Subscription | null = null;
+
+  startCarousel() {
+    this.stopCarousel();
+    this.ngZone.runOutsideAngular(() => {
+      const id = setInterval(() => {
+        this.ngZone.run(() => {
+          this.currentSlide = (this.currentSlide + 1) % this.slides.length;
+          this.cdr.markForCheck();
+        });
+      }, 7000);
+      this.carouselSub = { unsubscribe: () => clearInterval(id) } as any;
+    });
+  }
+
+  stopCarousel() {
+    this.carouselSub?.unsubscribe();
+    this.carouselSub = null;
+  }
+
+  nextSlide() {
+    this.stopCarousel();
+    this.currentSlide = (this.currentSlide + 1) % this.slides.length;
+    this.startCarousel();
+  }
+
+  prevSlide() {
+    this.stopCarousel();
+    this.currentSlide = (this.currentSlide - 1 + this.slides.length) % this.slides.length;
+    this.startCarousel();
+  }
+
+  goToSlide(index: number) {
+    this.stopCarousel();
+    this.currentSlide = index;
+    this.startCarousel();
+  }
+
+  scrollToContent() {
+    document.querySelector('.featured')?.scrollIntoView({ behavior: 'smooth' });
   }
 }

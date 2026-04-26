@@ -32,18 +32,19 @@
   }
 }
 
-// ── Global ──────────────────────────────────────────────
-.global-grid {
+// ─── Global Stats Grid ─────────────────────────────────────
+
+.global-stats {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 24px;
-
-  .top-card {
-    grid-column: span 2;
-  }
 }
 
-// ── Personal ─────────────────────────────────────────────
+.col-span-2 { grid-column: span 2; }
+.col-span-3 { grid-column: span 3; }
+
+// ─── Personal ─────────────────────────────────────────────
+
 .personal-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -54,7 +55,8 @@
   }
 }
 
-// ── Tarjetas ─────────────────────────────────────────────
+// ─── Chart Card ───────────────────────────────────────────
+
 .chart-card {
   background: white;
   border-radius: 20px;
@@ -69,73 +71,18 @@
   }
 }
 
-.stat-card {
-  background: white;
-  border-radius: 20px;
-  padding: 24px 20px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: 8px;
-}
+// ─── Bar Chart ────────────────────────────────────────────
 
-.empty-card {
-  background: white;
-  border-radius: 20px;
-  padding: 28px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 160px;
-  grid-column: span 4;
-
-  p {
-    font-size: 13px;
-    color: #bbb;
-    font-style: italic;
-    margin: 0;
-  }
-}
-
-// ── Métricas de stat-card ─────────────────────────────────
-.stat-icon {
-  font-size: 28px;
-}
-
-.stat-label {
-  font-size: 12px;
-  color: #888;
-  font-weight: 500;
-  margin: 0;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-
-.stat-value {
-  font-size: 36px;
-  font-weight: 800;
-  color: #1a1a2e;
-  margin: 0;
-  line-height: 1;
-
-  &.text-val {
-    font-size: 18px;
-    font-weight: 700;
-  }
-}
-
-// ── Gráficas de barras ────────────────────────────────────
 .bar-chart {
   display: flex;
   align-items: flex-end;
   justify-content: space-around;
-  height: 200px;
-  gap: 6px;
-  padding-bottom: 0; // quita el padding-bottom si lo tenías
-  margin-bottom: 36px; // espacio para las etiquetas de abajo
+  height: 220px;
+  gap: 8px;
+
+  &--days {
+    height: 160px;
+  }
 }
 
 .bar-item {
@@ -145,45 +92,43 @@
   justify-content: flex-end;
   flex: 1;
   height: 100%;
-  gap: 0;
-  position: relative; // necesario para posicionar la etiqueta
-}
-
-.bar-fill {
-  width: 100%;
-  border-radius: 8px 8px 0 0;
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  padding-top: 6px;
-  transition: height 0.4s ease;
-  min-height: 4px;
-}
-
-.bar-label {
-  position: absolute;
-  bottom: -32px; // fuera del área de barras, siempre a la misma distancia
-  font-size: 10px;
-  color: #888;
-  font-weight: 500;
-  text-align: center;
-  width: 100%;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  gap: 6px;
 }
 
 .bar-value {
   font-size: 11px;
   font-weight: 700;
-  color: white;
+  color: #444;
 }
 
-// ── Top lista ─────────────────────────────────────────────
+.bar-fill {
+  width: 100%;
+  border-radius: 8px 8px 0 0;
+  transition: height 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  min-height: 4px;
+
+  &--blue {
+    background: #2563eb;
+  }
+}
+
+.bar-label {
+  font-size: 10px;
+  color: #888;
+  font-weight: 500;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+// ─── Top List ─────────────────────────────────────────────
+
 .top-list {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 20px;
 }
 
 .top-item {
@@ -193,18 +138,37 @@
 }
 
 .top-rank {
-  font-size: 20px;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+.top-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.top-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
 }
 
 .top-label {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   color: #1a1a2e;
-  min-width: 80px;
+}
+
+.top-value {
+  font-size: 13px;
+  font-weight: 700;
+  color: #555;
 }
 
 .top-bar {
-  flex: 1;
+  width: 100%;
   height: 8px;
   background: #f0f0f0;
   border-radius: 4px;
@@ -214,13 +178,59 @@
 .top-bar-fill {
   height: 100%;
   border-radius: 4px;
-  transition: width 0.4s ease;
+  transition: width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.top-value {
+// ─── Personal Stats ───────────────────────────────────────
+
+.stat-card {
+  background: white;
+  border-radius: 20px;
+  padding: 28px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+
+  &.highlight {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 8px;
+  }
+}
+
+.stat-icon {
+  font-size: 32px;
+}
+
+.stat-label {
   font-size: 13px;
-  font-weight: 700;
-  color: #555;
-  min-width: 35px;
-  text-align: right;
+  color: #888;
+  font-weight: 500;
+  margin: 0;
+}
+
+.stat-value {
+  font-size: 36px;
+  font-weight: 800;
+  color: #1a1a2e;
+  margin: 0;
+
+  &--sm {
+    font-size: 22px;
+  }
+}
+
+.empty-card {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 160px;
+
+  p {
+    font-size: 13px;
+    color: #bbb;
+    text-align: center;
+    font-style: italic;
+    margin: 0;
+  }
 }

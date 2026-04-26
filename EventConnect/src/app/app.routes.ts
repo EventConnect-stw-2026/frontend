@@ -21,6 +21,8 @@ import { AdminEventsComponent } from './features/admin/pages/admin-events/admin-
 import { AdminReportsComponent } from './features/admin/pages/admin-reports/admin-reports.component';
 import { AdminSettingsComponent } from './features/admin/pages/admin-settings/admin-settings.component';
 import { MeetupsComponent } from './features/meetups/meetups.component';
+import { HistoryComponent } from './features/profile/history/history.component';
+import { FavoritesComponent } from './features/profile/favorites/favorites.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
@@ -38,6 +40,8 @@ export const routes: Routes = [
   { path: 'friends', component: FriendsComponent, canActivate: [authGuard] },
   { path: 'chat/:conversationId', component: ChatDetailComponent, canActivate: [authGuard] },
   { path: 'meetups', component: MeetupsComponent, canActivate: [authGuard] },
+  { path: 'history', component: HistoryComponent, canActivate: [authGuard] },
+  { path: 'favorites', component: FavoritesComponent, canActivate: [authGuard] },
   { path: 'admin', component: AdminLayoutComponent, canActivate: [authGuard, adminGuard], canActivateChild: [adminGuard], children: [
     { path: 'dashboard', component: AdminDashboardComponent },
     { path: 'users', component: AdminUsersComponent },

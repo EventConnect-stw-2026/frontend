@@ -3,35 +3,49 @@
 <div class="explore-wrapper">
 
   <div class="filters-bar">
-    <div class="filters-top">
-      <div class="search-box">
-        <input [(ngModel)]="searchText" (keyup.enter)="onSearch()" placeholder="Busca eventos por su nombre">
-        <button (click)="onSearch()">🔍</button>
-      </div>
 
-      <div class="date-filters">
-        <div class="date-input">
-            <label>Desde</label>
-            <input type="date" [(ngModel)]="dateFrom" (change)="onDateChange()" onkeydown="return false">
-        </div>
-        <div class="date-separator">→</div>
-        <div class="date-input">
-            <label>Hasta</label>
-            <input type="date" [(ngModel)]="dateTo" (change)="onDateChange()" onkeydown="return false">
-        </div>
-        @if (dateFrom || dateTo) {
-          <button class="clear-dates" (click)="clearDates()">✕ Limpiar</button>
+    <!-- 1. Buscador -->
+    <div class="search-box">
+      <input [(ngModel)]="searchText" (keyup.enter)="onSearch()" placeholder="Busca eventos por su nombre">
+      <button (click)="onSearch()" aria-label="Buscar">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- 2. Categorías -->
+    <div class="categories-wrapper">
+      <div class="categories">
+        @for (cat of categories; track cat) {
+          <button class="cat-btn" [class.active]="selectedCategory === cat" (click)="selectCategory(cat)">
+            {{ cat }}
+          </button>
         }
       </div>
+      <div class="categories-arrow">
+        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="9 18 15 12 9 6"/>
+        </svg>
+      </div>
     </div>
 
-    <div class="categories">
-      @for (cat of categories; track cat) {
-        <button class="cat-btn" [class.active]="selectedCategory === cat" (click)="selectCategory(cat)">
-          {{ cat }}
-        </button>
+    <!-- 3. Fechas -->
+    <div class="date-filters">
+      <div class="date-input">
+        <label>Desde</label>
+        <input type="date" [(ngModel)]="dateFrom" (change)="onDateChange()" onkeydown="return false">
+      </div>
+      <span class="date-separator">→</span>
+      <div class="date-input">
+        <label>Hasta</label>
+        <input type="date" [(ngModel)]="dateTo" (change)="onDateChange()" onkeydown="return false">
+      </div>
+      @if (dateFrom || dateTo) {
+        <button class="clear-dates" (click)="clearDates()">✕</button>
       }
     </div>
+
   </div>
 
   @if (loading) {
@@ -45,19 +59,26 @@
       @for (event of events; track event._id) {
         <a class="event-card" [routerLink]="['/events', event._id]">
           <div class="card-image">
-            <img 
-              [src]="getImage(event)" 
-              (error)="onImageError($event)" 
-              [alt]="event.title">
+            <img [src]="getImage(event)" (error)="onImageError($event)" [alt]="event.title">
             <span class="card-category">{{ event.category }}</span>
             @if (event.isFree) { <span class="card-free">Gratis</span> }
           </div>
           <div class="card-body">
             <h3>{{ event.title }}</h3>
             @if (event.startDate) {
-              <p class="card-date">🕐 {{ event.startDate | date:'dd MMM · HH:mm' }}</p>
+              <p class="card-date">
+                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                </svg>
+                {{ event.startDate | date:'dd MMM · HH:mm' }}
+              </p>
             }
-            <p class="card-location">📍 {{ event.locationName }}</p>
+            <p class="card-location">
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+              </svg>
+              {{ event.locationName }}
+            </p>
             <p class="card-desc">{{ event.description | stripHtml }}</p>
             <span class="card-link">Ver más →</span>
           </div>
