@@ -35,6 +35,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   loading = true;
   error = false;
   aiSummary: string | null = null;
+  aiHighlights: { text: string; eventId: string }[] = [];
   aiLoading = false;
   aiError = false;
   selectedCategory: string = 'all';
@@ -77,19 +78,24 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.aiLoading = true;
     this.aiError = false;
     this.aiSummary = null;
+    
 
     const filtered = this.getFilteredEvents();
 
     this.http.post<any>('http://localhost:3000/api/ai/summary', {
       events: filtered
     }).subscribe({
-      next: (res: any) => {
-        this.aiSummary = res.summary || 'Sin resumen';
-        this.aiLoading = false;
-        this.cdr.detectChanges();
-      },
-      error: () => {
-        this.aiError = true;
+        next: (res: any) => {
+        console.log("AI RESPONSE:", res);
+
+        if (typeof res.summary === 'string') {
+          this.aiSummary = res.summary;
+          this.aiHighlights = res.highlights || [];
+        } else {
+          this.aiSummary = res.summary?.text || '';
+          this.aiHighlights = res.summary?.highlights || [];
+        }
+
         this.aiLoading = false;
         this.cdr.detectChanges();
       }
