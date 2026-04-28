@@ -141,21 +141,19 @@
 
   <div class="ai-controls">
 
-    <div class="ai-field">
-      <label>Categoría</label>
-      <select [(ngModel)]="selectedCategory">
-        <option value="all">Todas</option>
-        <option value="cultural">Cultural</option>
-        <option value="gastronomia">Gastronomía</option>
-        <option value="musica">Música</option>
-      </select>
-    </div>
+  <select [(ngModel)]="selectedCategory">
+    <option value="">Todas</option>
+    @for (cat of categories; track cat) {
+      <option [value]="cat">{{ cat }}</option>
+    }
+  </select>
 
     <div class="ai-field">
       <label>Filtro</label>
       <select [(ngModel)]="selectedRange">
-        <option value="today">Hoy</option>
-        <option value="week">Semana</option>
+        <option value="week">Esta semana</option>
+    <option value="today">Hoy</option>
+    <option value="">Todos</option>
       </select>
     </div>
 
