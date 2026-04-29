@@ -91,12 +91,18 @@ export class HomeComponent implements OnInit, OnDestroy {
       date: this.selectedRange === 'today' ? new Date().toISOString() : null
     }).subscribe({
       next: (res: any) => {
+        console.log("RES COMPLETO:", JSON.stringify(res));
+        console.log("RES.SUMMARY:", res.summary);
+        console.log("TIPO:", typeof res.summary);
         this.aiSummary = res.summary || '';
         this.aiHighlights = res.highlights || [];
         this.aiLoading = false;
         this.cdr.detectChanges();
       },
-      error: () => {
+      error: (err: any) => {
+        console.log("RES COMPLETO:", JSON.stringify(err));
+        console.log("RES.SUMMARY:", err.summary);
+        console.log("TIPO:", typeof err.summary);
         this.aiSummary = 'No se pudo generar el resumen.';
         this.aiLoading = false;
         this.cdr.detectChanges();
