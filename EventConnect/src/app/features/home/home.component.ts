@@ -35,10 +35,18 @@ export class HomeComponent implements OnInit, OnDestroy {
   loading = true;
   error = false;
   aiSummary: string | null = null;
+  aiHighlights: { text: string; eventId: string }[] = [];
   aiLoading = false;
   aiError = false;
-  selectedCategory: string = 'all';
-  selectedRange: string = 'today';
+  categories = [
+    'Deporte', 'Música', 'Teatro y Artes Escénicas', 'Artes plásticas',
+    'Cursos y Talleres', 'Formación', 'Ocio y Juegos', 'Turismo',
+    'Gastronomía', 'Aire Libre y Excursiones', 'Medio Ambiente y Naturaleza',
+    'Conferencias y Congresos', 'Imagen y sonido', 'Idiomas',
+    'Desarrollo personal', 'Otros'
+  ];
+  selectedCategory: string = '';  // vacío = todas
+  selectedRange: string = 'week';
   sections: any = {
     featured: [],
     today: [],
@@ -78,18 +86,24 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.aiError = false;
     this.aiSummary = null;
 
-    const filtered = this.getFilteredEvents();
-
     this.http.post<any>('http://localhost:3000/api/ai/summary', {
-      events: filtered
+      category: this.selectedCategory !== 'all' ? this.selectedCategory : null,
+      date: this.selectedRange === 'today' ? new Date().toISOString() : null
     }).subscribe({
       next: (res: any) => {
-        this.aiSummary = res.summary || 'Sin resumen';
+        console.log("RES COMPLETO:", JSON.stringify(res));
+        console.log("RES.SUMMARY:", res.summary);
+        console.log("TIPO:", typeof res.summary);
+        this.aiSummary = res.summary || '';
+        this.aiHighlights = res.highlights || [];
         this.aiLoading = false;
         this.cdr.detectChanges();
       },
-      error: () => {
-        this.aiError = true;
+      error: (err: any) => {
+        console.log("RES COMPLETO:", JSON.stringify(err));
+        console.log("RES.SUMMARY:", err.summary);
+        console.log("TIPO:", typeof err.summary);
+        this.aiSummary = 'No se pudo generar el resumen.';
         this.aiLoading = false;
         this.cdr.detectChanges();
       }
@@ -133,19 +147,17 @@ export class HomeComponent implements OnInit, OnDestroy {
     if (isPlatformBrowser(this.platformId)) {  
       this.startCarousel();
       this.loadForYou();
+
       this.http.get<any>('http://localhost:3000/api/events/sections')
         .subscribe({
-          next: (res) => {
+          next: (res: any) => {
+            console.log("SECTIONS:", res);
             this.sections = res.data;
-    console.log("SECTIONS:", res);
-
-            // 👇 IMPORTANTE: mantener compatibilidad con AI
             this.events = [
               ...res.data.featured,
               ...res.data.today,
               ...res.data.week
             ];
-
             this.loading = false;
             this.cdr.detectChanges();
           },

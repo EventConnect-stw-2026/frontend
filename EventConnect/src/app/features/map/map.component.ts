@@ -1,13 +1,14 @@
 import { Component, OnInit, inject, PLATFORM_ID, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule, isPlatformBrowser, DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { EventService } from '../../core/services/event.service';
 import { HeaderComponent } from '../../layout/components/header/header';
 
 @Component({
   selector: 'app-map',
   standalone: true,
-  imports: [CommonModule, RouterLink, HeaderComponent, DatePipe],
+  imports: [CommonModule, RouterLink, HeaderComponent, DatePipe, FormsModule],
   templateUrl: './map.component.html',
   styleUrl: './map.component.scss',
 })
@@ -18,6 +19,12 @@ export class MapComponent implements OnInit, AfterViewInit {
   private eventService = inject(EventService);
   private cdr = inject(ChangeDetectorRef);
   private map: any;
+
+  // --- Búsqueda ---
+  searchQuery = '';
+  searchResults: any[] = [];
+  private searchTimeout: any;
+  private searchMarker: any = null;
 
   categoryEmojis: Record<string, string> = {
     'Deporte': '⚽',
@@ -55,7 +62,6 @@ export class MapComponent implements OnInit, AfterViewInit {
         attribution: '© OpenStreetMap'
       }).addTo(this.map);
 
-      // Redibuja marcadores al cambiar zoom
       this.map.on('zoomend', () => {
         this.updateMarkerSizes();
       });
@@ -63,6 +69,83 @@ export class MapComponent implements OnInit, AfterViewInit {
       if (this.events.length) this.addMarkers();
     }
   }
+
+  // ─── Búsqueda con Nominatim ───────────────────────────────────────────────
+
+  onSearchInput() {
+    clearTimeout(this.searchTimeout);
+    if (this.searchQuery.length < 3) {
+      this.searchResults = [];
+      return;
+    }
+    // Debounce de 400ms para no saturar la API
+    this.searchTimeout = setTimeout(() => this.searchPlace(), 400);
+  }
+
+  async searchPlace() {
+    if (!this.searchQuery.trim()) return;
+
+    const url = `https://nominatim.openstreetmap.org/search?` +
+      `q=${encodeURIComponent(this.searchQuery)}` +
+      `&format=json&limit=5&countrycodes=es` +
+      `&accept-language=es`;
+
+    try {
+      const res = await fetch(url, {
+        headers: { 'Accept-Language': 'es' }
+      });
+      this.searchResults = await res.json();
+      this.cdr.detectChanges();
+    } catch (e) {
+      console.error('Error buscando:', e);
+    }
+  }
+
+  async selectResult(result: any) {
+    const L = await import('leaflet');
+    const lat = parseFloat(result.lat);
+    const lon = parseFloat(result.lon);
+
+    // Elimina el marcador de búsqueda anterior si existe
+    if (this.searchMarker) {
+      this.searchMarker.remove();
+    }
+
+    // Añade un marcador temporal en el resultado
+    this.searchMarker = L.marker([lat, lon], {
+      icon: L.divIcon({
+        html: `<div style="
+          background:#2563eb;color:white;
+          border-radius:50%;width:16px;height:16px;
+          border:3px solid white;
+          box-shadow:0 2px 8px rgba(0,0,0,0.4);
+        "></div>`,
+        className: '',
+        iconSize: [16, 16],
+        iconAnchor: [8, 8],
+      })
+    }).addTo(this.map);
+
+    // Hace zoom al resultado
+    this.map.flyTo([lat, lon], 16, { duration: 1.2 });
+
+    // Cierra el desplegable
+    this.searchResults = [];
+    this.searchQuery = result.display_name.split(',')[0]; // Muestra solo el nombre corto
+    this.cdr.detectChanges();
+  }
+
+  clearSearch() {
+    this.searchQuery = '';
+    this.searchResults = [];
+    if (this.searchMarker) {
+      this.searchMarker.remove();
+      this.searchMarker = null;
+    }
+    this.cdr.detectChanges();
+  }
+
+  // ─── Marcadores de eventos ────────────────────────────────────────────────
 
   private markers: any[] = [];
 

@@ -1,7 +1,38 @@
 <app-header></app-header>
 
 <div class="map-wrapper">
+
+<!-- 🔍 Barra de búsqueda -->
+  <div class="search-bar">
+    <div class="search-input-wrapper">
+      <span class="search-icon">🔍</span>
+      <input
+        type="text"
+        placeholder="Buscar calle, lugar..."
+        [(ngModel)]="searchQuery"
+        (input)="onSearchInput()"
+        (keydown.enter)="searchPlace()"
+        (keydown.escape)="clearSearch()"
+      />
+      @if (searchQuery) {
+        <button class="clear-btn" (click)="clearSearch()">✕</button>
+      }
+    </div>
+
+    @if (searchResults.length > 0) {
+      <ul class="search-results">
+        @for (result of searchResults; track result.place_id) {
+          <li (click)="selectResult(result)">
+            <span class="result-icon">📍</span>
+            <span class="result-text">{{ result.display_name }}</span>
+          </li>
+        }
+      </ul>
+    }
+  </div>
+
   <div id="map"></div>
+
 
   @if (selectedEvent) {
     <div class="event-panel">
