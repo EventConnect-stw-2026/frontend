@@ -959,6 +959,28 @@ body { overflow-x: hidden; }
   cursor: pointer;
 }
 
+.ai-links {
+  display: flex;
+  flex-direction: column;  // ← de row a column
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.ai-link {
+  display: block;
+  padding: 10px 16px;
+  background: #f0f5ff;
+  border-radius: 8px;
+  color: #2563eb;
+  font-size: 14px;
+  text-decoration: none;
+  transition: background 0.15s;
+
+  &:hover {
+    background: #dbeafe;
+  }
+}
+
 /* ── RESPONSIVE ───────────────────────────────────────── */
 
 @media (max-width: 900px) {
