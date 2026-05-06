@@ -26,6 +26,10 @@ export class AdminUsersComponent implements OnInit {
 
   search = '';
   selectedRole = 'Todos';
+  
+  // Pagination
+  currentPage = 1;
+  pageSize = 10;
 
   // Modal state
   showDetailModal = false;
@@ -111,6 +115,35 @@ export class AdminUsersComponent implements OnInit {
         this.selectedRole === 'Todos' || user.role === this.selectedRole;
       return matchesSearch && matchesRole;
     });
+  }
+
+  getPaginatedUsers(users: AdminUserView[]): AdminUserView[] {
+    const filtered = this.filteredUsers(users);
+    const startIndex = (this.currentPage - 1) * this.pageSize;
+    return filtered.slice(startIndex, startIndex + this.pageSize);
+  }
+
+  getTotalPages(users: AdminUserView[]): number {
+    const filtered = this.filteredUsers(users);
+    return Math.max(1, Math.ceil(filtered.length / this.pageSize));
+  }
+
+  goToPage(page: number, totalPages: number): void {
+    if (page >= 1 && page <= totalPages) {
+      this.currentPage = page;
+    }
+  }
+
+  nextPage(totalPages: number): void {
+    this.goToPage(this.currentPage + 1, totalPages);
+  }
+
+  previousPage(totalPages: number): void {
+    this.goToPage(this.currentPage - 1, totalPages);
+  }
+
+  resetPagination(): void {
+    this.currentPage = 1;
   }
 
   viewUserDetail(user: AdminUserView): void {

@@ -40,6 +40,10 @@ export class AdminReportsComponent implements OnInit {
   activeTab: ReportTab = 'Contenido';
   search = '';
   selectedFilter = 'Todos';
+  
+  // Pagination
+  currentPage = 1;
+  pageSize = 10;
 
   // Para modal de detalles
   showDetailModal = false;
@@ -134,6 +138,7 @@ export class AdminReportsComponent implements OnInit {
 
   setTab(tab: ReportTab): void {
     this.activeTab = tab;
+    this.resetPagination();
   }
 
   getFilteredReports(reports: AdminReport[]): AdminReport[] {
@@ -155,6 +160,35 @@ export class AdminReportsComponent implements OnInit {
 
       return matchesTab && matchesSearch && matchesFilter;
     });
+  }
+
+  getPaginatedReports(reports: AdminReport[]): AdminReport[] {
+    const filtered = this.getFilteredReports(reports);
+    const startIndex = (this.currentPage - 1) * this.pageSize;
+    return filtered.slice(startIndex, startIndex + this.pageSize);
+  }
+
+  getTotalPages(reports: AdminReport[]): number {
+    const filtered = this.getFilteredReports(reports);
+    return Math.max(1, Math.ceil(filtered.length / this.pageSize));
+  }
+
+  goToPage(page: number, totalPages: number): void {
+    if (page >= 1 && page <= totalPages) {
+      this.currentPage = page;
+    }
+  }
+
+  nextPage(totalPages: number): void {
+    this.goToPage(this.currentPage + 1, totalPages);
+  }
+
+  previousPage(totalPages: number): void {
+    this.goToPage(this.currentPage - 1, totalPages);
+  }
+
+  resetPagination(): void {
+    this.currentPage = 1;
   }
 
   viewReportDetail(report: AdminReport): void {
