@@ -74,6 +74,7 @@
             (click)="onAttendClick()">
             {{ isAttending ? 'Ya estás apuntado' : 'Apuntarme al evento' }}
           </button>
+          <button class="report-event-btn" (click)="openReportForEvent()">Reportar evento</button>
           
           @if (event.sourceUrl) {
             <a [href]="event.sourceUrl" target="_blank" class="source-btn">
@@ -116,9 +117,9 @@
               } @else {
                 <div class="messages-list">
                   @for (msg of messages; track msg._id) {
-                    <div class="message-bubble" [class.own]="msg.sender._id === currentUserId">
+                    <div class="message-bubble" [class.own]="msg.sender._id === currentUserId" [class.clickable]="msg.sender._id !== currentUserId" (click)="msg.sender._id !== currentUserId && openReportForMessage(msg)">
                       @if (msg.sender._id !== currentUserId) {
-                        <img class="msg-avatar" [src]="msg.sender.avatarUrl || 'assets/images/default-avatar.png'" [alt]="msg.sender.name">
+                        <img class="msg-avatar report-clickable" (click)="$event.stopPropagation(); openReportForUser(msg.sender)" [src]="msg.sender.avatarUrl || 'assets/images/default-avatar.png'" [alt]="msg.sender.name" title="Reportar usuario">
                       }
                       <div class="msg-content">
                         @if (msg.sender._id !== currentUserId) {
@@ -129,6 +130,28 @@
                       </div>
                     </div>
                   }
+                </div>
+              }
+              <!-- Report modal -->
+              @if (reportVisible) {
+                <div class="report-modal-backdrop">
+                  <div class="report-modal">
+                    <h3>Reportar: {{ reportTarget?.title }}</h3>
+                    <label>Razón</label>
+                    <select [(ngModel)]="reportReason">
+                      <option value="spam">Spam</option>
+                      <option value="offensive_content">Contenido ofensivo</option>
+                      <option value="inappropriate">Inapropiado</option>
+                      <option value="needs_urgent_review">Necesita revisión urgente</option>
+                      <option value="other">Otro</option>
+                    </select>
+                    <label>Descripción (opcional)</label>
+                    <textarea [(ngModel)]="reportDescription" rows="4" placeholder="Describe por qué reportas esto..."></textarea>
+                    <div class="modal-actions">
+                      <button class="btn" (click)="closeReport()" [disabled]="reportLoading">Cancelar</button>
+                      <button class="btn primary" (click)="submitReport()" [disabled]="reportLoading">Enviar reporte</button>
+                    </div>
+                  </div>
                 </div>
               }
             </div>
