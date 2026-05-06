@@ -55,8 +55,7 @@ export class LoginComponent {
             type: 'standard',
             size: 'large',
             text: 'signin_with',
-            theme: 'outline',
-            width: '100%'
+            theme: 'outline'
           });
         }
       }

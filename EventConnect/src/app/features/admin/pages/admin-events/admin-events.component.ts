@@ -44,6 +44,10 @@ export class AdminEventsComponent implements OnInit {
 
   search = '';
   selectedStatus = 'Todos';
+  
+  // Pagination
+  currentPage = 1;
+  pageSize = 10;
 
   // Modal state
   showDetailModal = false;
@@ -82,17 +86,16 @@ export class AdminEventsComponent implements OnInit {
       if (!eventId) {
         return of(null);
       }
-      this.loadingDetail = true;
+
       return this.adminService.getEventDetail(eventId).pipe(
-        map((response) => response.event),
+        map((response) => {
+          this.loadingDetail = false;
+          return response.event;
+        }),
         catchError((error) => {
           this.errorDetail = error?.error?.message || 'Error al cargar detalles del evento';
           this.loadingDetail = false;
           return of(null);
-        }),
-        map((event) => {
-          this.loadingDetail = false;
-          return event;
         })
       );
     })
@@ -144,6 +147,35 @@ export class AdminEventsComponent implements OnInit {
     });
   }
 
+  getPaginatedEvents(events: AdminEvent[]): AdminEvent[] {
+    const filtered = this.getFilteredEvents(events);
+    const startIndex = (this.currentPage - 1) * this.pageSize;
+    return filtered.slice(startIndex, startIndex + this.pageSize);
+  }
+
+  getTotalPages(events: AdminEvent[]): number {
+    const filtered = this.getFilteredEvents(events);
+    return Math.max(1, Math.ceil(filtered.length / this.pageSize));
+  }
+
+  goToPage(page: number, totalPages: number): void {
+    if (page >= 1 && page <= totalPages) {
+      this.currentPage = page;
+    }
+  }
+
+  nextPage(totalPages: number): void {
+    this.goToPage(this.currentPage + 1, totalPages);
+  }
+
+  previousPage(totalPages: number): void {
+    this.goToPage(this.currentPage - 1, totalPages);
+  }
+
+  resetPagination(): void {
+    this.currentPage = 1;
+  }
+
   openCreateModal(): void {
     this.isEditMode = false;
     this.selectedEventId = null;
@@ -169,17 +201,21 @@ export class AdminEventsComponent implements OnInit {
 
   viewEventDetail(event: AdminEvent): void {
     this.selectedEventId = event.id;
-    this.showDetailModal = true;
     this.errorDetail = '';
+    this.loadingDetail = true;
+    this.showDetailModal = true;
     this.eventDetailTrigger$.next(event.id);
   }
 
   closeDetailModal(): void {
     this.showDetailModal = false;
-    // Solo limpiar selectedEventId si no estamos en modo edición
+    this.loadingDetail = false;
+    this.errorDetail = '';
+
     if (!this.isEditMode) {
       this.selectedEventId = null;
     }
+
     this.eventDetailTrigger$.next(null);
   }
 

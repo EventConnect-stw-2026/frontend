@@ -8,7 +8,7 @@
       <div class="profile-main">
         <div class="avatar-wrapper">
           <img
-            [src]="user.avatarUrl || 'assets/images/default-avatar.png'"
+            [src]="user.avatarUrl || 'assets/images/default-avatar.svg'"
             [alt]="user.name"
             class="avatar"
           >
@@ -66,5 +66,28 @@
       <span class="logout-icon">⇦</span>
       Cerrar sesión
     </button>
+
+    <!-- Report modal simple -->
+    @if (reportVisible) {
+      <div class="report-modal-backdrop">
+        <div class="report-modal">
+          <h3>Reportar usuario: {{ user.name }}</h3>
+          <label>Razón</label>
+          <select [(ngModel)]="reportReason">
+            <option value="spam">Spam</option>
+            <option value="offensive_content">Contenido ofensivo</option>
+            <option value="inappropriate">Inapropiado</option>
+            <option value="needs_urgent_review">Necesita revisión urgente</option>
+            <option value="other">Otro</option>
+          </select>
+          <label>Descripción (opcional)</label>
+          <textarea [(ngModel)]="reportDescription" rows="4" placeholder="Describe por qué reportas..."></textarea>
+          <div class="modal-actions">
+            <button class="btn" (click)="reportVisible=false">Cancelar</button>
+            <button class="btn primary" (click)="submitUserReport()">Enviar</button>
+          </div>
+        </div>
+      </div>
+    }
   </section>
 </main>

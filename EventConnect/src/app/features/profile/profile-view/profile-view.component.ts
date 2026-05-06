@@ -1,8 +1,10 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
+import { ReportService } from '../../../core/services/report.service';
 import { HeaderComponent } from '../../../layout/components/header/header';
 interface UserProfile {
   _id?: string;
@@ -18,7 +20,7 @@ interface UserProfile {
 @Component({
   selector: 'app-profile-view',
   standalone: true,
-  imports: [CommonModule, HeaderComponent],
+  imports: [CommonModule, HeaderComponent, FormsModule],
   templateUrl: './profile-view.component.html',
   styleUrl: './profile-view.component.scss'
 })
@@ -26,6 +28,37 @@ export class ProfileViewComponent {
   private authService = inject(AuthService);
   private sanitizer   = inject(DomSanitizer);
   private router = inject(Router);
+  private reportService = inject(ReportService);
+
+  // Report UI
+  reportVisible = false;
+  reportReason = 'other';
+  reportDescription = '';
+
+  openReportUser() {
+    if (!this.user || !this.user._id) return;
+    this.reportVisible = true;
+    this.reportReason = 'other';
+    this.reportDescription = '';
+  }
+
+  submitUserReport() {
+    if (!this.user || !this.user._id) return;
+    const payload = {
+      type: 'user',
+      involvedUserId: this.user._id,
+      reason: this.reportReason,
+      description: this.reportDescription
+    };
+    this.reportService.createReport(payload).subscribe({
+      next: () => {
+        this.reportVisible = false;
+        // feedback minimal
+        alert('Reporte enviado. Gracias.');
+      },
+      error: () => alert('Error enviando reporte')
+    });
+  }
 
   user: UserProfile = {
     name: 'Jeffrey Preston Bezos',
@@ -68,7 +101,7 @@ export class ProfileViewComponent {
           name: profile.name ?? 'Usuario',
           email: profile.email ?? '',
           username: profile.username ?? '',
-          avatarUrl: profile.avatarUrl ?? 'assets/images/default-avatar.png',
+          avatarUrl: profile.avatarUrl ?? 'assets/images/default-avatar.svg',
           bio: profile.bio ?? '',
           location: profile.location ?? '',
           interests: profile.interests ?? ['culture', 'sports', 'family']

@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { EventService } from '../../core/services/event.service';
 import { AuthService } from '../../core/services/auth.service';
 import { EventChatService } from '../../core/services/event-chat.service';
+import { ReportService } from '../../core/services/report.service';
 import { HeaderComponent } from '../../layout/components/header/header';
 import { StripHtmlPipe } from '../../shared/pipes/strip-html.pipe';
 import { FormsModule } from '@angular/forms';
@@ -46,6 +47,14 @@ export class EventDetailComponent implements OnInit, AfterViewInit, OnDestroy {
   private cdr = inject(ChangeDetectorRef);
   private http            = inject(HttpClient);
   private eventChatService = inject(EventChatService);
+  private reportService = inject(ReportService);
+
+  // Report UI
+  reportVisible = false;
+  reportTarget: any = null; // { type, relatedId?, involvedUserId?, title? }
+  reportReason = 'other';
+  reportDescription = '';
+  reportLoading = false;
 
   ngOnInit() {
     if (isPlatformBrowser(this.platformId)) {
@@ -144,6 +153,62 @@ export class EventDetailComponent implements OnInit, AfterViewInit, OnDestroy {
         if (err.status === 401) this.showToast('Inicia sesión para escribir en el chat', 'error');
       }
     });
+  }
+
+  // ── Report logic ─────────────────────────────────────────────────────────
+  openReportForMessage(msg: any) {
+    this.reportTarget = { type: 'message', relatedId: msg._id, involvedUserId: msg.sender._id, title: `Mensaje de ${msg.sender.name}` };
+    this.reportReason = 'other';
+    this.reportDescription = '';
+    this.reportVisible = true;
+    this.cdr.detectChanges();
+  }
+
+  openReportForUser(user: any) {
+    if (!user?._id) return;
+    this.reportTarget = { type: 'user', involvedUserId: user._id, relatedId: user._id, title: `Usuario: ${user.name}` };
+    this.reportReason = 'other';
+    this.reportDescription = '';
+    this.reportVisible = true;
+    this.cdr.detectChanges();
+  }
+
+  openReportForEvent() {
+    if (!this.event?._id) return;
+    this.reportTarget = { type: 'event', relatedId: this.event._id, title: `Evento: ${this.event.title}` };
+    this.reportReason = 'other';
+    this.reportDescription = '';
+    this.reportVisible = true;
+    this.cdr.detectChanges();
+  }
+
+  submitReport() {
+    if (!this.reportTarget) return;
+    this.reportLoading = true;
+    const payload: any = {
+      type: this.reportTarget.type,
+      description: this.reportDescription,
+      reason: this.reportReason
+    };
+    if (this.reportTarget.relatedId) payload.relatedId = this.reportTarget.relatedId;
+    if (this.reportTarget.involvedUserId) payload.involvedUserId = this.reportTarget.involvedUserId;
+
+    this.reportService.createReport(payload).subscribe({
+      next: () => {
+        this.reportLoading = false;
+        this.reportVisible = false;
+        this.showToast('Reporte enviado. Gracias por colaborar.', 'success');
+      },
+      error: (err) => {
+        this.reportLoading = false;
+        this.showToast(err?.error?.message || 'Error enviando reporte', 'error');
+      }
+    });
+  }
+
+  closeReport() {
+    this.reportVisible = false;
+    this.reportTarget = null;
   }
 
   onEnter(e: KeyboardEvent) {
