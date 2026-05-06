@@ -3,6 +3,7 @@ import { BehaviorSubject, forkJoin } from 'rxjs';
 import { FriendsService } from './friends.service';
 import { ChatService } from './chat.service';
 import { MeetupService } from './meetup.service';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +12,7 @@ export class NotificationsService {
   private friendsService = inject(FriendsService);
   private chatService = inject(ChatService);
   private meetupService = inject(MeetupService);
+  private authService = inject(AuthService);
 
   private hasFriendsNotificationsSubject = new BehaviorSubject<boolean>(false);
   hasFriendsNotifications$ = this.hasFriendsNotificationsSubject.asObservable();
@@ -32,7 +34,17 @@ export class NotificationsService {
     this.meetupInvitationsSubject.next(data);
   }
 
+  clearNotifications(): void {
+    this.setHasFriendsNotifications(false);
+    this.setMeetupInvitations({ hasPending: false, count: 0 });
+  }
+
   refreshAllFriendsNotifications(): void {
+    if (!this.authService.getCurrentUser()) {
+      this.clearNotifications();
+      return;
+    }
+
     forkJoin({
       pending: this.friendsService.getPendingRequests(),
       unread: this.chatService.getUnreadCountsByFriend(),
@@ -60,6 +72,11 @@ export class NotificationsService {
         );
       },
       error: (err) => {
+        if (err?.status === 401) {
+          this.clearNotifications();
+          this.authService.clearSession();
+          return;
+        }
         console.error('Error al refrescar notificaciones globales:', err);
       }
     });

@@ -101,7 +101,7 @@ export class ProfileViewComponent {
           name: profile.name ?? 'Usuario',
           email: profile.email ?? '',
           username: profile.username ?? '',
-          avatarUrl: profile.avatarUrl ?? 'assets/images/default-avatar.png',
+          avatarUrl: profile.avatarUrl ?? 'assets/images/default-avatar.svg',
           bio: profile.bio ?? '',
           location: profile.location ?? '',
           interests: profile.interests ?? ['culture', 'sports', 'family']

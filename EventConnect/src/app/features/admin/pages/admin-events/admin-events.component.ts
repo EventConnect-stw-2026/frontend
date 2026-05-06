@@ -86,17 +86,16 @@ export class AdminEventsComponent implements OnInit {
       if (!eventId) {
         return of(null);
       }
-      this.loadingDetail = true;
+
       return this.adminService.getEventDetail(eventId).pipe(
-        map((response) => response.event),
+        map((response) => {
+          this.loadingDetail = false;
+          return response.event;
+        }),
         catchError((error) => {
           this.errorDetail = error?.error?.message || 'Error al cargar detalles del evento';
           this.loadingDetail = false;
           return of(null);
-        }),
-        map((event) => {
-          this.loadingDetail = false;
-          return event;
         })
       );
     })
@@ -202,17 +201,21 @@ export class AdminEventsComponent implements OnInit {
 
   viewEventDetail(event: AdminEvent): void {
     this.selectedEventId = event.id;
-    this.showDetailModal = true;
     this.errorDetail = '';
+    this.loadingDetail = true;
+    this.showDetailModal = true;
     this.eventDetailTrigger$.next(event.id);
   }
 
   closeDetailModal(): void {
     this.showDetailModal = false;
-    // Solo limpiar selectedEventId si no estamos en modo edición
+    this.loadingDetail = false;
+    this.errorDetail = '';
+
     if (!this.isEditMode) {
       this.selectedEventId = null;
     }
+
     this.eventDetailTrigger$.next(null);
   }
 

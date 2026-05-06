@@ -148,7 +148,7 @@
       <p style="color: #dc3545;">{{ errorDetail }}</p>
     </div>
 
-    <ng-container *ngIf="!loadingDetail && (eventDetail$ | async) as event">
+    <ng-container *ngIf="eventDetail$ | async as event">
       <div class="modal-body">
         <!-- Información del evento -->
         <div class="detail-section">

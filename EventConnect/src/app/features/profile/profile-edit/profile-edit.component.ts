@@ -137,7 +137,7 @@ export class ProfileEditComponent {
           username: profile.username ?? '',
           avatarUrl:
             profile.avatarUrl ||
-            'assets/images/default-avatar.png',
+            'assets/images/default-avatar.svg',
           bio: profile.bio ?? '',
           location: profile.location ?? '',
           interests: profile.interests ?? ['culture', 'sports', 'family']
@@ -224,7 +224,7 @@ export class ProfileEditComponent {
       email: formValue.email ?? '',
       username: formValue.username ?? '',
       avatarUrl:
-        this.user.avatarUrl || 'assets/images/default-avatar.png',
+        this.user.avatarUrl || 'assets/images/default-avatar.svg',
       bio: this.user.bio ?? '',
       location: this.user.location ?? '',
       interests: this.favorites

@@ -119,7 +119,7 @@
                   @for (msg of messages; track msg._id) {
                     <div class="message-bubble" [class.own]="msg.sender._id === currentUserId" [class.clickable]="msg.sender._id !== currentUserId" (click)="msg.sender._id !== currentUserId && openReportForMessage(msg)">
                       @if (msg.sender._id !== currentUserId) {
-                        <img class="msg-avatar report-clickable" (click)="$event.stopPropagation(); openReportForUser(msg.sender)" [src]="msg.sender.avatarUrl || 'assets/images/default-avatar.png'" [alt]="msg.sender.name" title="Reportar usuario">
+                        <img class="msg-avatar report-clickable" (click)="$event.stopPropagation(); openReportForUser(msg.sender)" [src]="msg.sender.avatarUrl || 'assets/images/default-avatar.svg'" [alt]="msg.sender.name" title="Reportar usuario">
                       }
                       <div class="msg-content">
                         @if (msg.sender._id !== currentUserId) {
@@ -189,7 +189,7 @@
                 <div class="friends-list">
                   @for (friend of friendsAttending; track friend._id) {
                     <div class="friend-row">
-                      <img [src]="friend.avatarUrl || 'assets/images/default-avatar.png'" [alt]="friend.name" class="friend-avatar">
+                      <img [src]="friend.avatarUrl || 'assets/images/default-avatar.svg'" [alt]="friend.name" class="friend-avatar">
                       <div class="friend-info">
                         <span class="friend-name">{{ friend.name }}</span>
                         <span class="friend-username">@{{ friend.username }}</span>

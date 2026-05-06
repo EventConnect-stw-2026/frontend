@@ -1,10 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { Observable, of, BehaviorSubject } from 'rxjs';
-import { catchError, map, startWith, switchMap } from 'rxjs/operators';
+import { catchError, map, startWith, switchMap, finalize } from 'rxjs/operators';
 import { FormsModule } from '@angular/forms';
 import { AdminTopbarComponent } from '../../components/admin-topbar/admin-topbar.component';
-import { AdminService, AdminUser, AdminUserDetail } from '../../../../core/services/admin.service';
+import { AdminService, AdminUser } from '../../../../core/services/admin.service';
 
 interface AdminUserView {
   id: string;
@@ -26,23 +26,19 @@ export class AdminUsersComponent implements OnInit {
 
   search = '';
   selectedRole = 'Todos';
-  
-  // Pagination
+
   currentPage = 1;
   pageSize = 10;
 
-  // Modal state
   showDetailModal = false;
   selectedUserId: string | null = null;
   loadingDetail = false;
   errorDetail = '';
 
-  // Action states
   blockingUserId: string | null = null;
   unblockingUserId: string | null = null;
   deletingUserId: string | null = null;
 
-  // Messages
   successMessage = '';
   errorMessage = '';
 
@@ -54,12 +50,11 @@ export class AdminUsersComponent implements OnInit {
       if (!userId) {
         return of(null);
       }
-      this.loadingDetail = true;
+
       return this.adminService.getUserDetail(userId).pipe(
         map((response) => response.user),
         catchError((error) => {
           this.errorDetail = error?.error?.message || 'Error al cargar detalles del usuario';
-          this.loadingDetail = false;
           return of(null);
         }),
         map((user) => {
@@ -82,17 +77,19 @@ export class AdminUsersComponent implements OnInit {
             id: user.id,
             name: user.name,
             email: user.email,
-            role: user.role === 'admin' ? 'Admin' as 'Admin' : 'Usuario' as 'Usuario',
-            status: user.isBlocked ? 'Baneado' as 'Baneado' : 'Activo' as 'Activo'
+            role: user.role === 'admin' ? 'Admin' as const : 'Usuario' as const,
+            status: user.isBlocked ? 'Baneado' as const : 'Activo' as const
           })),
           isLoading: false,
           errorMessage: ''
         })),
-        catchError((error) => of({
-          users: [],
-          isLoading: false,
-          errorMessage: error?.error?.message || 'No se pudo cargar la lista de usuarios'
-        }))
+        catchError((error) =>
+          of({
+            users: [],
+            isLoading: false,
+            errorMessage: error?.error?.message || 'No se pudo cargar la lista de usuarios'
+          })
+        )
       )
     ),
     startWith({
@@ -111,8 +108,10 @@ export class AdminUsersComponent implements OnInit {
       const matchesSearch =
         user.name.toLowerCase().includes(this.search.toLowerCase()) ||
         user.email.toLowerCase().includes(this.search.toLowerCase());
+
       const matchesRole =
         this.selectedRole === 'Todos' || user.role === this.selectedRole;
+
       return matchesSearch && matchesRole;
     });
   }
@@ -148,14 +147,17 @@ export class AdminUsersComponent implements OnInit {
 
   viewUserDetail(user: AdminUserView): void {
     this.selectedUserId = user.id;
-    this.showDetailModal = true;
     this.errorDetail = '';
+    this.loadingDetail = true;
+    this.showDetailModal = true;
     this.userDetailTrigger$.next(user.id);
   }
 
   closeDetailModal(): void {
     this.showDetailModal = false;
     this.selectedUserId = null;
+    this.loadingDetail = false;
+    this.errorDetail = '';
     this.userDetailTrigger$.next(null);
   }
 
@@ -163,10 +165,12 @@ export class AdminUsersComponent implements OnInit {
     if (!userId) return;
 
     this.blockingUserId = userId;
+
     this.adminService.blockUser(userId).subscribe({
       next: () => {
         this.successMessage = 'Usuario bloqueado exitosamente';
         this.blockingUserId = null;
+
         setTimeout(() => {
           this.successMessage = '';
           this.closeDetailModal();
@@ -184,10 +188,12 @@ export class AdminUsersComponent implements OnInit {
     if (!userId) return;
 
     this.unblockingUserId = userId;
+
     this.adminService.unblockUser(userId).subscribe({
       next: () => {
         this.successMessage = 'Usuario desbloqueado exitosamente';
         this.unblockingUserId = null;
+
         setTimeout(() => {
           this.successMessage = '';
           this.closeDetailModal();
@@ -203,15 +209,17 @@ export class AdminUsersComponent implements OnInit {
 
   deleteUserAction(userId: string): void {
     if (!userId) return;
-    
+
     const confirmed = confirm('¿Estás seguro de que quieres eliminar este usuario? Esta acción no se puede deshacer.');
     if (!confirmed) return;
 
     this.deletingUserId = userId;
+
     this.adminService.deleteUser(userId).subscribe({
       next: () => {
         this.successMessage = 'Usuario eliminado exitosamente';
         this.deletingUserId = null;
+
         setTimeout(() => {
           this.successMessage = '';
           this.closeDetailModal();

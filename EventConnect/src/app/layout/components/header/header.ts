@@ -22,14 +22,20 @@ export class HeaderComponent implements OnInit {
   hasFriendsNotifications = false;
 
   ngOnInit(): void {
-    const currentUser = this.authService.getCurrentUser?.();
-    if (!currentUser) return;
+    this.isLoggedIn$.subscribe((isLoggedIn) => {
+      if (!isLoggedIn) {
+        this.hasFriendsNotifications = false;
+        this.notificationsService.clearNotifications();
+        this.cdr.detectChanges();
+        return;
+      }
 
-    this.notificationsService.hasFriendsNotifications$.subscribe(value => {
-      this.hasFriendsNotifications = value;
-      this.cdr.detectChanges();
+      this.notificationsService.hasFriendsNotifications$.subscribe(value => {
+        this.hasFriendsNotifications = value;
+        this.cdr.detectChanges();
+      });
+
+      this.notificationsService.refreshAllFriendsNotifications();
     });
-
-    this.notificationsService.refreshAllFriendsNotifications();
   }
 }
