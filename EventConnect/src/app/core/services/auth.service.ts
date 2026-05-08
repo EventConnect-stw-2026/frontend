@@ -57,8 +57,10 @@ export class AuthService {
   private sessionCheck$: Observable<boolean> | null = null;
 
   getProfile(): Observable<any> {
+    console.log('[AuthService] getProfile() called');
     return this.http.get(`${this.apiUrl}/profile`, { withCredentials: true }).pipe(
       tap((user) => {
+        console.log('[AuthService] getProfile response:', user);
         this.currentUserSubject.next(user);
         try { localStorage.setItem('sessionPresent', 'true'); } catch (e) {}
       })
@@ -66,19 +68,26 @@ export class AuthService {
   }
 
   refresh(): Observable<any> {
+    console.log('[AuthService] refresh() called');
     return this.http.post(`${this.apiUrl}/refresh`, {}, { withCredentials: true }).pipe(
       tap(() => {
+        console.log('[AuthService] refresh() successful');
         try { localStorage.setItem('sessionPresent', 'true'); } catch (e) {}
       })
     );
   }
 
   login(payload: LoginPayload): Observable<AuthResponse> {
+    console.log('[AuthService] login() called');
     return this.rawHttp.post<AuthResponse>(`${this.apiUrl}/login`, payload, { withCredentials: true }).pipe(
       tap((res) => {
+        console.log('[AuthService] login response:', res?.user);
         if (res?.user) this.currentUserSubject.next(res.user);
         this.sessionCheck$ = of(!!res?.user);
-        try { localStorage.setItem('sessionPresent', !!res?.user ? 'true' : 'false'); } catch (e) {}
+        try { 
+          localStorage.setItem('sessionPresent', !!res?.user ? 'true' : 'false');
+          console.log('[AuthService] sessionPresent set to:', !!res?.user ? 'true' : 'false');
+        } catch (e) {}
       })
     );
   }
@@ -104,11 +113,13 @@ export class AuthService {
   }
 
   logout(): void {
+    console.log('[AuthService] logout() called');
     this.http.post(`${this.apiUrl}/logout`, {}, { withCredentials: true }).subscribe();
     this.clearSession();
   }
 
   clearSession(): void {
+    console.log('[AuthService] clearSession() called');
     this.currentUserSubject.next(null);
     this.sessionCheck$ = of(false);
     try { localStorage.setItem('sessionPresent', 'false'); } catch (e) {}
@@ -121,23 +132,34 @@ export class AuthService {
   }
 
   isLoggedIn$(): Observable<boolean> {
+    // Return cached session state if available
     if (this.sessionCheck$) {
+      console.log('[AuthService] isLoggedIn$() returning cached sessionCheck$');
       return this.sessionCheck$;
     }
 
-    // Fast-path: if we haven't recorded a session presence locally, avoid calling the profile endpoint
-    // to prevent noisy 401s when the user is not authenticated. If the app has previously recorded
-    // a session (login/refresh), then perform the profile check.
+    // Check localStorage flag to minimize unnecessary profile calls
     let recorded = false;
     try { recorded = localStorage.getItem('sessionPresent') === 'true'; } catch (e) { recorded = false; }
+    console.log('[AuthService] isLoggedIn$() - sessionPresent flag:', recorded);
+    
+    // Fast-path: if session not recorded locally, don't check server
+    // This prevents loading stale session data from persistent cookies
     if (!recorded) {
+      console.log('[AuthService] isLoggedIn$() returning false (no sessionPresent flag)');
       this.sessionCheck$ = of(false);
       return this.sessionCheck$;
     }
 
+    // Session was recorded, verify it's still valid on the server
+    console.log('[AuthService] isLoggedIn$() calling getProfile()...');
     this.sessionCheck$ = this.getProfile().pipe(
-      map(() => true),
+      map(() => {
+        console.log('[AuthService] isLoggedIn$() getProfile succeeded, returning true');
+        return true;
+      }),
       catchError(() => {
+        console.log('[AuthService] isLoggedIn$() getProfile failed, clearing session');
         this.currentUserSubject.next(null);
         try { localStorage.setItem('sessionPresent', 'false'); } catch (e) {}
         return of(false);
@@ -146,7 +168,6 @@ export class AuthService {
       defaultIfEmpty(false),
       shareReplay(1)
     );
-
     return this.sessionCheck$;
   }
 

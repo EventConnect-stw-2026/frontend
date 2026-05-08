@@ -1,93 +1,104 @@
 <app-header></app-header>
 
 <main class="profile-page">
-  <section class="profile-wrapper">
-    <h1 class="page-title">Mi perfil</h1>
+  @if (loading) {
+    <div class="loading-container">
+      <p>Cargando perfil...</p>
+    </div>
+  } @else if (loadError) {
+    <div class="error-container">
+      <p>Error cargando el perfil. Por favor, intenta de nuevo.</p>
+      <button (click)="ngOnInit()" class="retry-btn">Reintentar</button>
+    </div>
+  } @else {
+    <section class="profile-wrapper">
+      <h1 class="page-title">Mi perfil</h1>
 
-    <article class="profile-card">
-      <div class="profile-main">
-        <div class="avatar-wrapper">
-          <img
-            [src]="user.avatarUrl || 'assets/images/default-avatar.svg'"
-            [alt]="user.name"
-            class="avatar"
-          >
-        </div>
-
-        <div class="profile-info">
-          <h2>{{ user.name }}</h2>
-
-          <div class="info-row">
-            <span class="icon">✉</span>
-            <span>{{ user.email }}</span>
+      <article class="profile-card">
+        <div class="profile-main">
+          <div class="avatar-wrapper">
+            <img
+              [src]="user.avatarUrl || 'assets/images/default-avatar.svg'"
+              [alt]="user.name"
+              class="avatar"
+            >
           </div>
 
-          <div class="info-row" *ngIf="user.username">
-            <span class="icon">@</span>
-            <span>{{ user.username }}</span>
+          <div class="profile-info">
+            <h2>{{ user.name }}</h2>
+
+            <div class="info-row">
+              <span class="icon">✉</span>
+              <span>{{ user.email }}</span>
+            </div>
+
+            <div class="info-row" *ngIf="user.username">
+              <span class="icon">@</span>
+              <span>{{ user.username }}</span>
+            </div>
           </div>
         </div>
-      </div>
-    </article>
+      </article>
 
-    <section class="actions-card">
-      <button class="action-btn" (click)="goToEditProfile()">
-        <span class="action-icon">✎</span>
-        Editar perfil
-      </button>
+      <section class="actions-card">
+        <button class="action-btn" (click)="goToEditProfile()">
+          <span class="action-icon">✎</span>
+          Editar perfil
+        </button>
 
-      <button class="action-btn" (click)="goToFavorites()">
-        <span class="action-icon">♡</span>
-        Tus eventos favoritos
-      </button>
+        <button class="action-btn" (click)="goToFavorites()">
+          <span class="action-icon">♡</span>
+          Tus eventos favoritos
+        </button>
 
-      <button class="action-btn" (click)="goToStats()">
-        <span class="action-icon">⌁</span>
-        Ver estadísticas
-      </button>
+        <button class="action-btn" (click)="goToStats()">
+          <span class="action-icon">⌁</span>
+          Ver estadísticas
+        </button>
 
-      <button class="action-btn" (click)="goToHistory()">
-        <span class="action-icon">◷</span>
-        Tu historial
-      </button>
-    </section>
-
-      <section class="interests-card">
-        <h3>Tus intereses</h3>
-        <div class="interests-grid">
-          <div class="interest-chip" *ngFor="let interest of user.interests">
-            <span class="interest-svg" [innerHTML]="getSvg(interest)"></span>
-            <span class="interest-label">{{ interestLabels[interest] || interest }}</span>
-          </div>
-        </div>
+        <button class="action-btn" (click)="goToHistory()">
+          <span class="action-icon">◷</span>
+          Tu historial
+        </button>
       </section>
 
-    <button class="logout-btn" (click)="logout()">
-      <span class="logout-icon">⇦</span>
-      Cerrar sesión
-    </button>
+        <section class="interests-card">
+          <h3>Tus intereses</h3>
+          <div class="interests-grid">
+            <div class="interest-chip" *ngFor="let interest of user.interests">
+              <span class="interest-svg" [innerHTML]="getSvg(interest)"></span>
+              <span class="interest-label">{{ interestLabels[interest] || interest }}</span>
+            </div>
+          </div>
+        </section>
 
-    <!-- Report modal simple -->
-    @if (reportVisible) {
-      <div class="report-modal-backdrop">
-        <div class="report-modal">
-          <h3>Reportar usuario: {{ user.name }}</h3>
-          <label>Razón</label>
-          <select [(ngModel)]="reportReason">
-            <option value="spam">Spam</option>
-            <option value="offensive_content">Contenido ofensivo</option>
-            <option value="inappropriate">Inapropiado</option>
-            <option value="needs_urgent_review">Necesita revisión urgente</option>
-            <option value="other">Otro</option>
-          </select>
-          <label>Descripción (opcional)</label>
-          <textarea [(ngModel)]="reportDescription" rows="4" placeholder="Describe por qué reportas..."></textarea>
-          <div class="modal-actions">
-            <button class="btn" (click)="reportVisible=false">Cancelar</button>
-            <button class="btn primary" (click)="submitUserReport()">Enviar</button>
+      <button class="logout-btn" (click)="logout()">
+        <span class="logout-icon">⇦</span>
+        Cerrar sesión
+      </button>
+
+      <!-- Report modal simple -->
+      @if (reportVisible) {
+        <div class="report-modal-backdrop">
+          <div class="report-modal">
+            <h3>Reportar usuario: {{ user.name }}</h3>
+            <label>Razón</label>
+            <select [(ngModel)]="reportReason">
+              <option value="spam">Spam</option>
+              <option value="offensive_content">Contenido ofensivo</option>
+              <option value="inappropriate">Inapropiado</option>
+              <option value="needs_urgent_review">Necesita revisión urgente</option>
+              <option value="other">Otro</option>
+            </select>
+            <label>Descripción (opcional)</label>
+            <textarea [(ngModel)]="reportDescription" rows="4" placeholder="Describe por qué reportas..."></textarea>
+            <div class="modal-actions">
+              <button class="btn" (click)="reportVisible=false">Cancelar</button>
+              <button class="btn primary" (click)="submitUserReport()">Enviar</button>
+            </div>
           </div>
         </div>
-      </div>
-    }
-  </section>
+      }
+    </section>
+  }
 </main>

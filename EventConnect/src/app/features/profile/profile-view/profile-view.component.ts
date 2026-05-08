@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { ReportService } from '../../../core/services/report.service';
 import { HeaderComponent } from '../../../layout/components/header/header';
+import { Subscription } from 'rxjs';
 interface UserProfile {
   _id?: string;
   name: string;
@@ -24,16 +25,30 @@ interface UserProfile {
   templateUrl: './profile-view.component.html',
   styleUrl: './profile-view.component.scss'
 })
-export class ProfileViewComponent {
+export class ProfileViewComponent implements OnInit, OnDestroy {
   private authService = inject(AuthService);
   private sanitizer   = inject(DomSanitizer);
   private router = inject(Router);
   private reportService = inject(ReportService);
+  private cdr = inject(ChangeDetectorRef);
 
   // Report UI
   reportVisible = false;
   reportReason = 'other';
   reportDescription = '';
+
+  loading = true;
+  loadError = false;
+
+  private profileSub: Subscription | null = null;
+
+  user: UserProfile = {
+    name: '',
+    email: '',
+    username: '',
+    avatarUrl: 'assets/images/default-avatar.svg',
+    interests: []
+  };
 
   openReportUser() {
     if (!this.user || !this.user._id) return;
@@ -60,15 +75,6 @@ export class ProfileViewComponent {
     });
   }
 
-  user: UserProfile = {
-    name: 'Jeffrey Preston Bezos',
-    email: 'jeff@amazon.com',
-    username: 'jeffAmazon',
-    avatarUrl:
-      'https://upload.wikimedia.org/wikipedia/commons/9/91/Jeff_Bezos_2016.jpg',
-    interests: ['culture', 'sports', 'family']
-  };
-
   getSvg(key: string): SafeHtml {
     return this.sanitizer.bypassSecurityTrustHtml(this.interestSvgs[key] ?? '');
   }
@@ -94,8 +100,23 @@ export class ProfileViewComponent {
   };
 
   ngOnInit(): void {
-    this.authService.getProfile().subscribe({
+    console.log('[ProfileViewComponent] ngOnInit() #' + Math.random().toString(36).substring(7) + ' - calling getProfile()');
+    console.log('[ProfileViewComponent] loading state before:', this.loading);
+    this.loading = true;
+    this.loadError = false;
+    console.log('[ProfileViewComponent] loading state after setting to true:', this.loading);
+    this.cdr.markForCheck();
+    
+    // Unsubscribe from any previous subscription
+    if (this.profileSub) {
+      console.log('[ProfileViewComponent] Unsubscribing from previous profileSub');
+      this.profileSub.unsubscribe();
+    }
+    
+    this.profileSub = this.authService.getProfile().subscribe({
       next: (profile: UserProfile) => {
+        console.log('[ProfileViewComponent] getProfile() success:', profile);
+        console.log('[ProfileViewComponent] setting loading=false');
         this.user = {
           _id: profile._id ?? '',
           name: profile.name ?? 'Usuario',
@@ -106,11 +127,32 @@ export class ProfileViewComponent {
           location: profile.location ?? '',
           interests: profile.interests ?? ['culture', 'sports', 'family']
         };
+        console.log('[ProfileViewComponent] user updated:', this.user);
+        this.loading = false;
+        this.loadError = false;
+        console.log('[ProfileViewComponent] loading is now:', this.loading);
+        this.cdr.markForCheck();
+        console.log('[ProfileViewComponent] markForCheck called');
       },
-      error: () => {
-        // Si hay error, deja los datos de ejemplo
+      error: (err) => {
+        console.error('[ProfileViewComponent] getProfile() error:', err);
+        this.loading = false;
+        this.loadError = true;
+        this.cdr.markForCheck();
+        
+        if (err.status === 401) {
+          console.log('[ProfileViewComponent] 401 error, navigating to login');
+          this.router.navigate(['/login']);
+        }
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    console.log('[ProfileViewComponent] ngOnDestroy - unsubscribing');
+    if (this.profileSub) {
+      this.profileSub.unsubscribe();
+    }
   }
 
   goToEditProfile(): void {
