@@ -19,7 +19,15 @@
       </div>
     }
 
-    @if (!loading && events.length === 0) {
+    @if (loadError) {
+      <div class="error-state">
+        <span class="error-icon">⚠</span>
+        <p>Error cargando el historial.</p>
+        <button class="retry-btn" (click)="ngOnInit()">Reintentar</button>
+      </div>
+    }
+
+    @if (!loading && !loadError && events.length === 0) {
       <div class="empty-state">
         <span class="empty-icon">◷</span>
         <p>Todavía no has asistido a ningún evento.</p>
@@ -27,7 +35,7 @@
       </div>
     }
 
-    @if (!loading && events.length > 0) {
+    @if (!loading && !loadError && events.length > 0) {
       <div class="events-grid">
         @for (event of paginatedEvents; track event._id) {
           <a class="event-card" [routerLink]="['/events', event._id]">
