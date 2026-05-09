@@ -67,9 +67,6 @@ export class EventDetailComponent implements OnInit, AfterViewInit, OnDestroy {
             this.cdr.detectChanges();
             // Comprobar si el usuario ya está apuntado
             this.checkAttendance(id);
-            // Guardar ID del usuario para distinguir mensajes propios
-            const cached = this.authService.getCurrentUser();
-            if (cached) this.currentUserId = cached._id ?? cached.sub ?? '';
             this.loadMessages();
             this.startPolling();
           },
@@ -84,23 +81,18 @@ export class EventDetailComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private checkAttendance(eventId: string) {
-    // Usamos el perfil cacheado si existe, sino lo pedimos
-    const cached = this.authService.getCurrentUser();
-    if (cached) {
-      this.isAttending = (cached.attendedEvents ?? [])
-        .some((id: any) => id.toString() === eventId);
-      this.cdr.detectChanges();
-    } else {
-      // No hay caché → pedir perfil (solo si hay sesión)
-      this.authService.getProfile().subscribe({
-        next: (profile: any) => {
-          this.isAttending = (profile.attendedEvents ?? [])
-            .some((id: any) => id.toString() === eventId);
-          this.cdr.detectChanges();
-        },
-        error: () => {} // no logueado → isAttending queda false
-      });
-    }
+    // Siempre pedir el perfil fresco al backend para garantizar datos actualizados
+    // El caché puede estar vacío tras un nuevo login
+    this.authService.getProfile().subscribe({
+      next: (profile: any) => {
+        this.isAttending = (profile.attendedEvents ?? [])
+          .some((id: any) => id.toString() === eventId);
+        const cached = this.authService.getCurrentUser();
+        if (cached) this.currentUserId = cached._id ?? cached.sub ?? '';
+        this.cdr.detectChanges();
+      },
+      error: () => {} // no logueado → isAttending queda false
+    });
   }
 
   // ── Tab change ────────────────────────────────────────────────────────────

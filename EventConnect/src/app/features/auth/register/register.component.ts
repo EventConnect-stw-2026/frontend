@@ -50,6 +50,8 @@ export class RegisterComponent implements OnInit, AfterViewInit {
 
   isSubmitting = false;
   errorMessage = '';
+  showPassword = false;
+  showConfirmPassword = false;
 
   registerForm = this.fb.group(
     {
