@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class EventService {
 
-  private apiUrl = 'http://localhost:3000/api/events';
+  private apiUrl = 'https://backend-hi6i.onrender.com/api/events';
 
   constructor(private http: HttpClient) {}
 
@@ -30,11 +30,11 @@ export class EventService {
   }
 
   getGlobalStats(): Observable<any> {
-    return this.http.get('http://localhost:3000/api/stats/global');
+    return this.http.get('https://backend-hi6i.onrender.com/api/stats/global');
   }
 
   getPersonalStats(): Observable<any> {
-    return this.http.get('http://localhost:3000/api/stats/personal', { withCredentials: true });
+    return this.http.get('https://backend-hi6i.onrender.com/api/stats/personal', { withCredentials: true });
   }
 
   toggleAttend(eventId: string): Observable<any> {
