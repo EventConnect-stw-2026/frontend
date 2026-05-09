@@ -161,9 +161,14 @@
                   [(ngModel)]="newMessage"
                   (keydown)="onEnter($event)"
                   placeholder="Escribe un mensaje..."
-                  [disabled]="sendingMessage">
-                <button (click)="sendMessage()" [disabled]="!newMessage.trim() || sendingMessage">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                  [disabled]="sendingMessage"
+                  [class.has-content]="newMessage.trim().length > 0">
+                <button
+                  (click)="sendMessage()"
+                  [style.background]="newMessage.trim() ? '#2563eb' : '#e2e8f0'"
+                  [style.color]="newMessage.trim() ? 'white' : '#94a3b8'"
+                  [style.cursor]="newMessage.trim() ? 'pointer' : 'not-allowed'">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2L15 22L11 13L2 9L22 2Z"/></svg>
                 </button>
               </div>
             } @else {

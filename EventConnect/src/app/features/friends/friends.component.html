@@ -59,7 +59,7 @@
         <div *ngFor="let request of pendingRequests" class="pending-card">
           <div class="pending-info">
             <img
-              [src]="request.fromUser.avatarUrl"
+              [src]="request.fromUser.avatarUrl || 'assets/images/default-avatar.svg'"
               [alt]="request.fromUser.name"
               class="avatar"
             />
@@ -104,7 +104,7 @@
         <div *ngFor="let request of sentRequests" class="pending-card">
           <div class="pending-info">
             <img
-              [src]="request.toUser.avatarUrl"
+              [src]="request.toUser.avatarUrl || 'assets/images/default-avatar.svg'"
               [alt]="request.toUser.name"
               class="avatar"
             />
@@ -170,7 +170,7 @@
           <div *ngIf="!isLoading && filteredFriends.length > 0" class="friends-list">
             <div *ngFor="let friend of filteredFriends" class="friend-card">
               <div class="friend-info">
-                <img [src]="friend.avatarUrl" [alt]="friend.name" class="avatar" />
+                <img [src]="friend.avatarUrl || 'assets/images/default-avatar.svg'" [alt]="friend.name" class="avatar" />
                 <div class="friend-details">
                   <p class="name">{{ friend.name }}</p>
                   <p class="username">@{{ friend.username }}</p>
@@ -231,7 +231,7 @@
           <div *ngIf="suggestedUsers.length > 0" class="suggestions-list">
             <div *ngFor="let user of suggestedUsers" class="suggestion-card">
               <div class="suggestion-info">
-                <img [src]="user.avatarUrl" [alt]="user.name" class="avatar" />
+                <img [src]="user.avatarUrl || 'assets/images/default-avatar.svg'" [alt]="user.name" class="avatar" />
                 <div class="suggestion-details">
                   <p class="name">{{ user.name }}</p>
                   <p class="username">@{{ user.username }}</p>
@@ -315,7 +315,7 @@
 
           <div *ngFor="let user of filteredAddFriendUsers" class="modal-user-card">
             <div class="user-info">
-              <img [src]="user.avatarUrl" [alt]="user.name" class="avatar" />
+              <img [src]="user.avatarUrl || 'assets/images/default-avatar.svg'" [alt]="user.name" class="avatar" />
               <div class="user-details">
                 <p class="name">{{ user.name }}</p>
                 <p class="username">@{{ user.username }}</p>
