@@ -15,32 +15,46 @@ import { HeaderComponent } from '../../layout/components/header/header';
 export class MapComponent implements OnInit, AfterViewInit {
   events: any[] = [];
   selectedEvent: any = null;
+
   private platformId = inject(PLATFORM_ID);
   private eventService = inject(EventService);
   private cdr = inject(ChangeDetectorRef);
   private map: any;
 
+  // --- Búsqueda ---
   searchQuery = '';
   searchResults: any[] = [];
   private searchTimeout: any;
   private searchMarker: any = null;
 
-  categorySvgs: Record<string, string> = {
-    'Deporte': `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>`,
-    'Deportivo': `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>`,
-    'Música': `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>`,
-    'Cultural': `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20h20"/><path d="M5 20V8l7-6 7 6v12"/><path d="M9 20v-5h6v5"/></svg>`,
-    'Cultura': `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20h20"/><path d="M5 20V8l7-6 7 6v12"/><path d="M9 20v-5h6v5"/></svg>`,
-    'Social': `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`,
-    'Educativo': `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>`,
-    'Gastronómico': `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3v7"/></svg>`,
-    'Empresarial': `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="12.01"/></svg>`,
-    'Religioso': `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 22V10L12 2 6 10v12"/><path d="M12 2v8"/><path d="M6 10h12"/></svg>`,
-    'default': `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>`,
-  };
-
+  // --- Marcadores ---
   private markers: any[] = [];
   private selectedMarker: any = null;
+
+  // SVGs inline para los marcadores del mapa
+  categorySvgs: Record<string, string> = {
+    'Deporte': `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>`,
+
+    'Deportivo': `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>`,
+
+    'Música': `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>`,
+
+    'Cultural': `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20h20"/><path d="M5 20V8l7-6 7 6v12"/><path d="M9 20v-5h6v5"/></svg>`,
+
+    'Cultura': `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20h20"/><path d="M5 20V8l7-6 7 6v12"/><path d="M9 20v-5h6v5"/></svg>`,
+
+    'Social': `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`,
+
+    'Educativo': `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>`,
+
+    'Gastronómico': `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3v7"/></svg>`,
+
+    'Empresarial': `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="12.01"/></svg>`,
+
+    'Religioso': `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 22V10L12 2 6 10v12"/><path d="M12 2v8"/><path d="M6 10h12"/></svg>`,
+
+    'default': `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>`,
+  };
 
   ngOnInit() {
     if (!isPlatformBrowser(this.platformId)) return;
@@ -67,6 +81,7 @@ export class MapComponent implements OnInit, AfterViewInit {
       error: (error) => {
         console.error('[MapComponent] Error cargando eventos:', error);
         this.events = [];
+        this.cdr.detectChanges();
       }
     });
   }
@@ -74,7 +89,7 @@ export class MapComponent implements OnInit, AfterViewInit {
   async ngAfterViewInit() {
     if (!isPlatformBrowser(this.platformId)) return;
 
-    const L = await import('leaflet');
+    const L = await this.loadLeaflet();
 
     this.map = L.map('map', {
       center: [41.6488, -0.8891],
@@ -92,6 +107,11 @@ export class MapComponent implements OnInit, AfterViewInit {
     if (this.events.length) {
       this.addMarkers();
     }
+  }
+
+  private async loadLeaflet(): Promise<any> {
+    const leafletModule: any = await import('leaflet');
+    return leafletModule.default || leafletModule;
   }
 
   private extractEventsArray(res: any): any[] {
@@ -114,6 +134,8 @@ export class MapComponent implements OnInit, AfterViewInit {
     console.warn('[MapComponent] La respuesta de eventos no contiene un array:', res);
     return [];
   }
+
+  // ─── Búsqueda con Nominatim ───────────────────────────────────────────────
 
   onSearchInput() {
     clearTimeout(this.searchTimeout);
@@ -146,11 +168,12 @@ export class MapComponent implements OnInit, AfterViewInit {
     } catch (error) {
       console.error('Error buscando:', error);
       this.searchResults = [];
+      this.cdr.detectChanges();
     }
   }
 
   async selectResult(result: any) {
-    const L = await import('leaflet');
+    const L = await this.loadLeaflet();
 
     const lat = Number(result.lat);
     const lon = Number(result.lon);
@@ -174,8 +197,10 @@ export class MapComponent implements OnInit, AfterViewInit {
     }).addTo(this.map);
 
     this.map.flyTo([lat, lon], 16, { duration: 1.2 });
+
     this.searchResults = [];
     this.searchQuery = result.display_name?.split(',')?.[0] || '';
+
     this.cdr.detectChanges();
   }
 
@@ -191,9 +216,12 @@ export class MapComponent implements OnInit, AfterViewInit {
     this.cdr.detectChanges();
   }
 
+  // ─── Marcadores de eventos ────────────────────────────────────────────────
+
   buildIcon(L: any, svg: string, size: number, selected = false) {
     const iconSize = Math.round(size * 0.58);
     const bg = selected ? '#2563eb' : 'white';
+
     const svgFinal = selected
       ? svg.replace(/stroke="#2563eb"/g, 'stroke="white"')
       : svg;
@@ -215,13 +243,15 @@ export class MapComponent implements OnInit, AfterViewInit {
 
   async closePanel() {
     if (this.selectedMarker) {
-      const L = await import('leaflet');
+      const L = await this.loadLeaflet();
+
       const idx = this.markers.indexOf(this.selectedMarker);
 
       if (idx !== -1 && this.events[idx]) {
         const event = this.events[idx];
         const svg = this.categorySvgs[event.category] || this.categorySvgs['default'];
         const size = this.getMarkerSize(this.map.getZoom());
+
         this.selectedMarker.setIcon(this.buildIcon(L, svg, size, false));
       }
 
@@ -235,7 +265,7 @@ export class MapComponent implements OnInit, AfterViewInit {
   async addMarkers() {
     if (!this.map) return;
 
-    const L = await import('leaflet');
+    const L = await this.loadLeaflet();
 
     this.markers.forEach((marker) => marker.remove());
     this.markers = [];
@@ -259,6 +289,7 @@ export class MapComponent implements OnInit, AfterViewInit {
       marker.on('mouseover', () => {
         if (marker !== this.selectedMarker) {
           const el = marker.getElement()?.querySelector('div') as HTMLElement;
+
           if (el) {
             el.style.background = '#eff6ff';
             el.style.border = '3px solid #1d4ed8';
@@ -269,6 +300,7 @@ export class MapComponent implements OnInit, AfterViewInit {
       marker.on('mouseout', () => {
         if (marker !== this.selectedMarker) {
           const el = marker.getElement()?.querySelector('div') as HTMLElement;
+
           if (el) {
             el.style.background = 'white';
             el.style.border = '2px solid #2563eb';
@@ -277,11 +309,11 @@ export class MapComponent implements OnInit, AfterViewInit {
       });
 
       marker.on('click', async () => {
-        const Lc = await import('leaflet');
-        const s = this.getMarkerSize(this.map.getZoom());
+        const Lc = await this.loadLeaflet();
+        const markerSize = this.getMarkerSize(this.map.getZoom());
 
         if (this.selectedMarker === marker) {
-          marker.setIcon(this.buildIcon(Lc, svg, s, false));
+          marker.setIcon(this.buildIcon(Lc, svg, markerSize, false));
           this.selectedMarker = null;
           this.selectedEvent = null;
           this.cdr.detectChanges();
@@ -294,13 +326,17 @@ export class MapComponent implements OnInit, AfterViewInit {
           if (prevIdx !== -1 && this.events[prevIdx]) {
             const prevEvent = this.events[prevIdx];
             const prevSvg = this.categorySvgs[prevEvent.category] || this.categorySvgs['default'];
-            this.selectedMarker.setIcon(this.buildIcon(Lc, prevSvg, s, false));
+
+            this.selectedMarker.setIcon(
+              this.buildIcon(Lc, prevSvg, markerSize, false)
+            );
           }
         }
 
-        marker.setIcon(this.buildIcon(Lc, svg, s, true));
+        marker.setIcon(this.buildIcon(Lc, svg, markerSize, true));
         this.selectedMarker = marker;
         this.selectedEvent = event;
+
         this.cdr.detectChanges();
       });
 
@@ -318,7 +354,8 @@ export class MapComponent implements OnInit, AfterViewInit {
   async updateMarkerSizes() {
     if (!this.map || !Array.isArray(this.markers)) return;
 
-    const L = await import('leaflet');
+    const L = await this.loadLeaflet();
+
     const zoom = this.map.getZoom();
     const size = this.getMarkerSize(zoom);
 
