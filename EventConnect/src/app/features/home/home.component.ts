@@ -110,7 +110,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.aiError = false;
     this.aiSummary = null;
 
-    this.http.post<any>('http://localhost:3000/api/ai/summary', {
+    this.http.post<any>('https://backend-hi6i.onrender.com/api/ai/summary', {
       category: this.selectedCategory !== 'all' ? this.selectedCategory : null,
       date: this.selectedRange === 'today' ? new Date().toISOString() : null
     }).subscribe({
@@ -172,7 +172,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.startCarousel();
       this.loadForYou();
 
-      this.http.get<any>('http://localhost:3000/api/events/sections')
+      this.http.get<any>('https://backend-hi6i.onrender.com/api/events/sections')
         .subscribe({
           next: (res: any) => {
             console.log("SECTIONS:", res);
