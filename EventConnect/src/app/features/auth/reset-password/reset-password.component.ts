@@ -20,13 +20,15 @@ export class ResetPasswordComponent {
   private cdr = inject(ChangeDetectorRef);
 
   isSubmitting = false;
+  showPassword = false;
+  showConfirmPassword = false;
   message = '';
   errorMessage = '';
 
   token = this.route.snapshot.queryParamMap.get('token') ?? '';
 
   form = this.fb.group({
-    password: ['', [Validators.required, Validators.minLength(8)]],
+    password: ['', [Validators.required, Validators.minLength(6)]],
     confirmPassword: ['', [Validators.required]]
   });
 
