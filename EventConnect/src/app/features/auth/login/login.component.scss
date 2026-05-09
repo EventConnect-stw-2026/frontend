@@ -457,3 +457,23 @@ input {
     transform: translateY(0);
   }
 }
+.toggle-password {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #9ca3af;
+  display: flex;
+  align-items: center;
+  padding: 0;
+  transition: color 0.2s ease;
+
+  &:hover { color: #1a56c4; }
+}
+
+.input-group {
+  position: relative;
+}

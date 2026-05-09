@@ -5,7 +5,9 @@
 <!-- 🔍 Barra de búsqueda -->
   <div class="search-bar">
     <div class="search-input-wrapper">
-      <span class="search-icon">🔍</span>
+      <span class="search-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </span>
       <input
         type="text"
         placeholder="Buscar calle, lugar..."
@@ -15,7 +17,9 @@
         (keydown.escape)="clearSearch()"
       />
       @if (searchQuery) {
-        <button class="clear-btn" (click)="clearSearch()">✕</button>
+        <button class="clear-btn" (click)="clearSearch()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
       }
     </div>
 
@@ -23,7 +27,9 @@
       <ul class="search-results">
         @for (result of searchResults; track result.place_id) {
           <li (click)="selectResult(result)">
-            <span class="result-icon">📍</span>
+            <span class="result-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            </span>
             <span class="result-text">{{ result.display_name }}</span>
           </li>
         }
@@ -36,16 +42,24 @@
 
   @if (selectedEvent) {
     <div class="event-panel">
-      <button class="close-btn" (click)="selectedEvent = null">✕</button>
+      <button class="close-btn" (click)="closePanel()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
       <img [src]="selectedEvent.imageUrl ? 'https:' + selectedEvent.imageUrl : 'assets/images/zaragoza.png'"
            [alt]="selectedEvent.title">
       <div class="panel-body">
         <span class="panel-category">{{ selectedEvent.category }}</span>
         <h3>{{ selectedEvent.title }}</h3>
         @if (selectedEvent.startDate) {
-          <p class="panel-date">🕐 {{ selectedEvent.startDate | date:'dd MMM · HH:mm' }}</p>
+          <p class="panel-date">
+            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            {{ selectedEvent.startDate | date:'dd MMM · HH:mm' }}
+          </p>
         }
-        <p class="panel-location">📍 {{ selectedEvent.locationName }}</p>
+        <p class="panel-location">
+            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            {{ selectedEvent.locationName }}
+          </p>
         <a [routerLink]="['/events', selectedEvent._id]" class="panel-link">Ver más →</a>
       </div>
     </div>
