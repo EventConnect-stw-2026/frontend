@@ -134,9 +134,8 @@ export class ProfileViewComponent implements OnInit, OnDestroy {
         this.cdr.markForCheck();
         console.log('[ProfileViewComponent] markForCheck called');
       },
-      error: (err) => {
+      error: (err: any) => {
         console.error('[ProfileViewComponent] getProfile() error:', err);
-        this.loading = false;
         this.loadError = true;
         this.cdr.markForCheck();
         

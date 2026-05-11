@@ -11,6 +11,7 @@ import { catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-home',
@@ -20,6 +21,8 @@ import { AuthService } from '../../core/services/auth.service';
   styleUrl: './home.component.scss'
 })
 export class HomeComponent implements OnInit, OnDestroy {
+  private readonly apiUrl = environment.apiUrl;
+
   // ── Basado en tus eventos ──────────────────────────────────────────────
   forYouEvents: any[]  = [];
   forYouIndex          = 0;
@@ -110,7 +113,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.aiError = false;
     this.aiSummary = null;
 
-    this.http.post<any>('http://localhost:3000/api/ai/summary', {
+    this.http.post<any>(`${this.apiUrl}/ai/summary`, {
       category: this.selectedCategory !== 'all' ? this.selectedCategory : null,
       date: this.selectedRange === 'today' ? new Date().toISOString() : null
     }).subscribe({
@@ -172,7 +175,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.startCarousel();
       this.loadForYou();
 
-      this.http.get<any>('http://localhost:3000/api/events/sections')
+      this.http.get<any>(`${this.apiUrl}/events/sections`)
         .subscribe({
           next: (res: any) => {
             console.log("SECTIONS:", res);
@@ -248,7 +251,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.recommendedEvents = [];
     this.advisorError = false;
 
-    this.http.post<any>('http://localhost:3000/api/recommend', { companion, vibe })
+    this.http.post<any>(`${this.apiUrl}/recommend`, { companion, vibe })
       .subscribe({
         next: (res) => {
           setTimeout(() => {
