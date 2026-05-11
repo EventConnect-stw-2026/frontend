@@ -8,6 +8,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 // Servicio encargado de gestionar las operaciones relacionadas
 // con los eventos de la plataforma EventConnect.
@@ -18,8 +19,7 @@ import { Observable } from 'rxjs';
 })
 export class EventService {
 
-  // URL base de los endpoints relacionados con eventos.
-  private apiUrl = 'http://localhost:3000/api/events';
+  private apiUrl = `${environment.apiUrl}/events`;
 
   // Constructor del servicio que inyecta el cliente HTTP.
   constructor(private http: HttpClient) {}
@@ -56,14 +56,14 @@ export class EventService {
   // Recupera datos generales relacionados con eventos y usuarios.
   // La información se obtiene desde el módulo de estadísticas.
   getGlobalStats(): Observable<any> {
-    return this.http.get('http://localhost:3000/api/stats/global');
+    return this.http.get(`${environment.apiUrl}/stats/global`);
   }
 
   // Método para obtener estadísticas personales del usuario autenticado.
   // Incluye datos relacionados con su actividad en la plataforma.
   // Mantiene las credenciales de sesión durante la petición.
   getPersonalStats(): Observable<any> {
-    return this.http.get('http://localhost:3000/api/stats/personal', { withCredentials: true });
+    return this.http.get(`${environment.apiUrl}/stats/personal`, { withCredentials: true });
   }
 
   // Método para alternar la asistencia del usuario a un evento.
