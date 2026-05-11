@@ -30,6 +30,30 @@ export class HomeComponent implements OnInit, OnDestroy {
   showPersonalized     = false;
   readonly VISIBLE     = 4;
 
+  // ── Índices de carrusel por sección ───────────────────────────────────
+  featuredIndex = 0;
+  todayIndex    = 0;
+  weekIndex     = 0;
+  recentIndex   = 0;
+
+  visibleSlice(arr: any[], index: number) {
+    return arr.slice(index, index + this.VISIBLE);
+  }
+  canNext(arr: any[], index: number) { return index < arr.length - this.VISIBLE; }
+  canPrev(index: number)             { return index > 0; }
+  next(section: string) {
+    if (section === 'featured' && this.canNext(this.sections.featured, this.featuredIndex)) this.featuredIndex++;
+    if (section === 'today'    && this.canNext(this.sections.today,    this.todayIndex))    this.todayIndex++;
+    if (section === 'week'     && this.canNext(this.sections.week,     this.weekIndex))     this.weekIndex++;
+    if (section === 'recent'   && this.canNext(this.sections.recent,   this.recentIndex))   this.recentIndex++;
+  }
+  prev(section: string) {
+    if (section === 'featured' && this.canPrev(this.featuredIndex)) this.featuredIndex--;
+    if (section === 'today'    && this.canPrev(this.todayIndex))    this.todayIndex--;
+    if (section === 'week'     && this.canPrev(this.weekIndex))     this.weekIndex--;
+    if (section === 'recent'   && this.canPrev(this.recentIndex))   this.recentIndex--;
+  }
+
   get forYouVisible() { return this.forYouEvents.slice(this.forYouIndex, this.forYouIndex + this.VISIBLE); }
   forYouNext() { if (this.forYouIndex < this.forYouEvents.length - this.VISIBLE) this.forYouIndex++; }
   forYouPrev() { if (this.forYouIndex > 0) this.forYouIndex--; }
@@ -297,6 +321,6 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   scrollToContent() {
-    document.querySelector('.featured')?.scrollIntoView({ behavior: 'smooth' });
+    document.querySelector('.for-you-section')?.scrollIntoView({ behavior: 'smooth' });
   }
 }

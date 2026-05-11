@@ -74,7 +74,7 @@
               [class.selected]="selectedFriendIds.has(friend._id)"
               (click)="toggleFriendSelection(friend._id)"
             >
-              <img [src]="friend.avatarUrl" [alt]="friend.name" class="avatar" />
+              <img [src]="friend.avatarUrl || 'assets/images/default-avatar.svg'" [alt]="friend.name" class="avatar" />
               <div class="friend-details">
                 <p class="name">{{ friend.name }}</p>
                 <p class="username">@{{ friend.username }}</p>

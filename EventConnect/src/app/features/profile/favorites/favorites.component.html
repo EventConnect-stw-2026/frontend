@@ -19,7 +19,15 @@
       </div>
     }
 
-    @if (!loading && events.length === 0) {
+    @if (loadError) {
+      <div class="error-state">
+        <span class="error-icon">⚠</span>
+        <p>Error cargando tus favoritos.</p>
+        <button class="retry-btn" (click)="ngOnInit()">Reintentar</button>
+      </div>
+    }
+
+    @if (!loading && !loadError && events.length === 0) {
       <div class="empty-state">
         <span class="empty-icon">♡</span>
         <p>Aún no te has apuntado a ningún evento.</p>
@@ -27,7 +35,7 @@
       </div>
     }
 
-    @if (!loading && events.length > 0) {
+    @if (!loading && !loadError && events.length > 0) {
       <div class="events-grid">
         @for (event of paginatedEvents; track event._id) {
           <div class="event-card" (click)="goToEvent(event._id)">
