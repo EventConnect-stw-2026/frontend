@@ -1,57 +1,109 @@
+<!-- 
+  Aplicación: EventConnect - Plataforma de gestión de eventos
+  Archivo: admin-dashboard.component.html
+  Descripción: Plantilla HTML del dashboard principal de administración.
+  Autor: Pablo Báscones, Mario Caudevilla, Mario Hernández y David Borrel
+-->
+
+<!-- Barra superior del panel de administración -->
 <app-admin-topbar title="Dashboard Principal"></app-admin-topbar>
 
-
+<!-- 
+  Contenedor principal del dashboard.
+  Se suscribe al observable dashboard$ para obtener los datos dinámicamente.
+-->
 <ng-container *ngIf="dashboard$ | async as dashboard">
+
+  <!-- Panel mostrado mientras los datos se están cargando -->
   <section class="panel" *ngIf="dashboard.isLoading">
     <p>Cargando datos del dashboard...</p>
   </section>
 
+  <!-- Panel mostrado cuando ocurre un error al obtener los datos -->
   <section class="panel" *ngIf="dashboard.errorMessage">
     <p>{{ dashboard.errorMessage }}</p>
   </section>
 
+  <!-- 
+    Sección de estadísticas generales.
+    Muestra tarjetas dinámicas con información resumida.
+  -->
   <section class="stats-grid">
+
+    <!-- Tarjeta individual de estadística -->
     <article class="stat-card" *ngFor="let stat of dashboard.stats">
+
+      <!-- Icono representativo de la estadística -->
       <div class="stat-icon">{{ stat.icon }}</div>
+
+      <!-- Valor principal de la estadística -->
       <div class="stat-value">{{ stat.value }}</div>
+
+      <!-- Etiqueta descriptiva -->
       <div class="stat-label">{{ stat.label }}</div>
+
+      <!-- Información adicional de la estadística -->
       <div class="stat-detail">{{ stat.detail }}</div>
     </article>
   </section>
 
-<section class="panel">
-  <h2>📈 Actividad Última Semana</h2>
-  <div class="chart-container">
-    <canvas #activityChart></canvas>
-  </div>
-</section>
+  <!-- Panel que contiene la gráfica de actividad semanal -->
+  <section class="panel">
 
-<section class="panel">
-  <h2>📅 Próximos Eventos</h2>
+    <!-- Título de la sección -->
+    <h2>📈 Actividad Última Semana</h2>
 
-  <div class="table-wrapper">
-    <table>
-      <thead>
-        <tr>
-          <th>Evento</th>
-          <th>Fecha</th>
-          <th>Inscritos</th>
-          <th>Estado</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let event of dashboard.upcomingEvents">
-          <td>{{ event.name }}</td>
-          <td>{{ event.date }}</td>
-          <td>{{ event.enrolled }}</td>
-          <td>
-            <span class="status active">{{ event.status }}</span>
-          </td>
-        </tr>
-        <tr *ngIf="!dashboard.upcomingEvents.length">
-          <td colspan="4">No hay próximos eventos.</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</section>
+    <!-- Contenedor de la gráfica -->
+    <div class="chart-container">
+
+      <!-- Canvas utilizado para renderizar el gráfico -->
+      <canvas #activityChart></canvas>
+    </div>
+  </section>
+
+  <!-- Panel que muestra los próximos eventos -->
+  <section class="panel">
+
+    <!-- Título de la sección -->
+    <h2>📅 Próximos Eventos</h2>
+
+    <!-- Contenedor responsive de la tabla -->
+    <div class="table-wrapper">
+
+      <!-- Tabla de próximos eventos -->
+      <table>
+
+        <!-- Cabecera de la tabla -->
+        <thead>
+          <tr>
+            <th>Evento</th>
+            <th>Fecha</th>
+            <th>Inscritos</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+
+        <!-- Cuerpo de la tabla -->
+        <tbody>
+
+          <!-- Filas dinámicas con información de eventos -->
+          <tr *ngFor="let event of dashboard.upcomingEvents">
+            <td>{{ event.name }}</td>
+            <td>{{ event.date }}</td>
+            <td>{{ event.enrolled }}</td>
+            <td>
+
+              <!-- Estado visual del evento -->
+              <span class="status active">{{ event.status }}</span>
+            </td>
+          </tr>
+
+          <!-- Mensaje mostrado si no existen eventos próximos -->
+          <tr *ngIf="!dashboard.upcomingEvents.length">
+            <td colspan="4">No hay próximos eventos.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</ng-container>

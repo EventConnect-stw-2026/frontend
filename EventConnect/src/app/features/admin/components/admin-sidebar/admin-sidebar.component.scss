@@ -1,3 +1,14 @@
+/* 
+  Aplicación: EventConnect - Plataforma de gestión de eventos
+  Archivo: admin-sidebar.component.css
+  Descripción: Estilos CSS del menú lateral del panel de administración.
+  Autor: Pablo Báscones, Mario Caudevilla, Mario Hernández y David Borrel
+*/
+
+/* 
+  Contenedor principal de la barra lateral.
+  Define el tamaño, colores y posicionamiento fijo del sidebar.
+*/
 .sidebar {
   width: 240px;
   min-height: 100vh;
@@ -14,6 +25,10 @@
   z-index: 100;
 }
 
+/* 
+  Sección superior del sidebar donde se muestra
+  el logo y el nombre del panel de administración.
+*/
 .brand {
   display: flex;
   align-items: center;
@@ -24,12 +39,20 @@
   font-size: 1.2rem;
 }
 
+/* 
+  Contenedor principal del menú de navegación.
+  Organiza verticalmente todas las opciones disponibles.
+*/
 .menu {
   display: flex;
   flex-direction: column;
   padding-top: 14px;
 }
 
+/* 
+  Estilo general de cada opción del menú lateral.
+  Define alineación, colores y espaciado interno.
+*/
 .menu-item {
   height: 48px;
   display: flex;
@@ -42,22 +65,38 @@
   transition: background 0.15s ease;
 }
 
+/* 
+  Efecto visual aplicado al pasar el ratón
+  o cuando una opción está activa.
+*/
 .menu-item:hover,
 .menu-item.active {
   background: rgba(255, 255, 255, 0.15);
 }
 
+/* 
+  Contenedor izquierdo de cada elemento del menú.
+  Agrupa icono y texto descriptivo.
+*/
 .menu-left {
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
+/* 
+  Estilo aplicado a los iconos del menú.
+  Ajusta tamaño y alineación horizontal.
+*/
 .menu-icon {
   width: 18px;
   text-align: center;
 }
 
+/* 
+  Indicador visual utilizado para mostrar
+  notificaciones o contadores en el menú.
+*/
 .badge {
   min-width: 22px;
   height: 22px;

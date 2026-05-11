@@ -1,11 +1,20 @@
+/* 
+  Aplicación: EventConnect - Plataforma de gestión de eventos
+  Archivo: register.component.scss
+  Descripción: Estilos SCSS de la pantalla de registro de nuevos usuarios.
+  Autor: Pablo Báscones, Mario Caudevilla, Mario Hernández y David Borrel
+*/
+
+/* Importación de la fuente principal utilizada en la pantalla. */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
+/* Estilos globales básicos para mantener la fuente y el modelo de caja. */
 * {
   font-family: 'Inter', sans-serif;
   box-sizing: border-box;
 }
 
-// ─── Page ───────────────────────────────────────────────────────────────────
+/* Contenedor principal de la página de registro. */
 .register-page {
   height: 100vh;
   width: 100vw;
@@ -18,6 +27,7 @@
   inset: 0;
   overflow: hidden;
 
+  /* Elemento decorativo circular superior izquierdo. */
   &::before {
     content: '';
     position: absolute;
@@ -30,6 +40,7 @@
     pointer-events: none;
   }
 
+  /* Elemento decorativo circular inferior derecho. */
   &::after {
     content: '';
     position: absolute;
@@ -43,7 +54,7 @@
   }
 }
 
-// ─── Container ──────────────────────────────────────────────────────────────
+/* Contenedor central que agrupa formulario e imagen lateral. */
 .register-container {
   width: min(940px, 100%);
   height: min(680px, calc(100vh - 48px));
@@ -59,12 +70,13 @@
   animation: fadeSlideUp 0.5s ease both;
 }
 
+/* Animación de entrada del contenedor principal. */
 @keyframes fadeSlideUp {
   from { opacity: 0; transform: translateY(24px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
-// ─── Form side ──────────────────────────────────────────────────────────────
+/* Parte izquierda del registro donde se muestra el formulario. */
 .register-form {
   width: 50%;
   background: #ffffff;
@@ -76,13 +88,14 @@
   overflow-y: auto;
 }
 
-// ─── Logo ───────────────────────────────────────────────────────────────────
+/* Contenedor del logotipo. */
 .logo-wrapper {
   display: flex;
   justify-content: center;
   margin-bottom: 2px;
 }
 
+/* Tarjeta visual que contiene el logo de la aplicación. */
 .logo-card {
   display: inline-flex;
   align-items: center;
@@ -94,17 +107,19 @@
   box-shadow: 0 2px 12px rgba(30, 91, 184, 0.1);
 }
 
+/* Imagen del logotipo de EventConnect. */
 .logo {
   height: 36px;
   width: auto;
 }
 
-// ─── Header ─────────────────────────────────────────────────────────────────
+/* Cabecera del formulario de registro. */
 .form-header {
   text-align: center;
   margin-bottom: 2px;
 }
 
+/* Título principal del formulario. */
 h2 {
   margin: 0 0 4px 0;
   color: #111827;
@@ -113,6 +128,7 @@ h2 {
   letter-spacing: -0.6px;
 }
 
+/* Subtítulo mostrado bajo el título. */
 .subtitle {
   margin: 0;
   color: #9ca3af;
@@ -120,13 +136,14 @@ h2 {
   font-weight: 400;
 }
 
-// ─── Input group ────────────────────────────────────────────────────────────
+/* Grupo de entrada con icono e input. */
 .input-group {
   position: relative;
   display: flex;
   align-items: center;
 }
 
+/* Icono situado dentro del input. */
 .input-icon {
   position: absolute;
   left: 14px;
@@ -138,10 +155,12 @@ h2 {
   z-index: 1;
 }
 
+/* Cambio de color del icono cuando el campo está enfocado. */
 .input-group:focus-within .input-icon {
   color: #1E5BB8;
 }
 
+/* Estilo base de los campos de entrada. */
 input {
   width: 100%;
   padding: 13px 14px 13px 42px;
@@ -155,17 +174,20 @@ input {
   transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
   outline: none;
 
+  /* Texto de ayuda dentro del input. */
   &::placeholder {
     color: #b0b8c8;
     font-weight: 400;
   }
 
+  /* Estado visual del input enfocado. */
   &:focus {
     border-color: #1E5BB8;
     background: #fff;
     box-shadow: 0 0 0 4px rgba(30, 91, 184, 0.08);
   }
 
+  /* Estado visual de input inválido tras ser tocado. */
   &.ng-touched.ng-invalid {
     border-color: #ef4444;
     background: #fef2f2;
@@ -173,7 +195,7 @@ input {
   }
 }
 
-// ─── Error ──────────────────────────────────────────────────────────────────
+/* Texto de error de validación o servidor. */
 .error {
   color: #ef4444;
   font-size: 0.76rem;
@@ -184,6 +206,7 @@ input {
   align-items: center;
   gap: 4px;
 
+  /* Variante para errores generales del servidor. */
   &.server-error {
     text-align: center;
     justify-content: center;
@@ -195,7 +218,7 @@ input {
   }
 }
 
-// ─── Register button ────────────────────────────────────────────────────────
+/* Botón principal de registro. */
 .register-btn {
   background: linear-gradient(90deg, #1a56c4 0%, #2d74e0 100%);
   color: white;
@@ -211,15 +234,18 @@ input {
   margin-top: 2px;
   box-shadow: 0 4px 14px rgba(30, 91, 184, 0.35);
 
+  /* Efecto visual al pasar el ratón sobre el botón activo. */
   &:hover:not(:disabled) {
     box-shadow: 0 6px 20px rgba(30, 91, 184, 0.45);
     transform: translateY(-1px);
   }
 
+  /* Efecto visual al pulsar el botón. */
   &:active:not(:disabled) {
     transform: translateY(0);
   }
 
+  /* Estado deshabilitado durante el envío del formulario. */
   &:disabled {
     opacity: 0.65;
     cursor: not-allowed;
@@ -227,6 +253,7 @@ input {
   }
 }
 
+/* Contenedor del texto y spinner de carga. */
 .spinner-wrapper {
   display: flex;
   align-items: center;
@@ -234,6 +261,7 @@ input {
   gap: 8px;
 }
 
+/* Spinner mostrado durante el registro. */
 .spinner {
   width: 14px;
   height: 14px;
@@ -244,11 +272,12 @@ input {
   display: inline-block;
 }
 
+/* Animación de giro del spinner. */
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
 
-// ─── Divider ────────────────────────────────────────────────────────────────
+/* Separador visual entre registro tradicional y Google. */
 .divider {
   display: flex;
   align-items: center;
@@ -270,7 +299,7 @@ input {
   }
 }
 
-// ─── Google button ──────────────────────────────────────────────────────────
+/* Botón visual alternativo para autenticación con Google. */
 .google-btn {
   display: flex;
   align-items: center;
@@ -301,7 +330,7 @@ input {
   }
 }
 
-// ─── Login link ─────────────────────────────────────────────────────────────
+/* Enlace para ir a la pantalla de inicio de sesión. */
 .login-link {
   text-align: center;
   font-size: 0.85rem;
@@ -322,12 +351,13 @@ input {
   }
 }
 
-// ─── Image side ─────────────────────────────────────────────────────────────
+/* Lado derecho con imagen decorativa del registro. */
 .register-image {
   width: 50%;
   background: url("/assets/images/login.jpg") center/cover no-repeat;
   position: relative;
 
+  /* Capa oscura sobre la imagen para mejorar legibilidad. */
   &::after {
     content: '';
     position: absolute;
@@ -341,6 +371,7 @@ input {
   }
 }
 
+/* Texto superpuesto sobre la imagen lateral. */
 .image-overlay {
   position: absolute;
   bottom: 40px;
@@ -366,7 +397,7 @@ input {
   }
 }
 
-// ─── Responsive ─────────────────────────────────────────────────────────────
+/* Adaptación responsive para tablets y móviles. */
 @media (max-width: 768px) {
   .register-page {
     padding: 16px;
@@ -396,6 +427,7 @@ input {
   }
 }
 
+/* Adaptación responsive para pantallas muy pequeñas. */
 @media (max-width: 480px) {
   .register-form {
     padding: 28px 18px;
@@ -410,6 +442,7 @@ input {
   }
 }
 
+/* Botón para mostrar u ocultar la contraseña. */
 .toggle-password {
   position: absolute;
   right: 14px;
@@ -427,6 +460,7 @@ input {
   &:hover { color: #1a56c4; }
 }
 
+/* Refuerzo de posicionamiento para grupos de entrada con botones internos. */
 .input-group {
   position: relative;
 }

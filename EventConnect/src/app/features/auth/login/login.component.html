@@ -1,85 +1,135 @@
+<!-- 
+  Aplicación: EventConnect - Plataforma de gestión de eventos
+  Archivo: login.component.html
+  Descripción: Plantilla HTML para el inicio de sesión de usuarios.
+  Autor: Pablo Báscones, Mario Caudevilla, Mario Hernández y David Borrel
+-->
+
+<!-- Contenedor principal de la pantalla de login -->
 <div class="login-page">
+
+  <!-- Contenedor central que agrupa el formulario y la imagen lateral -->
   <div class="login-container">
+
+    <!-- Formulario reactivo de inicio de sesión -->
     <form class="login-form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">      
+
+      <!-- Contenedor del logotipo de la aplicación -->
       <div class="logo-wrapper">
         <div class="logo-card">
+
+          <!-- Logo de EventConnect -->
           <img src="assets/images/logo.png" class="logo" alt="EventConnect">
         </div>
       </div>
 
+      <!-- Cabecera del formulario -->
       <div class="form-header">
         <h2>Iniciar sesión</h2>
         <p class="subtitle">Bienvenido de nuevo a EventConnect</p>
       </div>
 
+      <!-- Mensaje de error general del login -->
       <div class="error-banner" *ngIf="errorMessage">
         <p class="error">{{ errorMessage }}</p>
       </div>
 
+      <!-- Campo de correo electrónico -->
       <div class="input-group">
+
+        <!-- Icono visual del campo email -->
         <span class="input-icon">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
             <polyline points="22,6 12,13 2,6"/>
           </svg>
         </span>
+
+        <!-- Input asociado al correo del usuario -->
         <input
           type="email"
           placeholder="Correo electrónico"
           formControlName="email"
         >
       </div>
+
+      <!-- Mensaje de validación del correo electrónico -->
       <small class="error" *ngIf="email?.touched && email?.invalid">
         Introduce un correo válido
       </small>
 
+      <!-- Campo de contraseña -->
       <div class="input-group">
+
+        <!-- Icono visual del campo contraseña -->
         <span class="input-icon">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
             <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
           </svg>
         </span>
+
+        <!-- Input de contraseña con opción de mostrar u ocultar el texto -->
         <input
           [type]="showPassword ? 'text' : 'password'"
           placeholder="Contraseña"
           formControlName="password"
         >
+
+        <!-- Botón para alternar la visibilidad de la contraseña -->
         <button type="button" class="toggle-password" (click)="showPassword = !showPassword">
+
+          <!-- Icono mostrado cuando la contraseña es visible -->
           @if (showPassword) {
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
           } @else {
+
+            <!-- Icono mostrado cuando la contraseña está oculta -->
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
           }
         </button>
       </div>
+
+      <!-- Mensaje de validación de contraseña -->
       <small class="error" *ngIf="password?.touched && password?.invalid">
         La contraseña es obligatoria
       </small>
 
+      <!-- Enlace a recuperación de contraseña -->
       <div class="forgot-password">
         <a routerLink="/forgot-password">¿Olvidaste tu contraseña?</a>
       </div>
 
+      <!-- Botón principal para enviar el formulario -->
       <button type="submit" class="login-btn" [disabled]="isSubmitting">
+
+        <!-- Texto mostrado cuando no se está enviando el formulario -->
         <span *ngIf="!isSubmitting">Entrar</span>
+
+        <!-- Estado de carga durante el inicio de sesión -->
         <span *ngIf="isSubmitting" class="spinner-wrapper">
           <span class="spinner"></span> Entrando...
         </span>
       </button>
 
+      <!-- Separador entre login tradicional y Google -->
       <div class="divider"><span>o continúa con</span></div>
 
+      <!-- Contenedor donde se renderiza el botón de Google Sign-In -->
       <div style="display: flex; justify-content: center;">
         <div id="google-signin-button"></div>
       </div>
 
+      <!-- Enlace hacia la pantalla de registro -->
       <p class="register-link">
         ¿No tienes cuenta? <a routerLink="/register">Crear cuenta</a>
       </p>
     </form>
 
+    <!-- Imagen lateral decorativa de la pantalla de login -->
     <div class="login-image">
+
+      <!-- Texto superpuesto sobre la imagen lateral -->
       <div class="image-overlay">
         <h3>Conecta con tu ciudad</h3>
         <p>Descubre y organiza eventos cerca de ti</p>

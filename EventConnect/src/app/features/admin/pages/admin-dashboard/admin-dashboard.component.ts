@@ -1,3 +1,10 @@
+/**
+ * Aplicación: EventConnect - Plataforma de gestión de eventos
+ * Archivo: admin-dashboard.component.ts
+ * Descripción: Componente encargado de mostrar el dashboard principal del panel de administración.
+ * Autor: Pablo Báscones, Mario Caudevilla, Mario Hernández y David Borrel
+ */
+
 import { CommonModule } from '@angular/common';
 import { Component, inject, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { Observable, of } from 'rxjs';
@@ -6,6 +13,8 @@ import { AdminTopbarComponent } from '../../components/admin-topbar/admin-topbar
 import { AdminService } from '../../../../core/services/admin.service';
 import Chart from 'chart.js/auto';
 
+// Interface para representar una tarjeta de estadística del dashboard,
+// incluyendo icono, valor principal, etiqueta descriptiva y detalle adicional.
 interface DashboardStat {
   icon: string;
   value: string;
@@ -13,6 +22,8 @@ interface DashboardStat {
   detail: string;
 }
 
+// Interface para representar un próximo evento mostrado en el dashboard,
+// incluyendo nombre, fecha, número de inscritos y estado del evento.
 interface DashboardUpcomingEvent {
   name: string;
   date: string;
@@ -20,6 +31,8 @@ interface DashboardUpcomingEvent {
   status: string;
 }
 
+// Interface para representar los datos utilizados en la gráfica de actividad,
+// incluyendo etiquetas y series de datos para inscripciones, usuarios y reportes.
 interface ActivityData {
   labels: string[];
   eventSignups: number[];
@@ -27,6 +40,9 @@ interface ActivityData {
   reportsFiled: number[];
 }
 
+// Interface para representar el estado completo del dashboard,
+// incluyendo estadísticas, eventos próximos, datos de actividad,
+// estado de carga y posibles mensajes de error.
 interface DashboardData {
   stats: DashboardStat[];
   upcomingEvents: DashboardUpcomingEvent[];
@@ -35,6 +51,9 @@ interface DashboardData {
   errorMessage: string;
 }
 
+// Componente encargado de mostrar el dashboard principal de administración.
+// Obtiene los datos desde el servicio de administración,
+// transforma la información recibida y renderiza una gráfica de actividad semanal.
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
@@ -43,12 +62,22 @@ interface DashboardData {
   styleUrl: './admin-dashboard.component.scss'
 })
 export class AdminDashboardComponent implements AfterViewInit {
+
+  // Servicio utilizado para obtener los datos administrativos del backend.
   private adminService = inject(AdminService);
   
+  // Referencia al canvas donde se renderiza la gráfica de actividad.
   @ViewChild('activityChart') chartCanvas!: ElementRef;
+
+  // Instancia actual de la gráfica generada con Chart.js.
   private chart: Chart | null = null;
+
+  // Datos actuales del dashboard utilizados para pintar la interfaz y la gráfica.
   private dashboardData: DashboardData | null = null;
 
+  // Observable principal del dashboard.
+  // Obtiene los datos del backend, los adapta al formato de la vista
+  // y gestiona estados de carga y error.
   dashboard$: Observable<DashboardData> = this.adminService.getDashboard().pipe(
     map((response) => ({
       stats: [
@@ -120,30 +149,41 @@ export class AdminDashboardComponent implements AfterViewInit {
     }))
   );
 
+  // Método del ciclo de vida de Angular ejecutado tras inicializar la vista.
+  // Se suscribe al observable del dashboard para capturar los datos.
+  // Cuando los datos están listos, solicita el renderizado de la gráfica.
   ngAfterViewInit(): void {
-    // Subscribe una sola vez para capturar los datos
+    // Suscripción única para capturar y actualizar los datos del dashboard.
     this.dashboard$.subscribe((data) => {
       this.dashboardData = data;
-      // Renderizar el gráfico cuando los datos estén listos
+
+      // Renderizado del gráfico cuando los datos están disponibles y no están cargando.
       if (data.activityData.labels.length > 0 && !data.isLoading) {
         setTimeout(() => this.renderChart(), 100);
       }
     });
   }
 
+  // Método privado encargado de renderizar la gráfica de actividad semanal.
+  // Comprueba que exista el canvas y que haya datos disponibles.
+  // Si ya existe una gráfica previa, la destruye antes de crear una nueva.
   private renderChart(): void {
     if (!this.chartCanvas || !this.chartCanvas.nativeElement || !this.dashboardData) {
       return;
     }
 
+    // Obtención del contexto 2D del canvas.
     const ctx = this.chartCanvas.nativeElement.getContext('2d');
     
+    // Destrucción de la gráfica anterior para evitar duplicados.
     if (this.chart) {
       this.chart.destroy();
     }
 
+    // Datos de actividad utilizados por Chart.js.
     const data = this.dashboardData.activityData;
 
+    // Creación de la gráfica de líneas con las tres series de actividad.
     this.chart = new Chart(ctx, {
       type: 'line',
       data: {
