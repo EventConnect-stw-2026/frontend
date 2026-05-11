@@ -1,9 +1,24 @@
+/**
+ * Aplicación: EventConnect - Plataforma de gestión de eventos
+ * Archivo: admin-settings.component.scss
+ * Descripción: Estilos visuales para la pantalla de configuración del panel de administración.
+ * Autor: Pablo Báscones, Mario Caudevilla, Mario Hernández y David Borrel
+ */
+
+/* 
+ * Contenedor principal de tarjetas de configuración.
+ * Organiza todas las secciones en una columna con separación uniforme.
+ */
 .settings-stack {
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 
+/* 
+ * Tarjeta individual de configuración.
+ * Se utiliza para agrupar cada bloque funcional del panel de ajustes.
+ */
 .settings-card {
   background: #fff;
   border-radius: 14px;
@@ -11,6 +26,10 @@
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
 }
 
+/* 
+ * Estilo de los títulos principales de cada tarjeta.
+ * Mantiene una identidad visual coherente en el panel.
+ */
 .settings-card h2 {
   margin: 0 0 16px;
   font-size: 1.15rem;
@@ -18,12 +37,20 @@
   font-weight: 700;
 }
 
+/* 
+ * Estructura general de los formularios de configuración.
+ * Distribuye los campos en columna con separación entre ellos.
+ */
 .settings-form {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
+/* 
+ * Fila de formulario con distribución de etiqueta y campo.
+ * Utiliza grid para mantener alineación uniforme.
+ */
 .form-row {
   display: grid;
   grid-template-columns: 220px 1fr;
@@ -31,12 +58,20 @@
   align-items: center;
 }
 
+/* 
+ * Estilo común para las etiquetas de formularios.
+ * Mejora la legibilidad de los campos de configuración.
+ */
 .form-row label,
 .form-column label {
   font-weight: 600;
   color: #333;
 }
 
+/* 
+ * Estilo base para inputs de formularios.
+ * Mantiene un diseño limpio y uniforme.
+ */
 .form-row input,
 .form-column input {
   height: 40px;
@@ -47,12 +82,20 @@
   box-sizing: border-box;
 }
 
+/* 
+ * Contenedor de formularios en formato columna.
+ * Se utiliza para grupos de campos verticales.
+ */
 .form-column {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
+/* 
+ * Estilo para opciones checkbox.
+ * Permite alinear correctamente el input y el texto.
+ */
 .checkbox-row {
   display: flex;
   align-items: center;
@@ -61,11 +104,16 @@
   font-size: 0.95rem;
 }
 
+/* Tamaño personalizado de los checkboxes */
 .checkbox-row input {
   width: 16px;
   height: 16px;
 }
 
+/* 
+ * Contenedor de botones de acción.
+ * Organiza botones en línea con separación automática.
+ */
 .action-row,
 .tool-actions {
   display: flex;
@@ -74,6 +122,10 @@
   margin-top: 8px;
 }
 
+/* 
+ * Estilo base compartido entre botones principales y secundarios.
+ * Define dimensiones, bordes y tipografía.
+ */
 .primary-btn,
 .secondary-btn {
   border: none;
@@ -84,16 +136,28 @@
   cursor: pointer;
 }
 
+/* 
+ * Botón principal utilizado para guardar cambios.
+ * Destaca visualmente frente al resto de acciones.
+ */
 .primary-btn {
   background: #4a88f7;
   color: white;
 }
 
+/* 
+ * Botón secundario para acciones complementarias.
+ * Utiliza colores neutros menos llamativos.
+ */
 .secondary-btn {
   background: #eef1f5;
   color: #445;
 }
 
+/* 
+ * Caja informativa utilizada para mostrar estado del sistema o backups.
+ * Mejora la separación visual de la información importante.
+ */
 .info-box {
   background: #f5f8fd;
   border-radius: 10px;
@@ -102,10 +166,15 @@
   color: #344054;
 }
 
+/* Espaciado interno entre párrafos de información */
 .info-box p {
   margin: 0 0 6px;
 }
 
+/* 
+ * Texto informativo auxiliar mostrado al final de algunas secciones.
+ * Se utiliza para recomendaciones o aclaraciones.
+ */
 .note {
   display: block;
   color: #7a7a7a;
@@ -114,17 +183,25 @@
   line-height: 1.45;
 }
 
+/* 
+ * Adaptación responsive para dispositivos móviles.
+ * Ajusta formularios y botones a disposición vertical.
+ */
 @media (max-width: 768px) {
+
+  /* Los campos pasan a ocupar una única columna */
   .form-row {
     grid-template-columns: 1fr;
     gap: 6px;
   }
 
+  /* Los botones se muestran apilados verticalmente */
   .action-row,
   .tool-actions {
     flex-direction: column;
   }
 
+  /* Los botones ocupan todo el ancho disponible */
   .primary-btn,
   .secondary-btn {
     width: 100%;

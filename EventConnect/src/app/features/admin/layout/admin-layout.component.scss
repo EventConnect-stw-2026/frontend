@@ -1,10 +1,24 @@
+/* 
+  Aplicación: EventConnect - Plataforma de gestión de eventos
+  Archivo: admin-layout.component.css
+  Descripción: Estilos CSS del layout principal del panel de administración.
+  Autor: Pablo Báscones, Mario Caudevilla, Mario Hernández y David Borrel
+*/
 
+/* 
+  Contenedor principal del layout administrativo.
+  Organiza la barra lateral y el contenido principal.
+*/
 .admin-layout {
   min-height: 100vh;
   display: flex;
   background: #eef1f5;
 }
 
+/* 
+  Contenedor principal donde se renderizan
+  las vistas administrativas de la aplicación.
+*/
 .admin-content {
   flex: 1;
   padding: 16px;
@@ -13,11 +27,24 @@
   min-width: 0;
 }
 
+/* 
+  Adaptación responsive para dispositivos móviles o pantallas pequeñas.
+  Modifica la distribución del layout y ajusta los márgenes internos.
+*/
 @media (max-width: 768px) {
+
+  /* 
+    En pantallas pequeñas los elementos pasan
+    a mostrarse en columna.
+  */
   .admin-layout {
     flex-direction: column;
   }
 
+  /* 
+    Reducción del padding del contenido principal
+    para aprovechar mejor el espacio disponible.
+  */
   .admin-content {
     padding: 12px;
   }

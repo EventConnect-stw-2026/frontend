@@ -1,9 +1,20 @@
+/**
+ * Aplicación: EventConnect - Plataforma de gestión de eventos
+ * Archivo: auth.interceptor.ts
+ * Descripción: Interceptor que maneja la autenticación de las solicitudes HTTP.
+ * Autor: Pablo Báscones, Mario Caudevilla, Mario Hernández y David Borrel
+ */
+
 import { HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { AuthService } from '../services/auth.service';
 import { catchError, switchMap } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 
+// El interceptor se encarga de agregar el token de autenticación a las solicitudes HTTP y manejar los errores 401 (Unauthorized) 
+// para intentar un refresh del token.
+// Si se detecta un error 401, el interceptor intentará refrescar el token utilizando el AuthService. Si el refresh es exitoso, 
+// se reintentará la solicitud original. Si el refresh falla, se limpiará la sesión del usuario.
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
   console.log('[AuthInterceptor] intercepting:', req.method, req.url);

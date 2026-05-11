@@ -1,3 +1,14 @@
+/* 
+  Aplicación: EventConnect - Plataforma de gestión de eventos
+  Archivo: admin-dashboard.component.css
+  Descripción: Estilos CSS del dashboard principal de administración.
+  Autor: Pablo Báscones, Mario Caudevilla, Mario Hernández y David Borrel
+*/
+
+/* 
+  Contenedor principal de las tarjetas de estadísticas.
+  Organiza las tarjetas en una cuadrícula responsive.
+*/
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -5,6 +16,10 @@
   margin-bottom: 16px;
 }
 
+/* 
+  Estilo compartido entre tarjetas estadísticas y paneles.
+  Define fondo, bordes redondeados y sombra visual.
+*/
 .stat-card,
 .panel {
   background: #fff;
@@ -13,38 +28,61 @@
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
 }
 
+/* 
+  Estilo del icono mostrado en cada tarjeta estadística.
+*/
 .stat-icon {
   font-size: 1.2rem;
   margin-bottom: 10px;
 }
 
+/* 
+  Valor principal de cada estadística.
+  Se destaca mediante tamaño y color.
+*/
 .stat-value {
   font-size: 2rem;
   font-weight: 700;
   color: #1f3f9d;
 }
 
+/* 
+  Texto descriptivo asociado a cada estadística.
+*/
 .stat-label {
   color: #666;
   margin-top: 4px;
 }
 
+/* 
+  Información adicional mostrada en las tarjetas.
+*/
 .stat-detail {
   margin-top: 6px;
   font-size: 0.85rem;
   color: #23a455;
 }
 
+/* 
+  Separación inferior entre paneles del dashboard.
+*/
 .panel {
   margin-bottom: 16px;
 }
 
+/* 
+  Estilo de los títulos de cada panel.
+*/
 .panel h2 {
   margin: 0 0 14px;
   font-size: 1.4rem;
   color: #1f3f9d;
 }
 
+/* 
+  Contenedor placeholder utilizado para gráficos
+  o contenido aún no cargado.
+*/
 .chart-placeholder {
   height: 180px;
   border-radius: 10px;
@@ -55,6 +93,10 @@
   color: #777;
 }
 
+/* 
+  Contenedor principal del gráfico de actividad.
+  Ajusta tamaño y posicionamiento del canvas.
+*/
 .chart-container {
   position: relative;
   height: 300px;
@@ -62,6 +104,9 @@
   margin-bottom: 20px;
 }
 
+/* 
+  Caja destacada utilizada para avisos de moderación.
+*/
 .moderation-box {
   background: #fff7e6;
   border-left: 4px solid #f5a623;
@@ -70,15 +115,25 @@
   color: #9a5b00;
 }
 
+/* 
+  Contenedor responsive de tablas.
+  Permite desplazamiento horizontal si es necesario.
+*/
 .table-wrapper {
   overflow-x: auto;
 }
 
+/* 
+  Estilo general de las tablas del dashboard.
+*/
 table {
   width: 100%;
   border-collapse: collapse;
 }
 
+/* 
+  Estilo aplicado a celdas y cabeceras.
+*/
 th,
 td {
   padding: 12px 10px;
@@ -86,11 +141,17 @@ td {
   text-align: left;
 }
 
+/* 
+  Estilo específico de las cabeceras de tabla.
+*/
 th {
   background: #f2f5fa;
   color: #1f3f9d;
 }
 
+/* 
+  Estilo base de las etiquetas de estado.
+*/
 .status {
   padding: 5px 10px;
   border-radius: 6px;
@@ -98,17 +159,28 @@ th {
   font-weight: 600;
 }
 
+/* 
+  Estilo específico para estados activos.
+*/
 .status.active {
   background: #d7f3df;
   color: #1e8e3e;
 }
 
+/* 
+  Adaptación responsive para pantallas medianas.
+  Reduce el número de columnas de estadísticas.
+*/
 @media (max-width: 1024px) {
   .stats-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
+/* 
+  Adaptación responsive para dispositivos móviles.
+  Muestra las estadísticas en una única columna.
+*/
 @media (max-width: 560px) {
   .stats-grid {
     grid-template-columns: 1fr;
