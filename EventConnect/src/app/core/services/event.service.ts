@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class EventService {
 
-  private apiUrl = 'http://localhost:3000/api/events';
+  private apiUrl = `${environment.apiUrl}/events`;
 
   constructor(private http: HttpClient) {}
 
@@ -30,11 +31,11 @@ export class EventService {
   }
 
   getGlobalStats(): Observable<any> {
-    return this.http.get('http://localhost:3000/api/stats/global');
+    return this.http.get(`${environment.apiUrl}/stats/global`);
   }
 
   getPersonalStats(): Observable<any> {
-    return this.http.get('http://localhost:3000/api/stats/personal', { withCredentials: true });
+    return this.http.get(`${environment.apiUrl}/stats/personal`, { withCredentials: true });
   }
 
   toggleAttend(eventId: string): Observable<any> {

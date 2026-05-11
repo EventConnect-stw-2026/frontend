@@ -72,14 +72,13 @@ export class ProfileEditComponent {
   isEditingUsername = false;
 
   user: UserProfile = {
-    name: 'Jeffrey Preston Bezos',
-    email: 'jeff@amazon.com',
-    username: 'jeffAmazon',
-    avatarUrl:
-      'https://upload.wikimedia.org/wikipedia/commons/9/91/Jeff_Bezos_2016.jpg',
+    name: '',
+    email: '',
+    username: '',
+    avatarUrl: 'assets/images/default-avatar.svg',
     bio: '',
     location: '',
-    interests: ['culture', 'sports', 'family']
+    interests: []
   };
 
   favorites: FavoriteCategory[] = [

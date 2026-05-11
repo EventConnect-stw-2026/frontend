@@ -61,12 +61,11 @@ export class ProfileViewComponent {
   }
 
   user: UserProfile = {
-    name: 'Jeffrey Preston Bezos',
-    email: 'jeff@amazon.com',
-    username: 'jeffAmazon',
-    avatarUrl:
-      'https://upload.wikimedia.org/wikipedia/commons/9/91/Jeff_Bezos_2016.jpg',
-    interests: ['culture', 'sports', 'family']
+    name: '',
+    email: '',
+    username: '',
+    avatarUrl: 'assets/images/default-avatar.svg',
+    interests: []
   };
 
   getSvg(key: string): SafeHtml {
@@ -108,7 +107,7 @@ export class ProfileViewComponent {
         };
       },
       error: () => {
-        // Si hay error, deja los datos de ejemplo
+        this.router.navigate(['/login']);
       }
     });
   }
