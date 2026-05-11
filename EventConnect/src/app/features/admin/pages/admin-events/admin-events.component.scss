@@ -371,3 +371,37 @@ form {
     background: #757575;
   }
 }
+
+.confirm-modal {
+  max-width: 520px;
+}
+
+.confirm-modal-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  text-align: center;
+
+  p {
+    margin: 0;
+    color: #333;
+    line-height: 1.6;
+  }
+}
+
+.confirm-modal-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgba(244, 67, 54, 0.12);
+  color: #f44336;
+  font-size: 2rem;
+}
+
+.confirm-modal-footer {
+  justify-content: center;
+}

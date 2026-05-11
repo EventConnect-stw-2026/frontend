@@ -87,7 +87,7 @@
                 <button 
                   type="button" 
                   title="Eliminar"
-                  (click)="deleteEventAction(event.id)"
+                  (click)="openDeleteConfirm(event.id, event.name)"
                   [disabled]="deletingEventId === event.id"
                 >
                   🗑
@@ -224,7 +224,7 @@
             <button 
               type="button" 
               class="btn btn-danger"
-              (click)="deleteEventAction(event.id)"
+              (click)="openDeleteConfirm(event.id, event.title)"
               [disabled]="deletingEventId === event.id"
             >
               {{ deletingEventId === event.id ? 'Eliminando...' : '🗑 Eliminar Evento' }}
@@ -245,6 +245,33 @@
     <div class="modal-footer">
       <button type="button" class="btn btn-secondary" (click)="closeDetailModal()">
         Cerrar
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de confirmación de eliminación -->
+<div class="modal-overlay" *ngIf="showDeleteConfirmModal" (click)="closeDeleteConfirm()">
+  <div class="modal-content confirm-modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>Eliminar Evento</h2>
+      <button type="button" class="close-btn" (click)="closeDeleteConfirm()">✕</button>
+    </div>
+
+    <div class="modal-body confirm-modal-body">
+      <div class="confirm-modal-icon">🗑</div>
+      <p>
+        ¿Seguro que quieres eliminar <strong>{{ deleteTargetEventLabel }}</strong>?
+        Esta acción no se puede deshacer.
+      </p>
+    </div>
+
+    <div class="modal-footer confirm-modal-footer">
+      <button type="button" class="btn btn-secondary" (click)="closeDeleteConfirm()">
+        Cancelar
+      </button>
+      <button type="button" class="btn btn-danger" (click)="confirmDeleteEvent()">
+        Eliminar
       </button>
     </div>
   </div>
