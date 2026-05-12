@@ -100,6 +100,9 @@ export class AdminEventsComponent implements OnInit {
 
   // Identificador del evento que se está eliminando actualmente.
   deletingEventId: string | null = null;
+  showDeleteConfirmModal = false;
+  deleteTargetEventId: string | null = null;
+  deleteTargetEventLabel = '';
 
   // Mensajes globales mostrados tras operaciones de éxito o error.
   successMessage = '';
@@ -406,11 +409,26 @@ export class AdminEventsComponent implements OnInit {
   // Método para eliminar un evento de la plataforma.
   // Solicita confirmación al usuario antes de ejecutar la acción.
   // Si se elimina correctamente, refresca la lista de eventos.
-  deleteEventAction(eventId: string): void {
+  openDeleteConfirm(eventId: string, eventLabel: string): void {
     if (!eventId) return;
-    
-    const confirmed = confirm('¿Estás seguro de que quieres eliminar este evento? Esta acción no se puede deshacer.');
-    if (!confirmed) return;
+
+    this.deleteTargetEventId = eventId;
+    this.deleteTargetEventLabel = eventLabel;
+    this.showDeleteConfirmModal = true;
+  }
+
+  closeDeleteConfirm(): void {
+    this.showDeleteConfirmModal = false;
+    this.deleteTargetEventId = null;
+    this.deleteTargetEventLabel = '';
+  }
+
+  confirmDeleteEvent(): void {
+    if (!this.deleteTargetEventId) return;
+
+    const eventId = this.deleteTargetEventId;
+    this.showDeleteConfirmModal = false;
+    this.deleteTargetEventId = null;
 
     this.deletingEventId = eventId;
     this.adminService.deleteEvent(eventId).subscribe({

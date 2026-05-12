@@ -60,6 +60,9 @@ export class AdminUsersComponent implements OnInit {
   blockingUserId: string | null = null;
   unblockingUserId: string | null = null;
   deletingUserId: string | null = null;
+  showDeleteConfirmModal = false;
+  deleteTargetUserId: string | null = null;
+  deleteTargetUserName = '';
 
   // Mensajes globales mostrados en la interfaz.
   successMessage = '';
@@ -278,11 +281,26 @@ export class AdminUsersComponent implements OnInit {
   // Método para eliminar un usuario.
   // Solicita confirmación antes de ejecutar una acción irreversible.
   // Tras eliminar correctamente, refresca la lista de usuarios.
-  deleteUserAction(userId: string): void {
+  openDeleteConfirm(userId: string, userName: string): void {
     if (!userId) return;
 
-    const confirmed = confirm('¿Estás seguro de que quieres eliminar este usuario? Esta acción no se puede deshacer.');
-    if (!confirmed) return;
+    this.deleteTargetUserId = userId;
+    this.deleteTargetUserName = userName;
+    this.showDeleteConfirmModal = true;
+  }
+
+  closeDeleteConfirm(): void {
+    this.showDeleteConfirmModal = false;
+    this.deleteTargetUserId = null;
+    this.deleteTargetUserName = '';
+  }
+
+  confirmDeleteUser(): void {
+    if (!this.deleteTargetUserId) return;
+
+    const userId = this.deleteTargetUserId;
+    this.showDeleteConfirmModal = false;
+    this.deleteTargetUserId = null;
 
     this.deletingUserId = userId;
 

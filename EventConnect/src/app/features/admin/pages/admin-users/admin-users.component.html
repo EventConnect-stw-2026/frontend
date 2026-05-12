@@ -118,7 +118,7 @@
                 <button
                   type="button"
                   title="Eliminar"
-                  (click)="deleteUserAction(user.id)"
+                  (click)="openDeleteConfirm(user.id, user.name)"
                   [disabled]="deletingUserId === user.id"
                   [class.disabled]="user.role === 'Admin'"
                 >
@@ -306,7 +306,7 @@
               *ngIf="user.role !== 'admin'"
               type="button" 
               class="btn btn-danger"
-              (click)="deleteUserAction(user.id)"
+              (click)="openDeleteConfirm(user.id, user.name)"
               [disabled]="deletingUserId === user.id"
             >
               {{ deletingUserId === user.id ? 'Eliminando...' : '🗑 Eliminar Usuario' }}
@@ -329,6 +329,33 @@
     <div class="modal-footer">
       <button type="button" class="btn btn-secondary" (click)="closeDetailModal()">
         Cerrar
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de confirmación de eliminación -->
+<div class="modal-overlay" *ngIf="showDeleteConfirmModal" (click)="closeDeleteConfirm()">
+  <div class="modal-content confirm-modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>Eliminar Usuario</h2>
+      <button type="button" class="close-btn" (click)="closeDeleteConfirm()">✕</button>
+    </div>
+
+    <div class="modal-body confirm-modal-body">
+      <div class="confirm-modal-icon">🗑</div>
+      <p>
+        ¿Seguro que quieres eliminar a <strong>{{ deleteTargetUserName }}</strong>?
+        Esta acción no se puede deshacer.
+      </p>
+    </div>
+
+    <div class="modal-footer confirm-modal-footer">
+      <button type="button" class="btn btn-secondary" (click)="closeDeleteConfirm()">
+        Cancelar
+      </button>
+      <button type="button" class="btn btn-danger" (click)="confirmDeleteUser()">
+        Eliminar
       </button>
     </div>
   </div>
