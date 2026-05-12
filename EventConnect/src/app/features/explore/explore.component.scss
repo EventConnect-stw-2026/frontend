@@ -461,6 +461,6 @@ $t:           0.2s ease;
 
 // En móviles, el contenido se reduce a una sola columna.
 @media (max-width: 768px) {
-  .explore-wrapper { padding: 100px 16px 64px; }
+  .explore-wrapper { padding: 12px 16px 64px; }
   .events-grid { grid-template-columns: 1fr; }
 }

@@ -315,10 +315,74 @@ $t:        0.2s ease;
   .personal-grid .wide { grid-column: span 2; }
 }
 
-// En tablets y móviles se reduce el padding y las tarjetas globales pasan a una columna.
+// ── Tablet (max 768px) ────────────────────────────────────────────────────
 @media (max-width: 768px) {
-  .stats-wrapper { padding: 100px 20px 48px; }
-  .global-stats { grid-template-columns: 1fr; }
+  .stats-wrapper {
+    padding: 12px 16px 48px;
+  }
+
+  .tab-switcher {
+    width: 100%;
+    button { flex: 1; padding: 10px 12px; font-size: 13px; }
+  }
+
+  .global-stats {
+    grid-template-columns: 1fr;
+  }
   .col-span-2, .col-span-3 { grid-column: span 1; }
-  .personal-grid { grid-template-columns: 1fr 1fr; }
+
+  .personal-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .personal-grid .wide { grid-column: span 2; }
+
+  // Gráficas: scroll horizontal en móvil para no recortar barras
+  .chart-card {
+    padding: 18px 14px;
+    overflow-x: auto;
+    h3 { font-size: 13px; margin-bottom: 18px; }
+  }
+
+  .bar-chart {
+    height: 160px;
+    gap: 6px;
+    min-width: max-content; /* permite scroll si hay muchas barras */
+    justify-content: flex-start;
+    &--days { height: 120px; min-width: unset; justify-content: space-around; }
+  }
+
+  .bar-item {
+    min-width: 40px;
+    max-width: 52px;
+  }
+
+  .bar-label {
+    font-size: 10px;
+    white-space: nowrap;
+  }
+
+  .bar-value {
+    font-size: 10px;
+  }
+
+  .stat-card { padding: 20px; }
+  .stat-value { font-size: 28px; }
+  .stat-icon { width: 44px; height: 44px; }
+}
+
+// ── Móvil pequeño (max 480px) ─────────────────────────────────────────────
+@media (max-width: 480px) {
+  .personal-grid {
+    grid-template-columns: 1fr;
+  }
+  .personal-grid .wide { grid-column: span 1; }
+
+  .bar-chart {
+    height: 130px;
+    gap: 3px;
+  }
+
+  .tab-switcher {
+    button { font-size: 12px; padding: 9px 8px; }
+  }
 }

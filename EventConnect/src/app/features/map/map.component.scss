@@ -23,11 +23,13 @@ $t:         0.2s ease;
 * { font-family: 'Inter', sans-serif; }
 
 // Contenedor principal de la pantalla de mapa.
-// Resta la altura del header para ocupar el espacio visible restante.
+// Usa top para respetar el header fijo sin depender de su altura exacta.
 .map-wrapper {
-  position: relative;
-  height: calc(100vh - 90px);
-  margin-top: 90px;
+  position: fixed;
+  top: 90px; /* altura del header en desktop */
+  left: 0;
+  right: 0;
+  bottom: 0;
 }
 
 // Contenedor donde se renderiza el mapa interactivo de Leaflet.
@@ -45,7 +47,7 @@ $t:         0.2s ease;
   left: 50%;
   transform: translateX(-50%);
   width: min(440px, calc(100% - 32px));
-  z-index: 1000;
+  z-index: 40; /* Por debajo del header (z-index:50) y su menú móvil (z-index:100) */
 }
 
 // Caja principal del input de búsqueda.
@@ -264,4 +266,61 @@ $t:         0.2s ease;
   transition: letter-spacing $t;
 
   &:hover { letter-spacing: 0.6px; }
+}
+
+/* ── Responsive: móvil (max 768px) ───────────────────────────────────────── */
+@media (max-width: 768px) {
+  .map-wrapper {
+    top: 60px; /* altura del header en móvil */
+  }
+
+  .search-bar {
+    top: 52px; /* desplazada para no tapar los controles de zoom */
+    width: calc(100% - 24px);
+  }
+
+  .event-panel {
+    width: 100%;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: auto;
+    border-radius: 20px 20px 0 0;
+    max-height: 60svh;
+    overflow-y: auto;
+
+    img {
+      height: 160px;
+    }
+  }
+}
+
+/* ── Responsive: móvil pequeño (max 480px) ───────────────────────────────── */
+@media (max-width: 480px) {
+  .map-wrapper {
+    top: 60px;
+  }
+
+
+  .search-bar {
+    top: 10px;
+  }
+
+  .event-panel img {
+    height: 130px;
+  }
+}
+
+
+/* ── Controles de zoom de Leaflet ────────────────────────────────────────── */
+@media (max-width: 768px) {
+  :host ::ng-deep .leaflet-top.leaflet-left {
+    top: auto !important;
+    bottom: 80px !important;
+    left: 10px !important;
+  }
+
+  :host ::ng-deep .leaflet-control-zoom {
+    margin: 0 !important;
+  }
 }

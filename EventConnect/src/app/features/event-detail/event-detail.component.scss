@@ -386,6 +386,7 @@ $t:         0.2s ease;
 // ── Responsive ─────────────────────────────────────────────────────────────
 // En pantallas pequeñas se elimina la segunda columna y los bloques laterales pasan debajo del contenido.
 @media (max-width: 900px) {
+  .detail-page { padding-top: 12px; }
   .detail-layout {
     grid-template-columns: 1fr;
     padding: 16px 20px 48px;

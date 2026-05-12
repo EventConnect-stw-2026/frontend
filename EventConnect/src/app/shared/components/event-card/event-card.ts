@@ -67,4 +67,13 @@ export class EventCardComponent {
   onImageError(event: any) {
     event.target.src = this.defaultImage;
   }
+
+  /**
+   * Recorta un texto a una longitud máxima añadiendo puntos suspensivos.
+   * Solución para títulos largos que Bootstrap impide recortar con CSS.
+   */
+  truncate(text: string, max: number): string {
+    if (!text) return '';
+    return text.length > max ? text.slice(0, max).trimEnd() + '...' : text;
+  }
 }

@@ -406,6 +406,8 @@
 // ── Responsive tablet ──────────────────────────────────────────────────────
 // Adaptaciones para pantallas de tamaño medio.
 @media (max-width: 768px) {
+  .edit-profile-page { margin-top: 0; }
+
   .page-title {
     font-size: 1.9rem;
   }
@@ -443,7 +445,8 @@
 // Adaptaciones para móviles, colocando el formulario en una sola columna.
 @media (max-width: 480px) {
   .edit-profile-page {
-    padding: 16px 12px 32px;
+    margin-top: 0;
+    padding: 12px 12px 32px;
   }
 
   .page-title {
@@ -493,12 +496,30 @@
   }
 
   .favorites-grid {
-    gap: 12px;
+    gap: 8px;
+    justify-content: center;
   }
 
   .favorite-item {
-    width: 64px;
-    height: 64px;
+    flex-direction: column;
+    width: calc(33% - 8px);
+    min-width: 90px;
+    height: auto;
+    padding: 12px 8px;
+    text-align: center;
+    border-radius: 14px;
+    gap: 6px;
+  }
+
+  .favorite-label {
+    font-size: 11px;
+    white-space: normal;
+    text-align: center;
+  }
+
+  .favorite-svg svg {
+    width: 22px;
+    height: 22px;
   }
 
   .favorite-emoji {

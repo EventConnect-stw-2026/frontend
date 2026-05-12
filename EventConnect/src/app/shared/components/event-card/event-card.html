@@ -33,7 +33,7 @@
   <div class="info">
 
     <!-- Título -->
-    <h3>{{ event?.title }}</h3>
+    <h3>{{ truncate(event?.title, 60) }}</h3>
 
     <!-- Fecha y hora -->
     <p class="date">
@@ -68,7 +68,7 @@
         <circle cx="12" cy="10" r="3"/>
       </svg>
 
-      {{ event?.locationName }}
+      {{ truncate(event?.locationName, 45) }}
     </p>
 
     <!--
@@ -76,7 +76,7 @@
       Se eliminan etiquetas HTML mediante el pipe stripHtml.
     -->
     <p class="description">
-      {{ event?.description | stripHtml }}
+      {{ truncate(event?.description | stripHtml, 100) }}
     </p>
 
     <!-- Enlace visual -->

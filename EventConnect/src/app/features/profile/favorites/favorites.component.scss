@@ -408,7 +408,11 @@ $t:         0.2s ease;
 
 // En móviles se reduce el padding y la rejilla pasa a una sola columna.
 @media (max-width: 600px) {
-  .page { padding: 16px 12px 48px; }
+  .page {
+    margin-top: 0;
+    padding: 12px 12px 48px;
+  }
   .page-title { font-size: 1.8rem; }
   .events-grid { grid-template-columns: 1fr; }
+  .page-header { margin-bottom: 24px; }
 }

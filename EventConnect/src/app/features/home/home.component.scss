@@ -412,7 +412,7 @@ body { overflow-x: hidden; }
 // Tablet (max 900px)
 @media (max-width: 900px) {
   .hero {
-    margin: 80px 20px 0;
+    margin: 12px 20px 0;
     height: 420px;
     border-radius: 18px;
   }
@@ -439,7 +439,7 @@ body { overflow-x: hidden; }
 // Móvil grande (max 600px)
 @media (max-width: 600px) {
   .hero {
-    margin: 70px 12px 0;
+    margin: 12px 12px 0;
     height: 340px;
     border-radius: 14px;
     box-shadow: 0 6px 30px rgba(37,99,235,0.35), 0 2px 10px rgba(37,99,235,0.15);
@@ -473,7 +473,7 @@ body { overflow-x: hidden; }
 // Móvil pequeño (max 400px)
 @media (max-width: 400px) {
   .hero {
-    margin: 65px 8px 0;
+    margin: 12px 8px 0;
     height: 280px;
     border-radius: 12px;
   }
