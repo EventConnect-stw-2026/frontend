@@ -1,54 +1,78 @@
+<!-- 
+  Aplicación: EventConnect - Plataforma de gestión de eventos
+  Archivo: admin-settings.component.html
+  Descripción: Plantilla HTML para la configuración general del panel de administración.
+  Autor: Pablo Báscones, Mario Caudevilla, Mario Hernández y David Borrel
+-->
+
+<!-- Barra superior del panel de administración -->
 <app-admin-topbar title="Configuración General"></app-admin-topbar>
 
-<!-- Mensajes de estado -->
+<!-- Mensaje mostrado cuando una acción se completa correctamente -->
 <div *ngIf="successMessage" style="background: #d4edda; color: #155724; padding: 12px; border-radius: 8px; margin-bottom: 16px;">
   ✅ {{ successMessage }}
 </div>
 
+<!-- Mensaje mostrado cuando ocurre un error en alguna operación -->
 <div *ngIf="errorMessage" style="background: #f8d7da; color: #721c24; padding: 12px; border-radius: 8px; margin-bottom: 16px;">
   ❌ {{ errorMessage }}
 </div>
 
+<!-- Contenedor principal de configuración cargada de forma asíncrona -->
 <ng-container *ngIf="settings$ | async as settingsData">
+
+  <!-- Estado de carga de la configuración -->
   <div *ngIf="settingsData.isLoading" style="text-align: center; padding: 40px; color: #666;">
     ⏳ Cargando configuración...
   </div>
 
+  <!-- Conjunto de tarjetas de configuración -->
   <section class="settings-stack" *ngIf="!settingsData.isLoading">
+
+    <!-- Tarjeta de información general de la aplicación -->
     <section class="settings-card">
       <h2>📋 Información General de la Aplicación</h2>
 
+      <!-- Formulario reactivo de información general -->
       <form [formGroup]="generalForm" class="settings-form">
+
+        <!-- Campo para el nombre de la aplicación -->
         <div class="form-row">
           <label>Nombre de la aplicación</label>
           <input type="text" formControlName="appName">
         </div>
 
+        <!-- Campo para la descripción general -->
         <div class="form-row">
           <label>Descripción</label>
           <input type="text" formControlName="description">
         </div>
 
+        <!-- Campo para el correo de contacto -->
         <div class="form-row">
           <label>Email de contacto</label>
           <input type="email" formControlName="contactEmail">
         </div>
 
+        <!-- Campo para el teléfono de contacto -->
         <div class="form-row">
           <label>Teléfono de contacto</label>
           <input type="text" formControlName="contactPhone">
         </div>
 
+        <!-- Campo para la zona horaria de la plataforma -->
         <div class="form-row">
           <label>Zona horaria</label>
           <input type="text" formControlName="timezone">
         </div>
 
+        <!-- Campo para el idioma por defecto -->
         <div class="form-row">
           <label>Idioma por defecto</label>
           <input type="text" formControlName="defaultLanguage">
         </div>
 
+        <!-- Botones de acción del formulario general -->
         <div class="action-row">
           <button type="button" class="primary-btn" (click)="saveGeneral()" [disabled]="savingGeneral">
             {{ savingGeneral ? '⏳ Guardando...' : '💾 Guardar Cambios' }}
@@ -60,30 +84,38 @@
       </form>
     </section>
 
+    <!-- Tarjeta de políticas de moderación -->
     <section class="settings-card">
       <h2>🔒 Políticas de Moderación</h2>
 
+      <!-- Formulario reactivo de configuración de moderación -->
       <form [formGroup]="moderationForm" class="settings-form">
+
+        <!-- Opción para exigir aprobación de nuevos eventos -->
         <label class="checkbox-row">
           <input type="checkbox" formControlName="requireEventApproval">
           Requerir aprobación de nuevos eventos de público
         </label>
 
+        <!-- Opción para filtrar automáticamente palabras prohibidas -->
         <label class="checkbox-row">
           <input type="checkbox" formControlName="autoDetectWords">
           Filtrar palabras prohibidas automáticamente
         </label>
 
+        <!-- Opción para banear usuarios tras varios reportes -->
         <label class="checkbox-row">
           <input type="checkbox" formControlName="autoBanAfterReports">
           Banear usuarios tras 5 reportes acumulados
         </label>
 
+        <!-- Opción para notificar a administradores ante incidencias -->
         <label class="checkbox-row">
           <input type="checkbox" formControlName="notifyModeratorsOnReports">
           Notificar admins cuando un evento supere el contenido
         </label>
 
+        <!-- Campo para configurar palabras prohibidas -->
         <div class="form-column">
           <label>Palabras prohibidas</label>
           <input
@@ -94,6 +126,7 @@
           <small>Ejemplo: spam, ofertas, impulsado</small>
         </div>
 
+        <!-- Botones de acción de la configuración de moderación -->
         <div class="action-row">
           <button type="button" class="primary-btn" (click)="saveModeration()" [disabled]="savingModeration">
             {{ savingModeration ? '⏳ Guardando...' : '💾 Guardar Cambios' }}
@@ -105,30 +138,38 @@
       </form>
     </section>
 
+    <!-- Tarjeta de configuración de notificaciones -->
     <section class="settings-card">
       <h2>🔔 Notificaciones</h2>
 
+      <!-- Formulario reactivo de preferencias de notificación -->
       <form [formGroup]="notificationsForm" class="settings-form">
+
+        <!-- Opción para avisar sobre usuarios reportados -->
         <label class="checkbox-row">
           <input type="checkbox" formControlName="notifyReportedUsers">
           Enviar alertas de usuarios reportados
         </label>
 
+        <!-- Opción para avisar sobre contenido marcado -->
         <label class="checkbox-row">
           <input type="checkbox" formControlName="notifyFlaggedContent">
           Notificar cuando hay contenido flaggeado
         </label>
 
+        <!-- Opción para activar resumen semanal -->
         <label class="checkbox-row">
           <input type="checkbox" formControlName="weeklySummary">
           Resumen semanal de actividad (lunes a las 9:00)
         </label>
 
+        <!-- Opción para recibir alertas del sistema -->
         <label class="checkbox-row">
           <input type="checkbox" formControlName="systemAlerts">
           Alertas de errores del sistema
         </label>
 
+        <!-- Botón para guardar configuración de notificaciones -->
         <div class="action-row">
           <button type="button" class="primary-btn" (click)="saveNotifications()" [disabled]="savingNotifications">
             {{ savingNotifications ? '⏳ Guardando...' : '💾 Guardar Cambios' }}
@@ -137,71 +178,83 @@
       </form>
     </section>
 
-  <ng-container *ngIf="systemStatus$ | async as systemData">
-    <section class="settings-card" *ngIf="!systemData.isLoading && !systemData.errorMessage">
-      <h2>🗄 Respaldo y Datos</h2>
+    <!-- Contenedor de información del sistema cargada de forma asíncrona -->
+    <ng-container *ngIf="systemStatus$ | async as systemData">
 
-      <div class="info-box">
-        <p><strong>Último respaldo automático:</strong> {{ systemData.status.lastBackup }}</p>
-        <p><strong>Próximo respaldo programado:</strong> {{ systemData.status.nextBackup }}</p>
-        <p><strong>Frecuencia:</strong> {{ systemData.status.backupFrequency === 'daily' ? 'Diariamente a las 3:00 AM' : systemData.status.backupFrequency }}</p>
-      </div>
+      <!-- Tarjeta de respaldo y datos -->
+      <section class="settings-card" *ngIf="!systemData.isLoading && !systemData.errorMessage">
+        <h2>🗄 Respaldo y Datos</h2>
 
+        <!-- Información sobre copias de seguridad -->
+        <div class="info-box">
+          <p><strong>Último respaldo automático:</strong> {{ systemData.status.lastBackup }}</p>
+          <p><strong>Próximo respaldo programado:</strong> {{ systemData.status.nextBackup }}</p>
+          <p><strong>Frecuencia:</strong> {{ systemData.status.backupFrequency === 'daily' ? 'Diariamente a las 3:00 AM' : systemData.status.backupFrequency }}</p>
+        </div>
+
+        <!-- Acciones relacionadas con copias y limpieza -->
+        <div class="tool-actions">
+          <button type="button" class="primary-btn" (click)="downloadManualBackup()">
+            ⬇ Descargar Respaldo Manual
+          </button>
+          <button type="button" class="secondary-btn">
+            🧹 Limpiar Datos Antiguos
+          </button>
+        </div>
+
+        <!-- Nota informativa sobre backups -->
+        <small class="note">
+          Consejo: Los respaldos se almacenan en servidor seguro durante 90 días. Los datos se purifican automáticamente según la política de privacidad.
+        </small>
+      </section>
+
+      <!-- Tarjeta de mantenimiento del sistema -->
+      <section class="settings-card" *ngIf="!systemData.isLoading && !systemData.errorMessage">
+        <h2>🛠 Mantenimiento</h2>
+
+        <!-- Información general del estado del sistema -->
+        <div class="info-box">
+          <p><strong>Estado del sistema:</strong> {{ systemData.status.isOperational ? '✅ Operativo' : '❌ No Operativo' }}</p>
+          <p><strong>Carga del sistema:</strong> {{ systemData.status.systemLoad }}</p>
+          <p><strong>Última actualización:</strong> {{ systemData.status.lastUpdateDate }}</p>
+        </div>
+
+        <!-- Acciones de mantenimiento -->
+        <div class="tool-actions">
+          <button type="button" class="secondary-btn" (click)="clearCache()">
+            🧽 Limpiar Caché
+          </button>
+          <button type="button" class="secondary-btn" (click)="optimizeDatabase()">
+            ⚙ Optimizar Base de Datos
+          </button>
+          <button type="button" class="secondary-btn" (click)="viewLogs()">
+            📄 Ver Logs del Sistema
+          </button>
+        </div>
+
+        <!-- Nota informativa sobre mantenimiento automático -->
+        <small class="note">
+          El mantenimiento se realiza automáticamente cada noche a las 02:00 AM. No es necesario hacerlo manualmente excepto en caso de problemas.
+        </small>
+      </section>
+    </ng-container>
+
+    <!-- Tarjeta de seguridad administrativa -->
+    <section class="settings-card">
+      <h2>🔐 Seguridad</h2>
+
+      <!-- Acciones relacionadas con seguridad y sesión -->
       <div class="tool-actions">
-        <button type="button" class="primary-btn" (click)="downloadManualBackup()">
-          ⬇ Descargar Respaldo Manual
+        <button type="button" class="secondary-btn" (click)="changeAdminPassword()">
+          🔑 Cambiar Contraseña Admin
         </button>
-        <button type="button" class="secondary-btn">
-          🧹 Limpiar Datos Antiguos
+        <button type="button" class="secondary-btn" (click)="resetSessionTokens()">
+          ♻ Restablecer Tokens de Sesión
+        </button>
+        <button type="button" class="secondary-btn" (click)="viewAccessLogs()">
+          📜 Ver Logs de Acceso
         </button>
       </div>
-
-      <small class="note">
-        Consejo: Los respaldos se almacenan en servidor seguro durante 90 días. Los datos se purifican automáticamente según la política de privacidad.
-      </small>
     </section>
-
-    <section class="settings-card" *ngIf="!systemData.isLoading && !systemData.errorMessage">
-      <h2>🛠 Mantenimiento</h2>
-
-      <div class="info-box">
-        <p><strong>Estado del sistema:</strong> {{ systemData.status.isOperational ? '✅ Operativo' : '❌ No Operativo' }}</p>
-        <p><strong>Carga del sistema:</strong> {{ systemData.status.systemLoad }}</p>
-        <p><strong>Última actualización:</strong> {{ systemData.status.lastUpdateDate }}</p>
-      </div>
-
-      <div class="tool-actions">
-        <button type="button" class="secondary-btn" (click)="clearCache()">
-          🧽 Limpiar Caché
-        </button>
-        <button type="button" class="secondary-btn" (click)="optimizeDatabase()">
-          ⚙ Optimizar Base de Datos
-        </button>
-        <button type="button" class="secondary-btn" (click)="viewLogs()">
-          📄 Ver Logs del Sistema
-        </button>
-      </div>
-
-      <small class="note">
-        El mantenimiento se realiza automáticamente cada noche a las 02:00 AM. No es necesario hacerlo manualmente excepto en caso de problemas.
-      </small>
-    </section>
-  </ng-container>
-
-  <section class="settings-card">
-    <h2>🔐 Seguridad</h2>
-
-    <div class="tool-actions">
-      <button type="button" class="secondary-btn" (click)="changeAdminPassword()">
-        🔑 Cambiar Contraseña Admin
-      </button>
-      <button type="button" class="secondary-btn" (click)="resetSessionTokens()">
-        ♻ Restablecer Tokens de Sesión
-      </button>
-      <button type="button" class="secondary-btn" (click)="viewAccessLogs()">
-        📜 Ver Logs de Acceso
-      </button>
-    </div>
-  </section>
   </section>
 </ng-container>

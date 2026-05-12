@@ -1,21 +1,51 @@
+<!-- 
+  Aplicación: EventConnect - Plataforma de gestión de eventos
+  Archivo: admin-sidebar.component.html
+  Descripción: Plantilla HTML del menú lateral del panel de administración.
+  Autor: Pablo Báscones, Mario Caudevilla, Mario Hernández y David Borrel
+-->
+
+<!-- Barra lateral principal del panel de administración -->
 <aside class="sidebar">
+
+  <!-- Sección de marca o logo del panel -->
   <div class="brand">
+
+    <!-- Icono visual del panel de administración -->
     <span class="brand-icon">📊</span>
+
+    <!-- Texto identificativo del panel -->
     <span class="brand-text">Admin</span>
   </div>
 
+  <!-- Menú principal de navegación -->
   <nav class="menu">
+
+    <!-- 
+      Generación dinámica de las opciones del menú
+      utilizando la lista menuItems definida en el componente TypeScript
+    -->
     <a
       *ngFor="let item of menuItems"
       [routerLink]="item.route"
       routerLinkActive="active"
       class="menu-item"
     >
+
+      <!-- Parte izquierda de cada elemento del menú -->
       <span class="menu-left">
+
+        <!-- Icono asociado a la opción -->
         <span class="menu-icon">{{ item.icon }}</span>
+
+        <!-- Texto descriptivo de la opción -->
         <span>{{ item.label }}</span>
       </span>
 
+      <!-- 
+        Badge opcional mostrado únicamente
+        si el elemento contiene información adicional
+      -->
       <span *ngIf="item.badge" class="badge">{{ item.badge }}</span>
     </a>
   </nav>

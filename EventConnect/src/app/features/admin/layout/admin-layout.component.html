@@ -1,7 +1,30 @@
+<!-- 
+  Aplicación: EventConnect - Plataforma de gestión de eventos
+  Archivo: admin-layout.component.html
+  Descripción: Plantilla principal del layout del panel de administración.
+  Autor: Pablo Báscones, Mario Caudevilla, Mario Hernández y David Borrel
+-->
+
+<!-- 
+  Contenedor principal del layout de administración.
+  Organiza el sidebar lateral y el contenido principal.
+-->
 <div class="admin-layout">
+
+  <!-- 
+    Componente del menú lateral de administración.
+    Incluye las distintas opciones de navegación del panel.
+  -->
   <app-admin-sidebar></app-admin-sidebar>
 
+  <!-- 
+    Contenedor principal del contenido dinámico.
+    Aquí se renderizan las distintas vistas administrativas
+    mediante el sistema de rutas de Angular.
+  -->
   <main class="admin-content">
+
+    <!-- Punto de carga de las rutas hijas -->
     <router-outlet></router-outlet>
   </main>
 </div>
