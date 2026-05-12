@@ -37,8 +37,8 @@ interface RegisterPayload {
 // incluyendo el mensaje, el token y los datos principales del usuario autenticado.
 interface AuthResponse {
   message: string;
-  token: string;
-  user: {
+  token?: string;
+  user?: {
     _id: string;
     name: string;
     username: string;
