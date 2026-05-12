@@ -1,34 +1,87 @@
+<!--
+  Aplicación: EventConnect - Plataforma de gestión de eventos
+  Archivo: event-card.html
+  Descripción: Plantilla visual de una tarjeta de evento utilizada para
+  mostrar información resumida de cada evento en listados y búsquedas.
+  Autor: Pablo Báscones, Mario Caudevilla, Mario Hernández y David Borrel
+ -->
+
+<!--
+  Tarjeta principal del evento.
+  Al hacer clic redirige automáticamente a la página de detalle del evento.
+-->
 <a class="card" [routerLink]="['/events', event?._id]">
 
+  <!-- Imagen principal del evento -->
   <div class="image-wrapper">
+
+    <!--
+      Imagen del evento.
+      Si ocurre un error de carga se sustituye por una imagen placeholder.
+    -->
     <img [src]="getImage(event)"
          (error)="onImageError($event)"
          [alt]="event?.title">
+
+    <!-- Categoría del evento -->
     @if (event?.category) {
       <span class="card-category">{{ event.category }}</span>
     }
   </div>
 
+  <!-- Información textual del evento -->
   <div class="info">
+
+    <!-- Título -->
     <h3>{{ event?.title }}</h3>
 
+    <!-- Fecha y hora -->
     <p class="date">
-      <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+      <svg xmlns="http://www.w3.org/2000/svg"
+           width="13"
+           height="13"
+           viewBox="0 0 24 24"
+           fill="none"
+           stroke="currentColor"
+           stroke-width="2.5"
+           stroke-linecap="round"
+           stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <polyline points="12 6 12 12 16 14"/>
       </svg>
+
       {{ event?.startDate | date:'dd/MM/yyyy HH:mm' }}
     </p>
 
+    <!-- Ubicación -->
     <p class="location">
-      <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+      <svg xmlns="http://www.w3.org/2000/svg"
+           width="13"
+           height="13"
+           viewBox="0 0 24 24"
+           fill="none"
+           stroke="currentColor"
+           stroke-width="2.5"
+           stroke-linecap="round"
+           stroke-linejoin="round">
+        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+        <circle cx="12" cy="10" r="3"/>
       </svg>
+
       {{ event?.locationName }}
     </p>
 
-    <p class="description">{{ event?.description | stripHtml }}</p>
+    <!--
+      Descripción resumida del evento.
+      Se eliminan etiquetas HTML mediante el pipe stripHtml.
+    -->
+    <p class="description">
+      {{ event?.description | stripHtml }}
+    </p>
 
+    <!-- Enlace visual -->
     <span class="card-link">Ver más →</span>
+
   </div>
 
 </a>

@@ -1,6 +1,18 @@
+<!-- 
+  Aplicación: EventConnect - Plataforma de gestión de eventos
+  Archivo: stats.component.html
+  Descripción: Plantilla HTML de la pantalla de estadísticas, donde el usuario puede consultar
+  estadísticas personales y estadísticas globales de eventos mediante tarjetas y gráficas.
+  Autor: Pablo Báscones, Mario Caudevilla, Mario Hernández y David Borrel
+-->
+
+<!-- Cabecera principal de la aplicación -->
 <app-header></app-header>
 
+<!-- Contenedor principal de la pantalla de estadísticas -->
 <div class="stats-wrapper">
+
+  <!-- Selector de pestañas entre estadísticas personales y globales -->
   <div class="tab-switcher">
     <button [class.active]="activeTab === 'personal'" (click)="setTab('personal')">
       Tus estadísticas
@@ -10,10 +22,11 @@
     </button>
   </div>
 
+  <!-- Bloque de estadísticas globales de todos los eventos -->
   @if (activeTab === 'global') {
     <div class="global-stats">
 
-      <!-- Eventos por categoría -->
+      <!-- Gráfica de eventos agrupados por categoría -->
       <div class="chart-card col-span-2">
         <h3>Eventos por categoría</h3>
         <div class="bar-chart">
@@ -30,21 +43,23 @@
         </div>
       </div>
 
-      <!-- Top categorías -->
+      <!-- Ranking de las tres categorías con más eventos -->
       <div class="chart-card">
         <h3>
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:8px"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>
           Top categorías
         </h3>
+
         <div class="top-list">
           @for (item of sortedCategoryStats.slice(0,3); track item.label; let i = $index) {
             <div class="top-item">
               <span class="top-rank">
                 <span class="medal" [class.gold]="i===0" [class.silver]="i===1" [class.bronze]="i===2">
-                {{ i + 1 }}
-              </span>
+                  {{ i + 1 }}
+                </span>
               </span>
 
+              <!-- Información de cada categoría destacada y barra proporcional -->
               <div class="top-info">
                 <div class="top-header">
                   <span class="top-label">{{ item.label }}</span>
@@ -63,7 +78,7 @@
         </div>
       </div>
 
-      <!-- Eventos por día -->
+      <!-- Gráfica global de eventos por día de la semana -->
       <div class="chart-card col-span-3">
         <h3>Eventos por día de la semana</h3>
         <div class="bar-chart bar-chart--days">
@@ -82,9 +97,11 @@
     </div>
   }
 
+  <!-- Bloque de estadísticas personales del usuario -->
   @if (activeTab === 'personal') {
     <div class="personal-grid">
 
+      <!-- Tarjeta con número de eventos asistidos -->
       <div class="stat-card">
         <span class="stat-icon">
           <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M13 5v2"/><path d="M13 17v2"/><path d="M13 11v2"/></svg>
@@ -93,6 +110,7 @@
         <p class="stat-value">{{ personalStats.eventsAttended }}</p>
       </div>
 
+      <!-- Tarjeta con número de amigos conocidos -->
       <div class="stat-card">
         <span class="stat-icon">
           <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
@@ -101,6 +119,7 @@
         <p class="stat-value">{{ personalStats.friendsMet }}</p>
       </div>
 
+      <!-- Tarjeta destacada con la categoría más frecuente del usuario -->
       <div class="stat-card highlight">
         <span class="stat-icon">
           <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
@@ -109,6 +128,7 @@
         <p class="stat-value stat-value--sm">{{ personalStats.topCategory }}</p>
       </div>
 
+      <!-- Tarjeta con el día más activo del usuario -->
       <div class="stat-card">
         <span class="stat-icon">
           <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
@@ -117,8 +137,10 @@
         <p class="stat-value stat-value--sm">{{ personalStats.busiestDay }}</p>
       </div>
 
+      <!-- Gráficas personales cuando el usuario tiene datos suficientes -->
       @if (personalStats.categoryStats.length) {
 
+        <!-- Gráfica personal de eventos por categoría -->
         <div class="chart-card wide">
           <h3>Tus eventos por categoría</h3>
           <div class="bar-chart">
@@ -135,6 +157,7 @@
           </div>
         </div>
 
+        <!-- Gráfica personal de eventos por día -->
         <div class="chart-card wide">
           <h3>Tus eventos por día</h3>
           <div class="bar-chart">
@@ -151,6 +174,7 @@
           </div>
         </div>
 
+      <!-- Estado vacío cuando todavía no hay datos personales para gráficas -->
       } @else {
 
         <div class="chart-card wide empty-card">

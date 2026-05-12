@@ -1,7 +1,36 @@
+/**
+ * Aplicación: EventConnect - Plataforma de gestión de eventos
+ * Archivo: tsconfig.e2e.json
+ * Descripción: Configuración TypeScript específica para
+ * las pruebas end-to-end (E2E) con Playwright.
+ * Define:
+ * - tipos disponibles en testing
+ * - archivos incluidos para pruebas E2E
+ * Autor: Pablo Báscones, Mario Caudevilla, Mario Hernández y David Borrel
+ */
+
 {
+  /**
+   * Hereda la configuración principal del proyecto.
+   */
   "extends": "./tsconfig.json",
+
   "compilerOptions": {
-    "types": ["node", "@playwright/test"]
+
+    /**
+     * Tipos disponibles durante los tests.
+     */
+    "types": [
+      "node",
+      "@playwright/test"
+    ]
   },
-  "include": ["playwright.config.ts", "e2e/**/*.ts"]
+
+  /**
+   * Archivos incluidos en el entorno E2E.
+   */
+  "include": [
+    "playwright.config.ts",
+    "e2e/**/*.ts"
+  ]
 }

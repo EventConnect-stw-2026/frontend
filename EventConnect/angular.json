@@ -1,4 +1,41 @@
 {
+  "_header": {
+    "aplicacion": "EventConnect - Plataforma de gestión de eventos",
+    "archivo": "angular.json",
+    "descripcion": "Configuración principal del workspace Angular del frontend de EventConnect.",
+    "autor": "Pablo Báscones, Mario Caudevilla, Mario Hernández y David Borrel"
+  },
+  "_documentation": {
+    "purpose": "Archivo de configuración de Angular CLI. Define el proyecto principal, opciones de compilación, servidor de desarrollo, testing, assets, estilos globales y configuraciones de producción y desarrollo.",
+    "fields": {
+      "$schema": "Esquema oficial usado por Angular CLI para validar la estructura del archivo.",
+      "version": "Versión del formato de configuración de Angular CLI.",
+      "cli": "Configuración general de Angular CLI, incluyendo gestor de paquetes y analytics.",
+      "newProjectRoot": "Directorio base donde se crearían nuevos proyectos dentro del workspace.",
+      "projects": "Listado de proyectos definidos en el workspace.",
+      "projectType": "Indica si el proyecto es una aplicación o una librería.",
+      "schematics": "Configuración por defecto para generar elementos Angular, como componentes con SCSS.",
+      "root": "Carpeta raíz del proyecto.",
+      "sourceRoot": "Carpeta donde se encuentra el código fuente principal.",
+      "prefix": "Prefijo utilizado en los selectores de componentes.",
+      "architect": "Define tareas principales del proyecto, como build, serve y test.",
+      "build": "Configuración de compilación de la aplicación.",
+      "serve": "Configuración del servidor de desarrollo.",
+      "test": "Configuración de ejecución de pruebas unitarias.",
+      "assets": "Recursos estáticos incluidos en la build.",
+      "styles": "Hojas de estilo globales cargadas por la aplicación.",
+      "budgets": "Límites de tamaño para controlar el peso de la aplicación.",
+      "configurations": "Variantes de configuración para producción y desarrollo."
+    },
+    "usage": {
+      "build_production": "ng build",
+      "build_development": "ng build --configuration development",
+      "serve_development": "ng serve",
+      "serve_production": "ng serve --configuration production",
+      "run_tests": "ng test"
+    },
+    "notes": "angular.json es JSON estricto y no admite comentarios tradicionales. La documentación se incluye mediante los objetos '_header' y '_documentation'."
+  },
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "version": 1,
   "cli": {

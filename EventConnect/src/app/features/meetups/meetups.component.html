@@ -1,7 +1,19 @@
+<!-- 
+  Aplicación: EventConnect - Plataforma de gestión de eventos
+  Archivo: meetups.component.html
+  Descripción: Plantilla HTML de la pantalla de quedadas, donde el usuario puede crear quedadas,
+  seleccionar amigos y eventos, consultar quedadas organizadas y responder invitaciones.
+  Autor: Pablo Báscones, Mario Caudevilla, Mario Hernández y David Borrel
+-->
+
+<!-- Cabecera principal de la aplicación -->
 <app-header></app-header>
 
+<!-- Contenedor principal de la página de quedadas -->
 <div class="meetups-page">
   <div class="meetups-shell">
+
+    <!-- Sección superior con título, descripción y botón de creación -->
     <section class="meetups-hero">
       <div>
         <span class="hero-badge">EventConnect</span>
@@ -9,6 +21,7 @@
         <p>Invita a tus amigos, elige un evento y organiza el punto de encuentro.</p>
       </div>
 
+      <!-- Botón para abrir el modal de creación de quedada -->
       <button
         class="create-btn"
         [disabled]="!canOpenCreateModal"
@@ -18,6 +31,7 @@
       </button>
     </section>
 
+    <!-- Pestañas principales de la pantalla -->
     <div class="tabs">
       <button [class.active]="activeTab === 'create'" (click)="activeTab = 'create'">Crear</button>
       <button [class.active]="activeTab === 'organized'" (click)="activeTab = 'organized'">Organizadas</button>
@@ -27,11 +41,16 @@
         class="tab-with-dot"
       >
         <span>Invitaciones</span>
+
+        <!-- Indicador visual de invitaciones pendientes -->
         <span *ngIf="hasPendingMeetupInvitations" class="nav-notification-dot"></span>
       </button>
     </div>
 
+    <!-- Pestaña para crear una nueva quedada -->
     <ng-container *ngIf="activeTab === 'create'">
+
+      <!-- Resumen de selección actual de amigos y evento -->
       <div class="selection-summary">
         <div class="summary-card">
           <span class="summary-value">{{ selectedFriendsCount }}</span>
@@ -44,6 +63,8 @@
       </div>
 
       <div class="meetups-grid">
+
+        <!-- Paso 1: selección de amigos invitados -->
         <section class="panel">
           <div class="section-header">
             <div>
@@ -52,6 +73,7 @@
             </div>
           </div>
 
+          <!-- Buscador para filtrar amigos por nombre o usuario -->
           <div class="friends-toolbar">
             <input
               type="text"
@@ -60,12 +82,14 @@
             />
           </div>
 
+          <!-- Estados de carga y vacío del listado de amigos -->
           <div *ngIf="loadingFriends" class="empty-state">Cargando amigos...</div>
 
           <div *ngIf="!loadingFriends && filteredFriends.length === 0" class="empty-state">
             No tienes amigos disponibles para invitar.
           </div>
 
+          <!-- Listado de amigos seleccionables -->
           <div *ngIf="!loadingFriends && filteredFriends.length > 0" class="friends-list">
             <button
               type="button"
@@ -79,11 +103,14 @@
                 <p class="name">{{ friend.name }}</p>
                 <p class="username">@{{ friend.username }}</p>
               </div>
+
+              <!-- Marca visual del amigo seleccionado -->
               <span class="checkmark" *ngIf="selectedFriendIds.has(friend._id)">✓</span>
             </button>
           </div>
         </section>
 
+        <!-- Paso 2: selección del evento asociado a la quedada -->
         <section class="panel">
           <div class="section-header">
             <div>
@@ -92,6 +119,7 @@
             </div>
           </div>
 
+          <!-- Filtro de eventos por categoría -->
           <div class="categories">
             <button
               *ngFor="let cat of categories"
@@ -103,12 +131,14 @@
             </button>
           </div>
 
+          <!-- Estados de carga y vacío del listado de eventos -->
           <div *ngIf="loadingEvents" class="empty-state">Cargando eventos...</div>
 
           <div *ngIf="!loadingEvents && events.length === 0" class="empty-state">
             No hay eventos para esta categoría.
           </div>
 
+          <!-- Listado de eventos seleccionables -->
           <div *ngIf="!loadingEvents && events.length > 0" class="events-list">
             <button
               type="button"
@@ -129,6 +159,7 @@
             </button>
           </div>
 
+          <!-- Paginación del listado de eventos -->
           <div class="pagination">
             <button (click)="prevPage()" [disabled]="eventPage === 1">← Anterior</button>
             <span>Página {{ eventPage }} de {{ eventTotalPages }}</span>
@@ -138,6 +169,7 @@
       </div>
     </ng-container>
 
+    <!-- Pestaña de quedadas organizadas por el usuario -->
     <ng-container *ngIf="activeTab === 'organized'">
       <section class="panel">
         <div class="section-header">
@@ -147,12 +179,14 @@
           </div>
         </div>
 
+        <!-- Estados de carga y vacío de quedadas organizadas -->
         <div *ngIf="loadingOrganized" class="empty-state">Cargando quedadas...</div>
 
         <div *ngIf="!loadingOrganized && organizedMeetups.length === 0" class="empty-state">
           Aún no has organizado ninguna quedada.
         </div>
 
+        <!-- Listado de quedadas creadas por el usuario -->
         <div *ngIf="!loadingOrganized && organizedMeetups.length > 0" class="meetup-list">
           <div *ngFor="let meetup of organizedMeetups" class="meetup-card">
             <div class="meetup-card-top">
@@ -161,11 +195,13 @@
                 <p>{{ meetup.meetupDateTime | date:'dd/MM/yyyy HH:mm' }} · {{ meetup.meetupPlace }}</p>
               </div>
 
+              <!-- Estado de la quedada organizada -->
               <span class="status" [class.cancelled]="meetup.status === 'cancelled'">
                 {{ meetup.status === 'cancelled' ? 'Cancelada' : 'Activa' }}
               </span>
             </div>
 
+            <!-- Participantes invitados y respuesta de cada uno -->
             <div class="participants">
               <div class="participant-row" *ngFor="let participant of meetup.participants">
                 <span>{{ participant.user?.name }} (@{{ participant.user?.username }})</span>
@@ -175,6 +211,7 @@
               </div>
             </div>
 
+            <!-- Acción disponible para cancelar una quedada activa -->
             <div class="meetup-actions" *ngIf="meetup.status === 'active'">
               <button class="danger-btn" (click)="cancelMeetup(meetup._id)">Cancelar quedada</button>
             </div>
@@ -183,6 +220,7 @@
       </section>
     </ng-container>
 
+    <!-- Pestaña de invitaciones a quedadas recibidas -->
     <ng-container *ngIf="activeTab === 'invited'">
       <section class="panel">
         <div class="section-header">
@@ -192,12 +230,14 @@
           </div>
         </div>
 
+        <!-- Estados de carga y vacío de invitaciones recibidas -->
         <div *ngIf="loadingInvited" class="empty-state">Cargando invitaciones...</div>
 
         <div *ngIf="!loadingInvited && invitedMeetups.length === 0" class="empty-state">
           No tienes invitaciones a quedadas.
         </div>
 
+        <!-- Listado de invitaciones a quedadas -->
         <div *ngIf="!loadingInvited && invitedMeetups.length > 0" class="meetup-list">
           <div *ngFor="let meetup of invitedMeetups" class="meetup-card">
             <div class="meetup-card-top">
@@ -207,16 +247,19 @@
                 <p>{{ meetup.meetupDateTime | date:'dd/MM/yyyy HH:mm' }} · {{ meetup.meetupPlace }}</p>
               </div>
 
+              <!-- Estado general de la quedada recibida -->
               <span class="status" [class.cancelled]="meetup.status === 'cancelled'">
                 {{ meetup.status === 'cancelled' ? 'Cancelada' : 'Activa' }}
               </span>
             </div>
 
+            <!-- Acciones para responder una invitación pendiente -->
             <div class="meetup-actions" *ngIf="meetup.status === 'active' && getParticipantResponse(meetup) === 'pending'">
               <button class="accept-btn" (click)="respondToMeetup(meetup._id, 'accepted')">Aceptar</button>
               <button class="reject-btn" (click)="respondToMeetup(meetup._id, 'rejected')">Rechazar</button>
             </div>
 
+            <!-- Estado mostrado cuando la invitación ya ha sido respondida -->
             <div class="meetup-actions" *ngIf="meetup.status === 'active' && getParticipantResponse(meetup) !== 'pending'">
               <span
                 class="participant-status"
@@ -232,8 +275,11 @@
     </ng-container>
   </div>
 
+  <!-- Modal para configurar fecha, hora y lugar de la quedada -->
   <div class="modal-overlay" *ngIf="showCreateModal" (click)="closeCreateModal()">
     <div class="modal-content" (click)="$event.stopPropagation()">
+
+      <!-- Cabecera del modal de creación -->
       <div class="modal-header">
         <div>
           <p class="section-eyebrow">Confirmar quedada</p>
@@ -243,9 +289,12 @@
       </div>
 
       <div class="modal-body">
+
+        <!-- Campo para seleccionar la fecha y hora de la quedada -->
         <label>Fecha y hora de la quedada</label>
         <input type="datetime-local" [(ngModel)]="meetupDateTime" />
 
+        <!-- Campo para indicar el lugar concreto de encuentro -->
         <label>Lugar de la quedada</label>
         <input
           type="text"
@@ -253,6 +302,7 @@
           placeholder="Ej: Entrada principal"
         />
 
+        <!-- Acciones del modal de creación -->
         <div class="modal-actions">
           <button class="secondary-btn" (click)="closeCreateModal()">Cancelar</button>
           <button class="primary-btn" [disabled]="creatingMeetup" (click)="createMeetup()">

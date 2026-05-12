@@ -1,4 +1,22 @@
 {
+  "_header": {
+    "aplicacion": "EventConnect - Plataforma de gestión de eventos",
+    "archivo": ".prettierrc",
+    "descripcion": "Configuración global de Prettier para mantener un formato consistente en el frontend Angular.",
+    "autor": "Pablo Báscones, Mario Caudevilla, Mario Hernández y David Borrel"
+  },
+  "_documentation": {
+    "purpose": "Archivo de configuración de Prettier utilizado para definir reglas automáticas de formato y estilo del código fuente.",
+    "fields": {
+      "printWidth": "Número máximo de caracteres permitidos por línea.",
+      "singleQuote": "Define el uso de comillas simples en lugar de dobles.",
+      "overrides": "Configuraciones específicas aplicadas a determinados tipos de archivos."
+    },
+    "overrides": {
+      "html": "Usa el parser específico de Angular para interpretar correctamente templates HTML."
+    },
+    "notes": "Este archivo utiliza formato JSON puro, por lo que no admite comentarios tradicionales. La documentación se incluye mediante los objetos '_header' y '_documentation'."
+  },
   "printWidth": 100,
   "singleQuote": true,
   "overrides": [

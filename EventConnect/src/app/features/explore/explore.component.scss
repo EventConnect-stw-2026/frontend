@@ -1,6 +1,16 @@
+/* 
+  Aplicación: EventConnect - Plataforma de gestión de eventos
+  Archivo: explore.component.scss
+  Descripción: Hoja de estilos de la pantalla de exploración de eventos, incluyendo filtros,
+  tarjetas de eventos, estados de carga, paginación y diseño responsive.
+  Autor: Pablo Báscones, Mario Caudevilla, Mario Hernández y David Borrel
+*/
+
+/* Importación de la fuente principal utilizada en el chat. */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
 // ── Variables ──────────────────────────────────────────────────────────────
+// Variables de color, tamaños y transiciones reutilizadas en toda la pantalla.
 $bg:          #f3f4f6;
 $white:       #ffffff;
 $blue:        #2563eb;
@@ -19,6 +29,7 @@ $t:           0.2s ease;
 * { box-sizing: border-box; }
 
 // ── Wrapper ────────────────────────────────────────────────────────────────
+// Contenedor principal de la página de exploración de eventos.
 .explore-wrapper {
   padding: 110px 48px 96px;
   background: $bg;
@@ -28,6 +39,7 @@ $t:           0.2s ease;
 }
 
 // ── Filters — una sola fila ────────────────────────────────────────────────
+// Barra superior que agrupa buscador, categorías y filtros de fecha.
 .filters-bar {
   display: flex;
   align-items: center;
@@ -37,6 +49,7 @@ $t:           0.2s ease;
 }
 
 // ── 1. Search ──────────────────────────────────────────────────────────────
+// Buscador textual de eventos por nombre.
 .search-box {
   display: flex;
   align-items: center;
@@ -66,6 +79,7 @@ $t:           0.2s ease;
     color: $text;
     background: transparent;
     outline: none;
+
     &::placeholder { color: $text-soft; font-weight: 400; }
   }
 
@@ -91,6 +105,7 @@ $t:           0.2s ease;
 }
 
 // ── 2. Categorías ──────────────────────────────────────────────────────────
+// Contenedor horizontal de categorías con desplazamiento lateral.
 .categories-wrapper {
   position: relative;
   display: flex;
@@ -104,6 +119,7 @@ $t:           0.2s ease;
   overflow: hidden;
 }
 
+// Lista desplazable de botones de categoría.
 .categories {
   display: flex;
   align-items: center;
@@ -114,9 +130,12 @@ $t:           0.2s ease;
   min-width: 0;
   height: 100%;
   scrollbar-width: none;
+
   &::-webkit-scrollbar { display: none; }
 }
 
+// Botón individual de categoría.
+// El estado active representa el filtro seleccionado actualmente.
 .cat-btn {
   display: inline-flex;
   align-items: center;
@@ -139,6 +158,7 @@ $t:           0.2s ease;
 }
 
 // Fade + flecha animada
+// Indicador visual que sugiere que hay más categorías hacia la derecha.
 .categories-arrow {
   position: absolute;
   right: 0;
@@ -164,6 +184,7 @@ $t:           0.2s ease;
 }
 
 // ── 3. Fechas ──────────────────────────────────────────────────────────────
+// Filtros de rango de fechas para limitar los eventos mostrados.
 .date-filters {
   display: flex;
   align-items: center;
@@ -176,6 +197,7 @@ $t:           0.2s ease;
   flex-shrink: 0;
   gap: 4px;
   transition: border-color $t;
+
   &:focus-within { border-color: $blue; }
 }
 
@@ -217,6 +239,7 @@ $t:           0.2s ease;
   flex-shrink: 0;
 }
 
+// Botón para limpiar el rango de fechas seleccionado.
 .clear-dates {
   display: flex;
   align-items: center;
@@ -233,10 +256,12 @@ $t:           0.2s ease;
   cursor: pointer;
   transition: all $t;
   flex-shrink: 0;
+
   &:hover { background: #fee2e2; }
 }
 
 // ── Estados ────────────────────────────────────────────────────────────────
+// Estados visuales mostrados durante carga, error o ausencia de resultados.
 .loading-state, .error-state, .empty-state {
   display: flex;
   flex-direction: column;
@@ -246,9 +271,11 @@ $t:           0.2s ease;
   color: $text-soft;
   font-size: 15px;
   gap: 16px;
+
   p { margin: 0; }
 }
 
+// Spinner de carga reutilizado en la pantalla.
 .spinner {
   width: 36px;
   height: 36px;
@@ -257,9 +284,11 @@ $t:           0.2s ease;
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
 }
+
 @keyframes spin { to { transform: rotate(360deg); } }
 
 // ── Grid ───────────────────────────────────────────────────────────────────
+// Rejilla principal donde se colocan las tarjetas de eventos.
 .events-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -267,6 +296,7 @@ $t:           0.2s ease;
 }
 
 // ── Card ───────────────────────────────────────────────────────────────────
+// Tarjeta individual de evento dentro del listado.
 .event-card {
   background: $white;
   border-radius: $radius-card;
@@ -283,10 +313,12 @@ $t:           0.2s ease;
     transform: translateY(-4px);
     border-color: #bfdbfe;
     box-shadow: 0 10px 28px rgba(37,99,235,0.12);
+
     .card-image img { transform: scale(1.04); }
   }
 }
 
+// Zona superior de imagen de la tarjeta.
 .card-image {
   position: relative;
   height: 190px;
@@ -302,6 +334,7 @@ $t:           0.2s ease;
   }
 }
 
+// Etiqueta de categoría situada sobre la imagen.
 .card-category {
   position: absolute;
   top: 12px; left: 12px;
@@ -315,6 +348,7 @@ $t:           0.2s ease;
   letter-spacing: 0.3px;
 }
 
+// Etiqueta mostrada cuando el evento es gratuito.
 .card-free {
   position: absolute;
   top: 12px; right: 12px;
@@ -328,6 +362,7 @@ $t:           0.2s ease;
   letter-spacing: 0.3px;
 }
 
+// Cuerpo de la tarjeta con título, fecha, ubicación, descripción y enlace.
 .card-body {
   padding: 18px 20px 20px;
   display: flex;
@@ -348,10 +383,12 @@ $t:           0.2s ease;
   }
 }
 
+// Metadatos resumidos de la tarjeta.
 .card-date     { font-size: 12px; font-weight: 600; color: $blue; margin: 0; display: flex; align-items: center; gap: 5px; svg { flex-shrink: 0; } }
 .card-location { font-size: 12px; color: $text-soft; font-weight: 500; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 5px; svg { flex-shrink: 0; } }
 .card-desc     { font-size: 13px; color: $text-mid; margin: 4px 0 0; line-height: 1.55; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 
+// Enlace visual inferior de la tarjeta hacia el detalle del evento.
 .card-link {
   margin-top: auto;
   padding-top: 12px;
@@ -362,10 +399,12 @@ $t:           0.2s ease;
   letter-spacing: 0.3px;
   border-top: 1px solid $border;
   transition: letter-spacing $t;
+
   .event-card:hover & { letter-spacing: 0.6px; }
 }
 
 // ── Pagination ─────────────────────────────────────────────────────────────
+// Controles inferiores para navegar entre páginas de resultados.
 .pagination {
   display: flex;
   justify-content: center;
@@ -386,19 +425,33 @@ $t:           0.2s ease;
     box-shadow: 0 1px 4px rgba(0,0,0,0.07);
     transition: all $t;
 
-    &:hover:not(:disabled) { border-color: $blue; color: $blue; background: $blue-soft; transform: translateY(-2px); }
+    &:hover:not(:disabled) {
+      border-color: $blue;
+      color: $blue;
+      background: $blue-soft;
+      transform: translateY(-2px);
+    }
+
     &:active  { transform: translateY(0); }
     &:disabled { opacity: 0.35; cursor: not-allowed; }
   }
 
-  span { font-size: 13px; font-weight: 600; color: $text-mid; min-width: 110px; text-align: center; }
+  span {
+    font-size: 13px;
+    font-weight: 600;
+    color: $text-mid;
+    min-width: 110px;
+    text-align: center;
+  }
 }
 
 // ── Responsive ─────────────────────────────────────────────────────────────
+// Adaptación de la rejilla a dos columnas en pantallas medianas.
 @media (max-width: 1100px) {
   .events-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
+// En tablets, los filtros pasan a ocupar varias filas.
 @media (max-width: 900px) {
   .filters-bar   { flex-wrap: wrap; height: auto; }
   .search-box    { width: 100%; }
@@ -406,6 +459,7 @@ $t:           0.2s ease;
   .date-filters  { width: 100%; justify-content: center; }
 }
 
+// En móviles, el contenido se reduce a una sola columna.
 @media (max-width: 768px) {
   .explore-wrapper { padding: 100px 16px 64px; }
   .events-grid { grid-template-columns: 1fr; }

@@ -1,36 +1,102 @@
-/* You can add global styles to this file, and also import other style files */
+/**
+ * Aplicación: EventConnect - Plataforma de gestión de eventos
+ * Archivo: styles.scss
+ * Descripción: Hoja global de estilos de la aplicación.
+ * Incluye:
+ * - Bootstrap
+ * - estilos personalizados de Leaflet
+ * - marcadores visuales del mapa
+ * Autor: Pablo Báscones, Mario Caudevilla, Mario Hernández y David Borrel
+ */
+
+/* =========================================================
+ * IMPORTS
+ * ========================================================= */
+
+/**
+ * Importación de Bootstrap SCSS.
+ */
 @use 'bootstrap/scss/bootstrap';
 
+/* =========================================================
+ * MARCADORES PERSONALIZADOS DEL MAPA
+ * ========================================================= */
+
+/**
+ * Marcador visual utilizado en Leaflet.
+ *
+ * Características:
+ * - forma tipo pin
+ * - fondo blanco
+ * - borde azul corporativo
+ * - emoji centrado
+ */
 .map-marker {
+
   width: 40px;
   height: 40px;
-  background: white;
-  border-radius: 50% 50% 50% 0;
-  transform: rotate(-45deg);
+
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.25);
+
+  background: white;
+
   border: 2px solid #2563eb;
+  border-radius: 50% 50% 50% 0;
+
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
+
   font-size: 18px;
 
-  span, &::after {
-    transform: rotate(45deg);
-    display: block;
-  }
-}
-
-.map-marker {
+  /**
+   * Rotación para crear efecto pin.
+   */
   transform: rotate(-45deg);
-  
+
+  /**
+   * Corrige la rotación del contenido interno.
+   */
+  span,
   &::after {
-    content: attr(data-emoji);
+    display: block;
     transform: rotate(45deg);
   }
 }
 
+/* =========================================================
+ * EMOJI DINÁMICO DEL MARCADOR
+ * ========================================================= */
+
+/**
+ * Inserta automáticamente el emoji asociado
+ * mediante el atributo data-emoji.
+ */
+.map-marker {
+
+  transform: rotate(-45deg);
+
+  &::after {
+
+    content: attr(data-emoji);
+
+    transform: rotate(45deg);
+  }
+}
+
+/* =========================================================
+ * PERSONALIZACIÓN DE LEAFLET
+ * ========================================================= */
+
+/**
+ * Elimina estilos por defecto de Leaflet
+ * para utilizar iconos completamente personalizados.
+ */
 .leaflet-div-icon {
+
   background: transparent !important;
+
   border: none !important;
+
   box-shadow: none !important;
 }

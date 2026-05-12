@@ -1,31 +1,71 @@
+/**
+ * Aplicación: EventConnect - Plataforma de gestión de eventos
+ * Archivo: server.ts
+ * Descripción: Servidor Express utilizado para ejecutar la
+ * aplicación Angular en entorno SSR (Server Side Rendering).
+ * Gestiona:
+ * - archivos estáticos generados en /browser
+ * - renderizado Angular SSR
+ * - posible definición de endpoints REST
+ * Autor: Pablo Báscones, Mario Caudevilla, Mario Hernández y David Borrel
+ */
+
 import {
   AngularNodeAppEngine,
   createNodeRequestHandler,
   isMainModule,
   writeResponseToNodeResponse,
 } from '@angular/ssr/node';
+
 import express from 'express';
 import { join } from 'node:path';
 
-const browserDistFolder = join(import.meta.dirname, '../browser');
+/**
+ * Ruta absoluta donde se encuentran los archivos
+ * compilados del frontend Angular.
+ */
+const browserDistFolder = join(
+  import.meta.dirname,
+  '../browser'
+);
 
+/**
+ * Inicialización del servidor Express.
+ */
 const app = express();
+
+/**
+ * Motor SSR de Angular encargado del renderizado
+ * de la aplicación en servidor.
+ */
 const angularApp = new AngularNodeAppEngine();
 
-/**
- * Example Express Rest API endpoints can be defined here.
- * Uncomment and define endpoints as necessary.
- *
- * Example:
- * ```ts
- * app.get('/api/{*splat}', (req, res) => {
- *   // Handle API request
- * });
- * ```
- */
+/* =========================================================
+ * ENDPOINTS API
+ * ========================================================= */
 
 /**
- * Serve static files from /browser
+ * Aquí podrían definirse endpoints REST adicionales.
+ *
+ * Ejemplo:
+ *
+ * app.get('/api/users', (req, res) => {
+ *   res.json([...]);
+ * });
+ */
+
+/* =========================================================
+ * ARCHIVOS ESTÁTICOS
+ * ========================================================= */
+
+/**
+ * Sirve los archivos estáticos generados tras
+ * el build de Angular.
+ *
+ * Configuración:
+ * - cache de 1 año
+ * - evita servir index.html automáticamente
+ * - desactiva redirecciones automáticas
  */
 app.use(
   express.static(browserDistFolder, {
@@ -35,34 +75,69 @@ app.use(
   }),
 );
 
+/* =========================================================
+ * RENDERIZADO SSR
+ * ========================================================= */
+
 /**
- * Handle all other requests by rendering the Angular application.
+ * Maneja cualquier petición restante renderizando
+ * la aplicación Angular mediante SSR.
  */
 app.use((req, res, next) => {
   angularApp
     .handle(req)
+
     .then((response) =>
-      response ? writeResponseToNodeResponse(response, res) : next(),
+      response
+        ? writeResponseToNodeResponse(response, res)
+        : next(),
     )
+
     .catch(next);
 });
 
+/* =========================================================
+ * ARRANQUE DEL SERVIDOR
+ * ========================================================= */
+
 /**
- * Start the server if this module is the main entry point, or it is ran via PM2.
- * The server listens on the port defined by the `PORT` environment variable, or defaults to 4000.
+ * Inicia el servidor únicamente cuando:
+ * - el archivo es ejecutado directamente
+ * - o se ejecuta mediante PM2
  */
-if (isMainModule(import.meta.url) || process.env['pm_id']) {
+if (
+  isMainModule(import.meta.url) ||
+  process.env['pm_id']
+) {
+
+  /**
+   * Puerto del servidor.
+   * Usa PORT del entorno o 4000 por defecto.
+   */
   const port = process.env['PORT'] || 4000;
+
+  /**
+   * Inicio del servidor Express.
+   */
   app.listen(port, (error) => {
+
     if (error) {
       throw error;
     }
 
-    console.log(`Node Express server listening on http://localhost:${port}`);
+    console.log(
+      `Node Express server listening on http://localhost:${port}`
+    );
   });
 }
 
+/* =========================================================
+ * EXPORTACIÓN DEL HANDLER
+ * ========================================================= */
+
 /**
- * Request handler used by the Angular CLI (for dev-server and during build) or Firebase Cloud Functions.
+ * Handler utilizado por Angular CLI,
+ * Firebase Functions o entornos similares.
  */
-export const reqHandler = createNodeRequestHandler(app);
+export const reqHandler =
+  createNodeRequestHandler(app);

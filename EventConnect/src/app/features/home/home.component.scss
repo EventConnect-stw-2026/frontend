@@ -1,9 +1,21 @@
+/**
+ * Aplicación: EventConnect - Plataforma de gestión de eventos
+ * Archivo: home.component.scss
+ * Descripción: Estilos de la pantalla de inicio, incluyendo el diseño responsive.
+ * Contiene estilos para el carrusel hero, secciones destacadas, asesor virtual y filtros de IA.
+ * Autor: Pablo Báscones, Mario Caudevilla, Mario Hernández y David Borrel
+ */
+
+/* Importación de la fuente principal utilizada en el chat. */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
+// ── Reset & tipografía global ────────────────────────────────────────────
 * { box-sizing: border-box; font-family: 'Inter', sans-serif; }
 :host { overflow-x: hidden; display: block; font-family: 'Inter', sans-serif; }
 body { overflow-x: hidden; }
 
+
+// ── Hero carousel ────────────────────────────────────────────────────────
 .hero {
   margin: 110px 48px 0;
   padding: 0;
@@ -51,6 +63,8 @@ body { overflow-x: hidden; }
   animation: fadeSlideUp 0.6s ease both;
 }
 
+
+// ── Controles del carrusel (flechas, dots, scroll-down) ──────────────────
 .carousel-arrow {
   position: absolute;
   top: 50%;
@@ -125,6 +139,8 @@ body { overflow-x: hidden; }
   }
 }
 
+
+// ── Animaciones del hero ─────────────────────────────────────────────────
 @keyframes bounce {
   0%, 100% { transform: translateX(-50%) translateY(0); }
   50%       { transform: translateX(-50%) translateY(8px); }
@@ -143,6 +159,8 @@ body { overflow-x: hidden; }
   to { opacity: 1; transform: translateY(0); }
 }
 
+
+// ── Tipografía del hero ──────────────────────────────────────────────────
 .hero h1 {
   font-size: 2.75rem;
   font-weight: 800;
@@ -152,6 +170,8 @@ body { overflow-x: hidden; }
   line-height: 1.2;
 }
 
+
+// ── Barra de búsqueda (desactivada, reservada para uso futuro) ───────────
 .search {
   display: flex;
   justify-content: space-between;
@@ -376,8 +396,8 @@ body { overflow-x: hidden; }
   &:hover { border-color: #2563eb; color: #2563eb; }
 }
 
-// ── RESPONSIVE ───────────────────────────────────────────
 
+// ── Responsive ───────────────────────────────────────────────────────────
 // Tablet grande (max 1100px)
 @media (max-width: 1100px) {
   .hero { margin: 90px 32px 0; height: 500px; }
@@ -559,6 +579,8 @@ body { overflow-x: hidden; }
   margin: 0 0 10px;
 }
 
+
+// ── Sección «Basado en tus eventos» (carrusel personalizado) ─────────────
 .for-you-section {
   padding: 64px 48px;
   background: #f0f5ff;
@@ -679,7 +701,7 @@ body { overflow-x: hidden; }
 
 @media (max-width: 1100px) { .for-you-row { grid-template-columns: repeat(3, 1fr); } }
 @media (max-width: 768px)  { .for-you-section { padding: 40px 20px; } .for-you-row { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 480px)  { .for-you-row { grid-template-columns: 1fr; } }// ── Pega esto al final de tu home.component.scss ──────────────────────────
+@media (max-width: 480px)  { .for-you-row { grid-template-columns: 1fr; } }// ── Secciones de carrusel (destacados, hoy, semana, recientes) ───────────
 
 .for-you-section {
   padding: 32px 48px 20px;
@@ -819,7 +841,7 @@ body { overflow-x: hidden; }
 @media (max-width: 480px)  { .for-you-row { grid-template-columns: 1fr; } }
 
 
-/* ── AI INLINE (nuevo diseño integrado) ───────────────────── */
+// ── Resumen IA inline ────────────────────────────────────────────────────
 
 .ai-inline {
   padding: 32px 48px;
@@ -985,8 +1007,8 @@ body { overflow-x: hidden; }
   }
 }
 
-/* ── RESPONSIVE ───────────────────────────────────────── */
 
+// ── Responsive IA ────────────────────────────────────────────────────────
 @media (max-width: 900px) {
   .ai-card {
     flex-direction: column;
@@ -1011,7 +1033,7 @@ body { overflow-x: hidden; }
       font-size: 11px;
       font-weight: 600;
       opacity: 0.8;
-      margin-left: 6px; // 👈 separa del borde del select
+      margin-left: 6px; // separa del borde del select
     }
   }
 }

@@ -1,7 +1,19 @@
+<!-- 
+  Aplicación: EventConnect - Plataforma de gestión de eventos
+  Archivo: friends.component.html
+  Descripción: Plantilla HTML de la pantalla de amistades, donde el usuario puede gestionar amigos,
+  solicitudes pendientes, sugerencias, chats y búsqueda de nuevos contactos.
+  Autor: Pablo Báscones, Mario Caudevilla, Mario Hernández y David Borrel
+-->
+
+<!-- Cabecera principal de la aplicación -->
 <app-header></app-header>
 
+<!-- Contenedor principal de la página de amigos -->
 <div class="friends-page">
   <div class="friends-shell">
+
+    <!-- Sección superior con presentación de la comunidad y estadísticas rápidas -->
     <section class="friends-hero">
       <div class="hero-text">
         <span class="hero-badge">Comunidad EventConnect</span>
@@ -12,6 +24,7 @@
         </p>
       </div>
 
+      <!-- Tarjetas resumen con número de amigos, solicitudes y sugerencias -->
       <div class="hero-stats">
         <div class="stat-card">
           <span class="stat-value">{{ filteredFriends.length }}</span>
@@ -28,7 +41,7 @@
       </div>
     </section>
 
-    <!-- Modal confirmación eliminar amigo -->
+    <!-- Modal de confirmación para eliminar a un amigo -->
     <div class="feedback-modal-overlay" *ngIf="showConfirmDelete">
       <div class="confirm-modal-content">
         <div class="confirm-modal-icon">
@@ -38,6 +51,8 @@
         <p>
           ¿Seguro que quieres eliminar a <strong>{{ friendToDeleteName }}</strong> de tu lista de amigos?
         </p>
+
+        <!-- Acciones del modal de eliminación -->
         <div class="confirm-modal-actions">
           <button class="secondary-btn" (click)="closeDeleteConfirm()">Cancelar</button>
           <button class="danger-btn" (click)="confirmRemoveFriend()">Eliminar</button>
@@ -45,7 +60,7 @@
       </div>
     </div>
 
-    <!-- Solicitudes recibidas -->
+    <!-- Sección de solicitudes de amistad recibidas -->
     <section class="pending-section" *ngIf="pendingRequests.length > 0">
       <div class="section-header">
         <div>
@@ -55,6 +70,7 @@
         <span class="count">{{ pendingRequests.length }}</span>
       </div>
 
+      <!-- Listado de solicitudes recibidas pendientes de aceptar o rechazar -->
       <div class="pending-list">
         <div *ngFor="let request of pendingRequests" class="pending-card">
           <div class="pending-info">
@@ -70,6 +86,7 @@
             </div>
           </div>
 
+          <!-- Botones para aceptar o rechazar la solicitud recibida -->
           <div class="pending-actions">
             <button
               class="action-btn accept-btn"
@@ -90,7 +107,7 @@
       </div>
     </section>
 
-    <!-- Solicitudes enviadas -->
+    <!-- Sección de solicitudes de amistad enviadas -->
     <section class="pending-section" *ngIf="sentRequests.length > 0">
       <div class="section-header">
         <div>
@@ -100,6 +117,7 @@
         <span class="count">{{ sentRequests.length }}</span>
       </div>
 
+      <!-- Listado de solicitudes enviadas que todavía no han sido respondidas -->
       <div class="pending-list">
         <div *ngFor="let request of sentRequests" class="pending-card">
           <div class="pending-info">
@@ -115,6 +133,7 @@
             </div>
           </div>
 
+          <!-- Estado informativo de solicitud enviada pendiente -->
           <div class="pending-actions">
             <span class="sent-badge">
               <span class="material-symbols-rounded">schedule</span>
@@ -125,7 +144,10 @@
       </div>
     </section>
 
+    <!-- Grid principal con lista de amigos y sugerencias -->
     <div class="friends-grid">
+
+      <!-- Panel con los amigos actuales del usuario -->
       <section class="panel friends-section">
         <div class="section-header">
           <div>
@@ -135,6 +157,7 @@
           <span class="count">{{ filteredFriends.length }}</span>
         </div>
 
+        <!-- Barra de búsqueda de amigos y botón para abrir el modal de añadir -->
         <div class="toolbar">
           <div class="search-box">
             <span class="search-icon material-symbols-rounded">search</span>
@@ -153,11 +176,14 @@
         </div>
 
         <div class="panel-body">
+
+          <!-- Estado de carga del listado de amigos -->
           <div *ngIf="isLoading" class="loading-state">
             <div class="spinner"></div>
             <p>Cargando amigos...</p>
           </div>
 
+          <!-- Estado vacío cuando el usuario todavía no tiene amigos -->
           <div *ngIf="!isLoading && filteredFriends.length === 0" class="empty-state">
             <div class="empty-icon"></div>
             <h3>Aún no tienes amigos</h3>
@@ -167,6 +193,7 @@
             </p>
           </div>
 
+          <!-- Listado de amigos filtrados por el buscador -->
           <div *ngIf="!isLoading && filteredFriends.length > 0" class="friends-list">
             <div *ngFor="let friend of filteredFriends" class="friend-card">
               <div class="friend-info">
@@ -178,6 +205,7 @@
                 </div>
               </div>
 
+              <!-- Acciones disponibles sobre cada amigo: abrir chat o eliminar -->
               <div class="friend-actions">
                 <button
                   class="icon-btn message-btn has-badge"
@@ -189,6 +217,7 @@
                     {{ openingChatIds.has(friend._id) ? 'hourglass_top' : 'chat' }}
                   </span>
 
+                  <!-- Indicador de mensajes no leídos de ese amigo -->
                   <span
                     *ngIf="unreadMessagesByFriend[friend._id] > 0"
                     class="unread-badge"
@@ -196,6 +225,7 @@
                     {{ unreadMessagesByFriend[friend._id] > 99 ? '99+' : unreadMessagesByFriend[friend._id] }}
                   </span>
                 </button>
+
                 <button
                   class="icon-btn delete-btn"
                   (click)="openDeleteConfirm(friend._id, friend.name)"
@@ -209,12 +239,15 @@
         </div>
       </section>
 
+      <!-- Panel de sugerencias de usuarios que el usuario podría conocer -->
       <section class="panel suggestions-section">
         <div class="section-header">
           <div>
             <p class="section-eyebrow">Descubre</p>
             <h2>Quizás conozcas a</h2>
           </div>
+
+          <!-- Acceso a la pantalla de quedadas con indicador de invitaciones pendientes -->
           <button class="organize-btn has-dot" (click)="goToMeetups()">
             <span>Organizar quedada</span>
             <span *ngIf="hasPendingMeetupInvitations" class="nav-notification-dot"></span>
@@ -222,12 +255,15 @@
         </div>
 
         <div class="panel-body">
+
+          <!-- Estado vacío cuando no hay sugerencias disponibles -->
           <div *ngIf="suggestedUsers.length === 0" class="empty-state compact">
             <div class="empty-icon"></div>
             <h3>No hay sugerencias ahora mismo</h3>
             <p>Cuando crezca tu red, aquí aparecerán nuevas recomendaciones.</p>
           </div>
 
+          <!-- Listado de usuarios sugeridos -->
           <div *ngIf="suggestedUsers.length > 0" class="suggestions-list">
             <div *ngFor="let user of suggestedUsers" class="suggestion-card">
               <div class="suggestion-info">
@@ -235,6 +271,8 @@
                 <div class="suggestion-details">
                   <p class="name">{{ user.name }}</p>
                   <p class="username">@{{ user.username }}</p>
+
+                  <!-- Información de amigo en común si existe -->
                   <p class="mutual-friend" *ngIf="user.mutualFriends">
                     Amigo en común: {{ user.mutualFriends }}
                   </p>
@@ -244,6 +282,7 @@
                 </div>
               </div>
 
+              <!-- Acciones sobre usuarios sugeridos -->
               <div class="suggestion-actions">
                 <button class="icon-btn message-btn" title="Mensaje">
                   <span class="material-symbols-rounded">chat</span>
@@ -264,13 +303,15 @@
     </div>
   </div>
 
-  <!-- Modal añadir amigo -->
+  <!-- Modal para buscar y añadir nuevos amigos -->
   <div
     class="modal-overlay"
     *ngIf="showAddFriendModal"
     (click)="closeAddFriendModal()"
   >
     <div class="modal-content" (click)="$event.stopPropagation()">
+
+      <!-- Cabecera del modal de búsqueda de usuarios -->
       <div class="modal-header">
         <div>
           <p class="section-eyebrow">Nueva amistad</p>
@@ -280,6 +321,8 @@
       </div>
 
       <div class="modal-body">
+
+        <!-- Buscador interno del modal para localizar usuarios por nombre, usuario o email -->
         <div class="modal-search-box">
           <span class="search-icon material-symbols-rounded">search</span>
           <input
@@ -291,7 +334,10 @@
           />
         </div>
 
+        <!-- Resultados y estados de búsqueda de usuarios -->
         <div class="modal-users-list">
+
+          <!-- Estado inicial antes de empezar a escribir -->
           <div *ngIf="!typingStarted && !isSearchingUsers" class="empty-state compact">
             <div class="empty-icon">
               <span class="material-symbols-rounded">person_search</span>
@@ -300,11 +346,13 @@
             <p>Busca por nombre, usuario o email y te irán saliendo resultados en tiempo real.</p>
           </div>
 
+          <!-- Estado de carga durante la búsqueda -->
           <div *ngIf="isSearchingUsers" class="empty-state compact">
             <div class="spinner"></div>
             <h3>Buscando usuarios...</h3>
           </div>
 
+          <!-- Estado sin resultados tras escribir una búsqueda -->
           <div *ngIf="typingStarted && !isSearchingUsers && filteredAddFriendUsers.length === 0" class="empty-state compact">
             <div class="empty-icon">
               <span class="material-symbols-rounded">search_off</span>
@@ -313,6 +361,7 @@
             <p>Prueba con otro texto.</p>
           </div>
 
+          <!-- Usuarios encontrados en el buscador del modal -->
           <div *ngFor="let user of filteredAddFriendUsers" class="modal-user-card">
             <div class="user-info">
               <img [src]="user.avatarUrl || 'assets/images/default-avatar.svg'" [alt]="user.name" class="avatar" />
@@ -323,11 +372,13 @@
               </div>
             </div>
 
+            <!-- Estado mostrado cuando ya existe una solicitud enviada a ese usuario -->
             <span *ngIf="user.requestSent" class="sent-badge">
               <span class="material-symbols-rounded">schedule</span>
               Pendiente
             </span>
 
+            <!-- Botón para enviar solicitud a usuarios sin petición previa -->
             <button
               *ngIf="!user.requestSent"
               class="action-btn request-btn"

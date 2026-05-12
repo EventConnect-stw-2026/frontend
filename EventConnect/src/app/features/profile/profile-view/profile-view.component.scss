@@ -1,9 +1,20 @@
+/* 
+  Aplicación: EventConnect - Plataforma de gestión de eventos
+  Archivo: profile.component.scss
+  Descripción: Hoja de estilos de la pantalla de perfil, incluyendo estados de carga y error,
+  tarjeta de usuario, acciones rápidas, intereses, modal de reporte y diseño responsive.
+  Autor: Pablo Báscones, Mario Caudevilla, Mario Hernández y David Borrel
+*/
+
+/* Importación de la fuente principal utilizada en el chat. */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
+// Define que el componente ocupe espacio como bloque dentro de la aplicación.
 :host {
   display: block;
 }
 
+// Contenedor principal de la pantalla de perfil.
 .profile-page {
   min-height: 100vh;
   background: #ffffff;
@@ -13,6 +24,7 @@
   margin-top: 90px;
 }
 
+// Estado mostrado mientras se carga el perfil.
 .loading-container {
   display: flex;
   justify-content: center;
@@ -22,6 +34,7 @@
   color: #666;
 }
 
+// Estado mostrado si ocurre un error al cargar el perfil.
 .error-container {
   display: flex;
   flex-direction: column;
@@ -37,6 +50,7 @@
     margin: 0;
   }
 
+  // Botón para reintentar la carga del perfil.
   .retry-btn {
     padding: 10px 24px;
     background-color: #1a56c4;
@@ -53,11 +67,13 @@
   }
 }
 
+// Contenedor central del contenido del perfil.
 .profile-wrapper {
   max-width: 900px;
   margin: 0 auto;
 }
 
+// Título principal de la pantalla.
 .page-title {
   text-align: center;
   font-size: 2.5rem;
@@ -67,6 +83,7 @@
   letter-spacing: -0.6px;
 }
 
+// Tarjetas principales de perfil, acciones e intereses.
 .profile-card,
 .actions-card,
 .interests-card {
@@ -79,22 +96,26 @@
   transition: box-shadow 0.2s ease;
 }
 
+// Efecto visual al pasar el ratón por las tarjetas.
 .profile-card:hover,
 .actions-card:hover,
 .interests-card:hover {
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
 }
 
+// Distribución del avatar y los datos principales del usuario.
 .profile-main {
   display: flex;
   align-items: center;
   gap: 24px;
 }
 
+// Contenedor del avatar.
 .avatar-wrapper {
   flex: 0 0 auto;
 }
 
+// Imagen circular del perfil.
 .avatar {
   width: 112px;
   height: 112px;
@@ -103,6 +124,7 @@
   display: block;
 }
 
+// Botón opcional para reportar desde el avatar.
 .report-avatar-btn {
   margin-top: 8px;
   display: inline-block;
@@ -115,22 +137,78 @@
   cursor: pointer;
   transition: transform 0.12s ease, box-shadow 0.12s ease;
 }
-.report-avatar-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 26px rgba(255,82,82,0.18); }
 
-/* Reuse modal styles similar to event-detail */
-.report-modal-backdrop { position: fixed; left:0; right:0; top:0; bottom:0; background: rgba(2,6,23,0.5); display:flex; align-items:center; justify-content:center; z-index:9999; }
-.report-modal { width: 90%; max-width: 480px; background: #fff; padding: 18px; border-radius: 12px; box-shadow: 0 18px 50px rgba(2,6,23,0.3); }
-.report-modal select, .report-modal textarea { width: 100%; padding: 8px 10px; border-radius: 8px; border: 1px solid #e6edf3; }
-.modal-actions { display:flex; gap:10px; justify-content:flex-end; margin-top:8px; }
-.btn { padding: 8px 12px; border-radius: 8px; border: 1px solid #e6edf3; background: #fff; cursor:pointer; }
-.btn.primary { background: linear-gradient(90deg,#ff8a80 0%,#ff5252 100%); color:#fff; border:none; font-weight:700; }
+.report-avatar-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 26px rgba(255,82,82,0.18);
+}
 
+// Fondo oscuro del modal de reporte.
+.report-modal-backdrop {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background: rgba(2,6,23,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+// Caja principal del modal de reporte.
+.report-modal {
+  width: 90%;
+  max-width: 480px;
+  background: #fff;
+  padding: 18px;
+  border-radius: 12px;
+  box-shadow: 0 18px 50px rgba(2,6,23,0.3);
+}
+
+// Campos del formulario de reporte.
+.report-modal select,
+.report-modal textarea {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid #e6edf3;
+}
+
+// Acciones del modal de reporte.
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+
+// Botón base del modal.
+.btn {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #e6edf3;
+  background: #fff;
+  cursor: pointer;
+}
+
+// Botón principal del modal de reporte.
+.btn.primary {
+  background: linear-gradient(90deg,#ff8a80 0%,#ff5252 100%);
+  color: #fff;
+  border: none;
+  font-weight: 700;
+}
+
+// Bloque con los datos personales del usuario.
 .profile-info {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
+// Nombre principal del usuario.
 .profile-info h2 {
   margin: 0;
   font-size: 2rem;
@@ -139,6 +217,7 @@
   color: #111;
 }
 
+// Fila de dato personal con icono.
 .info-row {
   display: flex;
   align-items: center;
@@ -148,6 +227,7 @@
   word-break: break-word;
 }
 
+// Icono de cada fila de información.
 .icon {
   font-size: 2rem;
   line-height: 1;
@@ -155,12 +235,14 @@
   text-align: center;
 }
 
+// Tarjeta de acciones rápidas del perfil.
 .actions-card {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16px 38px;
 }
 
+// Botón individual de acción del perfil.
 .action-btn {
   width: 100%;
   min-height: 64px;
@@ -190,6 +272,7 @@
   transform: translateY(0);
 }
 
+// Icono visual de cada acción.
 .action-icon {
   font-size: 2rem;
   line-height: 1;
@@ -197,6 +280,7 @@
   text-align: center;
 }
 
+// Título de la tarjeta de intereses.
 .interests-card h3 {
   margin: 0 0 14px;
   font-size: 2rem;
@@ -204,12 +288,14 @@
   color: #111;
 }
 
+// Contenedor flexible de intereses.
 .interests-grid {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
 }
 
+// Chip individual de interés del usuario.
 .interest-chip {
   display: inline-flex;
   align-items: center;
@@ -227,13 +313,16 @@
   }
 }
 
+// Icono SVG del interés.
 .interest-svg {
   display: flex;
   align-items: center;
   flex-shrink: 0;
+
   svg { stroke: white !important; }
 }
 
+// Texto del interés.
 .interest-label {
   font-size: 14px;
   font-weight: 600;
@@ -241,6 +330,7 @@
   white-space: nowrap;
 }
 
+// Botón para cerrar sesión.
 .logout-btn {
   min-width: 220px;
   min-height: 48px;
@@ -269,11 +359,13 @@
   transform: translateY(0);
 }
 
+// Icono del botón de cerrar sesión.
 .logout-icon {
   font-size: 1.2rem;
 }
 
-/* Tablet */
+// ── Responsive tablet ──────────────────────────────────────────────────────
+// Adaptación de tamaños y distribución para pantallas medianas.
 @media (max-width: 768px) {
   .page-title {
     font-size: 1.9rem;
@@ -310,7 +402,8 @@
   }
 }
 
-/* Móvil */
+// ── Responsive móvil ───────────────────────────────────────────────────────
+// Adaptación a una columna y elementos centrados en pantallas pequeñas.
 @media (max-width: 480px) {
   .profile-page {
     padding: 16px 12px 32px;

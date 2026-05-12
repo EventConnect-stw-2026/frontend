@@ -1,30 +1,88 @@
+<!--
+  Aplicación: EventConnect - Plataforma de gestión de eventos
+  Archivo: header.html
+  Descripción: Plantilla HTML del encabezado principal de la aplicación.
+  Incluye navegación principal, menú responsive y acceso al perfil o login.
+  Autor: Pablo Báscones, Mario Caudevilla, Mario Hernández y David Borrel
+-->
+
+<!-- Cabecera principal de navegación -->
 <header class="header">
+
+  <!-- Logo principal que redirige a la página de inicio -->
   <a class="logo" routerLink="/home">
     <img src="assets/images/logo.png" alt="EventConnect">
   </a>
 
-  <!-- Botón hamburguesa para móvil -->
-  <button class="menu-toggle" (click)="menuOpen = !menuOpen" aria-label="Abrir menú">
+  <!--
+    Botón hamburguesa visible en dispositivos móviles.
+    Permite abrir o cerrar el menú lateral responsive.
+  -->
+  <button
+    class="menu-toggle"
+    (click)="menuOpen = !menuOpen"
+    aria-label="Abrir menú"
+  >
     <span class="bar"></span>
     <span class="bar"></span>
     <span class="bar"></span>
   </button>
 
+  <!--
+    Menú principal de navegación.
+    La clase "open" se añade dinámicamente cuando el menú móvil está abierto.
+  -->
   <nav class="nav" [class.open]="menuOpen">
+
+    <!-- Enlace a la página principal -->
     <a routerLink="/home">Inicio</a>
+
+    <!-- Enlace a la sección de exploración de eventos -->
     <a routerLink="/explore">Explorar</a>
+
+    <!-- Enlace al mapa interactivo -->
     <a routerLink="/map">Mapa</a>
+
+    <!--
+      Enlace a la sección de amigos.
+      Incluye un punto rojo de notificación si existen solicitudes pendientes.
+    -->
     <a routerLink="/friends" class="nav-link-with-dot">
       <span>Amigos</span>
-      <span *ngIf="hasFriendsNotifications" class="nav-notification-dot"></span>
+
+      <!-- Punto de notificación visible solo si hay avisos pendientes -->
+      <span
+        *ngIf="hasFriendsNotifications"
+        class="nav-notification-dot"
+      ></span>
     </a>
+
+    <!-- Enlace a la pantalla de estadísticas -->
     <a routerLink="/stats">Estadísticas</a>
   </nav>
 
-  <button class="login-btn" *ngIf="!(isLoggedIn$ | async)" routerLink="/login">
+  <!--
+    Botón mostrado únicamente cuando el usuario NO ha iniciado sesión.
+    Redirige a la pantalla de autenticación.
+  -->
+  <button
+    class="login-btn"
+    *ngIf="!(isLoggedIn$ | async)"
+    routerLink="/login"
+  >
     Iniciar sesión
   </button>
-  <button class="login-btn" *ngIf="isLoggedIn$ | async" routerLink="/profile">
+
+  <!--
+    Botón mostrado únicamente cuando el usuario ha iniciado sesión.
+    Redirige al perfil del usuario.
+  -->
+  <button
+    class="login-btn"
+    *ngIf="isLoggedIn$ | async"
+    routerLink="/profile"
+  >
     Perfil
   </button>
+
 </header>

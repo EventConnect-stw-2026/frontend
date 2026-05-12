@@ -1,13 +1,25 @@
+<!-- 
+  Aplicación: EventConnect - Plataforma de gestión de eventos
+  Archivo: map.component.html
+  Descripción: Plantilla HTML de la pantalla de mapa, con buscador de lugares,
+  resultados de búsqueda, mapa interactivo y panel de detalle del evento seleccionado.
+  Autor: Pablo Báscones, Mario Caudevilla, Mario Hernández y David Borrel
+-->
+
+<!-- Cabecera principal de la aplicación -->
 <app-header></app-header>
 
+<!-- Contenedor principal de la vista de mapa -->
 <div class="map-wrapper">
 
-<!-- 🔍 Barra de búsqueda -->
+  <!-- Barra de búsqueda de calles, lugares o direcciones -->
   <div class="search-bar">
     <div class="search-input-wrapper">
       <span class="search-icon">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
       </span>
+
+      <!-- Campo de texto conectado al buscador de ubicaciones -->
       <input
         type="text"
         placeholder="Buscar calle, lugar..."
@@ -16,6 +28,8 @@
         (keydown.enter)="searchPlace()"
         (keydown.escape)="clearSearch()"
       />
+
+      <!-- Botón para limpiar la búsqueda actual -->
       @if (searchQuery) {
         <button class="clear-btn" (click)="clearSearch()">
           <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
@@ -23,6 +37,7 @@
       }
     </div>
 
+    <!-- Resultados devueltos por el buscador de ubicaciones -->
     @if (searchResults.length > 0) {
       <ul class="search-results">
         @for (result of searchResults; track result.place_id) {
@@ -37,29 +52,42 @@
     }
   </div>
 
+  <!-- Contenedor donde Leaflet renderiza el mapa interactivo -->
   <div id="map"></div>
 
-
+  <!-- Panel lateral/inferior con información del evento seleccionado en el mapa -->
   @if (selectedEvent) {
     <div class="event-panel">
+
+      <!-- Botón para cerrar el panel del evento seleccionado -->
       <button class="close-btn" (click)="closePanel()">
         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
+
+      <!-- Imagen principal del evento o imagen local por defecto -->
       <img [src]="selectedEvent.imageUrl ? 'https:' + selectedEvent.imageUrl : 'assets/images/zaragoza.png'"
            [alt]="selectedEvent.title">
+
+      <!-- Información resumida del evento seleccionado -->
       <div class="panel-body">
         <span class="panel-category">{{ selectedEvent.category }}</span>
         <h3>{{ selectedEvent.title }}</h3>
+
+        <!-- Fecha del evento, si está disponible -->
         @if (selectedEvent.startDate) {
           <p class="panel-date">
             <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
             {{ selectedEvent.startDate | date:'dd MMM · HH:mm' }}
           </p>
         }
+
+        <!-- Ubicación textual del evento seleccionado -->
         <p class="panel-location">
-            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-            {{ selectedEvent.locationName }}
-          </p>
+          <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          {{ selectedEvent.locationName }}
+        </p>
+
+        <!-- Enlace hacia la página de detalle completa del evento -->
         <a [routerLink]="['/events', selectedEvent._id]" class="panel-link">Ver más →</a>
       </div>
     </div>

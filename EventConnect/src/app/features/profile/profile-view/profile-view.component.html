@@ -1,21 +1,42 @@
+<!-- 
+  Aplicación: EventConnect - Plataforma de gestión de eventos
+  Archivo: profile.component.html
+  Descripción: Plantilla HTML de la pantalla de perfil, donde el usuario puede consultar
+  sus datos personales, acceder a acciones de cuenta, ver intereses y cerrar sesión.
+  Autor: Pablo Báscones, Mario Caudevilla, Mario Hernández y David Borrel
+-->
+
+<!-- Cabecera principal de la aplicación -->
 <app-header></app-header>
 
+<!-- Contenido principal de la página de perfil -->
 <main class="profile-page">
+
+  <!-- Estado mostrado mientras se carga la información del perfil -->
   @if (loading) {
     <div class="loading-container">
       <p>Cargando perfil...</p>
     </div>
+
+  <!-- Estado mostrado si ocurre un error al cargar el perfil -->
   } @else if (loadError) {
     <div class="error-container">
       <p>Error cargando el perfil. Por favor, intenta de nuevo.</p>
       <button (click)="ngOnInit()" class="retry-btn">Reintentar</button>
     </div>
+
+  <!-- Contenido del perfil cuando la carga ha finalizado correctamente -->
   } @else {
     <section class="profile-wrapper">
+
+      <!-- Título principal de la pantalla -->
       <h1 class="page-title">Mi perfil</h1>
 
+      <!-- Tarjeta con avatar y datos principales del usuario -->
       <article class="profile-card">
         <div class="profile-main">
+
+          <!-- Imagen de perfil del usuario -->
           <div class="avatar-wrapper">
             <img
               [src]="user.avatarUrl || 'assets/images/default-avatar.svg'"
@@ -24,6 +45,7 @@
             >
           </div>
 
+          <!-- Información básica del usuario -->
           <div class="profile-info">
             <h2>{{ user.name }}</h2>
 
@@ -32,6 +54,7 @@
               <span>{{ user.email }}</span>
             </div>
 
+            <!-- Username mostrado solo si existe en el perfil -->
             <div class="info-row" *ngIf="user.username">
               <span class="icon">@</span>
               <span>{{ user.username }}</span>
@@ -40,6 +63,7 @@
         </div>
       </article>
 
+      <!-- Acciones rápidas disponibles desde el perfil -->
       <section class="actions-card">
         <button class="action-btn" (click)="goToEditProfile()">
           <span class="action-icon">✎</span>
@@ -62,26 +86,33 @@
         </button>
       </section>
 
-        <section class="interests-card">
-          <h3>Tus intereses</h3>
-          <div class="interests-grid">
-            <div class="interest-chip" *ngFor="let interest of user.interests">
-              <span class="interest-svg" [innerHTML]="getSvg(interest)"></span>
-              <span class="interest-label">{{ interestLabels[interest] || interest }}</span>
-            </div>
-          </div>
-        </section>
+      <!-- Sección con los intereses seleccionados por el usuario -->
+      <section class="interests-card">
+        <h3>Tus intereses</h3>
 
+        <div class="interests-grid">
+
+          <!-- Chips de intereses generados dinámicamente -->
+          <div class="interest-chip" *ngFor="let interest of user.interests">
+            <span class="interest-svg" [innerHTML]="getSvg(interest)"></span>
+            <span class="interest-label">{{ interestLabels[interest] || interest }}</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Botón para cerrar la sesión actual -->
       <button class="logout-btn" (click)="logout()">
         <span class="logout-icon">⇦</span>
         Cerrar sesión
       </button>
 
-      <!-- Report modal simple -->
+      <!-- Modal simple para reportar al usuario del perfil -->
       @if (reportVisible) {
         <div class="report-modal-backdrop">
           <div class="report-modal">
             <h3>Reportar usuario: {{ user.name }}</h3>
+
+            <!-- Selector de motivo del reporte -->
             <label>Razón</label>
             <select [(ngModel)]="reportReason">
               <option value="spam">Spam</option>
@@ -90,8 +121,12 @@
               <option value="needs_urgent_review">Necesita revisión urgente</option>
               <option value="other">Otro</option>
             </select>
+
+            <!-- Descripción opcional del reporte -->
             <label>Descripción (opcional)</label>
             <textarea [(ngModel)]="reportDescription" rows="4" placeholder="Describe por qué reportas..."></textarea>
+
+            <!-- Acciones del modal de reporte -->
             <div class="modal-actions">
               <button class="btn" (click)="reportVisible=false">Cancelar</button>
               <button class="btn primary" (click)="submitUserReport()">Enviar</button>

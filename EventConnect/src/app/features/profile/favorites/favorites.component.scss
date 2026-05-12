@@ -1,7 +1,18 @@
+/* 
+  Aplicación: EventConnect - Plataforma de gestión de eventos
+  Archivo: favourites.component.scss
+  Descripción: Hoja de estilos de la pantalla de favoritos, incluyendo estados de carga,
+  error y vacío, tarjetas de eventos favoritos, botón de cancelar asistencia y paginación.
+  Autor: Pablo Báscones, Mario Caudevilla, Mario Hernández y David Borrel
+*/
+
+/* Importación de la fuente principal utilizada en el chat. */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
+// Define que el componente ocupe espacio como bloque dentro de la página.
 :host { display: block; }
 
+// Variables principales de color, bordes, fondo y transición usadas en la pantalla.
 $blue:      #1a56c4;
 $blue-soft: #f0f5ff;
 $green:     #16a34a;
@@ -15,6 +26,7 @@ $border-l:  #e5e7eb;
 $bg:        #f9fafb;
 $t:         0.2s ease;
 
+// Contenedor principal de la página de favoritos.
 .page {
   min-height: 100vh;
   background: #ffffff;
@@ -23,14 +35,17 @@ $t:         0.2s ease;
   margin-top: 90px;
 }
 
+// Limita el ancho del contenido para mantener una lectura cómoda.
 .wrapper {
   max-width: 980px;
   margin: 0 auto;
 }
 
 // ── Header ─────────────────────────────────────────────────────────────────
+// Cabecera interna de la página con botón de volver, título y subtítulo.
 .page-header { margin-bottom: 48px; }
 
+// Botón para regresar a la pantalla anterior.
 .back-btn {
   display: inline-flex;
   align-items: center;
@@ -45,10 +60,12 @@ $t:         0.2s ease;
   padding: 0;
   margin-bottom: 20px;
   transition: color $t;
+
   &:hover { color: $blue; }
   svg { display: block; }
 }
 
+// Título principal de la pantalla.
 .page-title {
   font-size: 2.5rem;
   font-weight: 800;
@@ -59,6 +76,7 @@ $t:         0.2s ease;
   span { color: $blue; }
 }
 
+// Texto secundario bajo el título.
 .page-subtitle {
   font-size: 1rem;
   color: $text-soft;
@@ -67,6 +85,7 @@ $t:         0.2s ease;
 }
 
 // ── States ─────────────────────────────────────────────────────────────────
+// Estado mostrado mientras se cargan los favoritos.
 .loading-state {
   display: flex;
   align-items: center;
@@ -78,6 +97,7 @@ $t:         0.2s ease;
   font-weight: 500;
 }
 
+// Spinner de carga reutilizado en la pantalla.
 .spinner {
   width: 32px;
   height: 32px;
@@ -87,8 +107,10 @@ $t:         0.2s ease;
   animation: spin 0.7s linear infinite;
   flex-shrink: 0;
 }
+
 @keyframes spin { to { transform: rotate(360deg); } }
 
+// Estado vacío cuando el usuario no tiene eventos favoritos.
 .empty-state {
   display: flex;
   flex-direction: column;
@@ -103,6 +125,7 @@ $t:         0.2s ease;
   padding: 40px;
 }
 
+// Estado de error cuando falla la carga de favoritos.
 .error-state {
   display: flex;
   flex-direction: column;
@@ -117,7 +140,11 @@ $t:         0.2s ease;
   padding: 40px;
 }
 
-.error-icon { font-size: 3.5rem; line-height: 1; color: #d32f2f; }
+.error-icon {
+  font-size: 3.5rem;
+  line-height: 1;
+  color: #d32f2f;
+}
 
 .error-state p {
   font-size: 1rem;
@@ -126,6 +153,7 @@ $t:         0.2s ease;
   margin: 0;
 }
 
+// Botón para volver a intentar la carga de favoritos.
 .retry-btn {
   padding: 11px 28px;
   border-radius: 100px;
@@ -137,6 +165,7 @@ $t:         0.2s ease;
   font-weight: 700;
   cursor: pointer;
   transition: all $t;
+
   &:hover { 
     background: #0d47a1;
     border-color: #0d47a1;
@@ -152,6 +181,7 @@ $t:         0.2s ease;
   margin: 0;
 }
 
+// Botón del estado vacío para ir a explorar eventos.
 .explore-btn {
   padding: 11px 28px;
   border-radius: 100px;
@@ -163,10 +193,12 @@ $t:         0.2s ease;
   color: $text;
   cursor: pointer;
   transition: all $t;
+
   &:hover { border-color: $blue; color: $blue; background: $blue-soft; }
 }
 
 // ── Grid ───────────────────────────────────────────────────────────────────
+// Rejilla donde se muestran los eventos favoritos del usuario.
 .events-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -174,6 +206,7 @@ $t:         0.2s ease;
 }
 
 // ── Card ───────────────────────────────────────────────────────────────────
+// Tarjeta individual de evento favorito.
 .event-card {
   background: $bg;
   border-radius: 16px;
@@ -190,10 +223,12 @@ $t:         0.2s ease;
     transform: translateY(-4px);
     border-color: $blue;
     box-shadow: 0 8px 24px rgba(26,86,196,0.13);
+
     .card-image img { transform: scale(1.04); }
   }
 }
 
+// Zona de imagen superior de cada tarjeta.
 .card-image {
   position: relative;
   height: 175px;
@@ -209,6 +244,7 @@ $t:         0.2s ease;
   }
 }
 
+// Etiqueta de categoría situada sobre la imagen.
 .card-category {
   position: absolute;
   top: 12px; left: 12px;
@@ -222,6 +258,7 @@ $t:         0.2s ease;
   letter-spacing: 0.3px;
 }
 
+// Etiqueta mostrada si el evento es gratuito.
 .card-free {
   position: absolute;
   top: 12px; right: 12px;
@@ -235,6 +272,7 @@ $t:         0.2s ease;
   letter-spacing: 0.3px;
 }
 
+// Cuerpo de la tarjeta con información resumida del evento.
 .card-body {
   padding: 16px 18px 18px;
   display: flex;
@@ -255,6 +293,7 @@ $t:         0.2s ease;
   }
 }
 
+// Fecha del evento favorito.
 .card-date {
   font-size: 12px;
   font-weight: 600;
@@ -263,9 +302,11 @@ $t:         0.2s ease;
   display: flex;
   align-items: center;
   gap: 5px;
+
   svg { flex-shrink: 0; }
 }
 
+// Ubicación del evento, truncada si es demasiado larga.
 .card-location {
   font-size: 12px;
   color: $text-soft;
@@ -277,10 +318,11 @@ $t:         0.2s ease;
   display: flex;
   align-items: center;
   gap: 5px;
+
   svg { flex-shrink: 0; }
 }
 
-// Botón cancelar asistencia
+// Botón para cancelar la asistencia al evento.
 .unattend-btn {
   display: inline-flex;
   align-items: center;
@@ -302,6 +344,7 @@ $t:         0.2s ease;
   svg { display: block; flex-shrink: 0; }
 }
 
+// Enlace visual inferior hacia el detalle del evento.
 .card-link {
   margin-top: auto;
   padding-top: 10px;
@@ -312,10 +355,12 @@ $t:         0.2s ease;
   letter-spacing: 0.3px;
   border-top: 1px solid $border-l;
   transition: letter-spacing $t;
+
   .event-card:hover & { letter-spacing: 0.6px; }
 }
 
 // ── Pagination ─────────────────────────────────────────────────────────────
+// Controles inferiores para navegar por páginas de favoritos.
 .pagination {
   display: flex;
   justify-content: center;
@@ -342,6 +387,7 @@ $t:         0.2s ease;
       background: $blue-soft;
       transform: translateY(-2px);
     }
+
     &:disabled { opacity: 0.35; cursor: not-allowed; }
   }
 
@@ -355,10 +401,12 @@ $t:         0.2s ease;
 }
 
 // ── Responsive ─────────────────────────────────────────────────────────────
+// En pantallas medianas se muestran dos columnas de eventos.
 @media (max-width: 900px) {
   .events-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
+// En móviles se reduce el padding y la rejilla pasa a una sola columna.
 @media (max-width: 600px) {
   .page { padding: 16px 12px 48px; }
   .page-title { font-size: 1.8rem; }

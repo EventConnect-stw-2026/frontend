@@ -1,13 +1,43 @@
+/**
+ * Aplicación: EventConnect - Plataforma de gestión de eventos
+ * Archivo: tsconfig.spec.json
+ * Descripción: Configuración TypeScript específica para
+ * los tests unitarios del proyecto.
+ * Define:
+ * - directorio de salida de compilación
+ * - tipos globales de Vitest
+ * - archivos incluidos para testing
+ * Autor: Pablo Báscones, Mario Caudevilla, Mario Hernández y David Borrel
+ */
+
 /* To learn more about Typescript configuration file: https://www.typescriptlang.org/docs/handbook/tsconfig-json.html. */
 /* To learn more about Angular compiler options: https://angular.dev/reference/configs/angular-compiler-options. */
+
 {
+  /**
+   * Hereda la configuración principal del proyecto.
+   */
   "extends": "./tsconfig.json",
+
   "compilerOptions": {
+
+    /**
+     * Directorio de salida para archivos compilados
+     * de testing.
+     */
     "outDir": "./out-tsc/spec",
+
+    /**
+     * Tipos globales disponibles durante los tests.
+     */
     "types": [
       "vitest/globals"
     ]
   },
+
+  /**
+   * Archivos incluidos en el entorno de pruebas.
+   */
   "include": [
     "src/**/*.d.ts",
     "src/**/*.spec.ts"
