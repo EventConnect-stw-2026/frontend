@@ -1,15 +1,28 @@
+<!-- 
+  Aplicación: EventConnect - Plataforma de gestión de eventos
+  Archivo: home.component.html
+  Descripción: Plantilla HTML de la página principal, con carrusel inicial, secciones de eventos,
+  recomendaciones personalizadas, resumen con IA y asesor de planes.
+  Autor: Pablo Báscones, Mario Caudevilla, Mario Hernández y David Borrel
+-->
+
+<!-- Cabecera principal de la aplicación -->
 <app-header></app-header>
 
+<!-- Sección hero con carrusel de imágenes principales -->
 <section class="hero">
 
+  <!-- Pista del carrusel desplazada según la diapositiva activa -->
   <div class="carousel-track" [style.transform]="'translateX(-' + (currentSlide * 100) + '%)'">
     @for (slide of slides; track slide.img) {
       <div class="carousel-slide" [style.backgroundImage]="'url(' + slide.img + ')'" [style.backgroundPosition]="slide.position"></div>
     }
   </div>
 
+  <!-- Capa oscura para mejorar la legibilidad del texto sobre las imágenes -->
   <div class="hero-overlay"></div>
 
+  <!-- Texto principal de bienvenida -->
   <div class="hero-content">
     <h1>Descubre qué hacer<br>hoy en Zaragoza</h1>
     <!--<div class="search"> 
@@ -22,6 +35,7 @@
     </div> -->
   </div>
 
+  <!-- Botones laterales para navegar entre diapositivas -->
   <button class="carousel-arrow left" (click)="prevSlide()">
     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
       <polyline points="15 18 9 12 15 6"/>
@@ -33,12 +47,14 @@
     </svg>
   </button>
 
+  <!-- Indicadores inferiores del carrusel -->
   <div class="carousel-dots">
     @for (slide of slides; track $index) {
       <button class="dot" [class.active]="currentSlide === $index" (click)="goToSlide($index)"></button>
     }
   </div>
 
+  <!-- Botón para bajar directamente al contenido de eventos -->
   <a class="scroll-down" (click)="scrollToContent()">
     <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
       <polyline points="6 9 12 15 18 9"/>
@@ -47,12 +63,13 @@
 
 </section>
 
-
-<!-- ── BASADO EN TUS EVENTOS ─────────────────────────────────────────────── -->
+<!-- Sección de recomendaciones personalizadas según eventos del usuario -->
 @if (showPersonalized) {
   <section class="for-you-section">
     <div class="for-you-header">
       <h2>Basado en tus eventos</h2>
+
+      <!-- Navegación horizontal de recomendaciones personalizadas -->
       <div class="for-you-nav">
         <button class="nav-arrow" (click)="forYouPrev()" [disabled]="forYouIndex === 0">
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
@@ -63,6 +80,7 @@
       </div>
     </div>
 
+    <!-- Estado de carga o listado de eventos recomendados -->
     @if (loadingForYou) {
       <div class="for-you-loading"><div class="for-you-spinner"></div><span>Buscando eventos para ti...</span></div>
     } @else {
@@ -71,6 +89,8 @@
           <app-event-card [event]="event"></app-event-card>
         }
       </div>
+
+      <!-- Enlace final cuando se llega al final del carrusel personalizado -->
       @if (forYouIndex >= forYouEvents.length - VISIBLE) {
         <div class="for-you-more"><a routerLink="/explore">Ver todos los eventos →</a></div>
       }
@@ -78,20 +98,26 @@
   </section>
 }
 
+<!-- Estado general de carga de eventos -->
 @if (loading) {
   <section class="for-you-section"><div class="for-you-loading"><div class="for-you-spinner"></div><span>Cargando eventos...</span></div></section>
 }
+
+<!-- Estado de error al cargar eventos -->
 @if (error) {
   <section class="for-you-section"><p>Error al cargar los eventos.</p></section>
 }
 
+<!-- Secciones principales de eventos cargadas correctamente -->
 @if (!loading && !error) {
 
-  <!-- Eventos destacados -->
+  <!-- Sección de eventos destacados -->
   @if (sections.featured?.length) {
     <section class="for-you-section">
       <div class="for-you-header">
         <h2>Eventos destacados</h2>
+
+        <!-- Navegación horizontal de eventos destacados -->
         <div class="for-you-nav">
           <button class="nav-arrow" (click)="prev('featured')" [disabled]="!canPrev(featuredIndex)">
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
@@ -101,22 +127,27 @@
           </button>
         </div>
       </div>
+
+      <!-- Tarjetas visibles de la sección de destacados -->
       <div class="for-you-row">
         @for (event of visibleSlice(sections.featured, featuredIndex); track event._id) {
           <app-event-card [event]="event"></app-event-card>
         }
       </div>
+
       @if (!canNext(sections.featured, featuredIndex)) {
         <div class="for-you-more"><a routerLink="/explore">Ver todos los eventos →</a></div>
       }
     </section>
   }
 
-  <!-- Hoy -->
+  <!-- Sección de eventos que ocurren hoy -->
   @if (sections.today?.length) {
     <section class="for-you-section">
       <div class="for-you-header">
         <h2>Hoy</h2>
+
+        <!-- Navegación horizontal de eventos de hoy -->
         <div class="for-you-nav">
           <button class="nav-arrow" (click)="prev('today')" [disabled]="!canPrev(todayIndex)">
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
@@ -126,22 +157,27 @@
           </button>
         </div>
       </div>
+
+      <!-- Tarjetas visibles de la sección de hoy -->
       <div class="for-you-row">
         @for (event of visibleSlice(sections.today, todayIndex); track event._id) {
           <app-event-card [event]="event"></app-event-card>
         }
       </div>
+
       @if (!canNext(sections.today, todayIndex)) {
         <div class="for-you-more"><a routerLink="/explore">Ver todos los eventos →</a></div>
       }
     </section>
   }
 
-  <!-- Esta semana -->
+  <!-- Sección de eventos de esta semana -->
   @if (sections.week?.length) {
     <section class="for-you-section">
       <div class="for-you-header">
         <h2>Esta semana</h2>
+
+        <!-- Navegación horizontal de eventos semanales -->
         <div class="for-you-nav">
           <button class="nav-arrow" (click)="prev('week')" [disabled]="!canPrev(weekIndex)">
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
@@ -151,22 +187,27 @@
           </button>
         </div>
       </div>
+
+      <!-- Tarjetas visibles de la sección de esta semana -->
       <div class="for-you-row">
         @for (event of visibleSlice(sections.week, weekIndex); track event._id) {
           <app-event-card [event]="event"></app-event-card>
         }
       </div>
+
       @if (!canNext(sections.week, weekIndex)) {
         <div class="for-you-more"><a routerLink="/explore">Ver todos los eventos →</a></div>
       }
     </section>
   }
 
-  <!-- Recientes -->
+  <!-- Sección de eventos recientes -->
   @if (sections.recent?.length) {
     <section class="for-you-section">
       <div class="for-you-header">
         <h2>Recientes</h2>
+
+        <!-- Navegación horizontal de eventos recientes -->
         <div class="for-you-nav">
           <button class="nav-arrow" (click)="prev('recent')" [disabled]="!canPrev(recentIndex)">
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
@@ -176,11 +217,14 @@
           </button>
         </div>
       </div>
+
+      <!-- Tarjetas visibles de la sección de recientes -->
       <div class="for-you-row">
         @for (event of visibleSlice(sections.recent, recentIndex); track event._id) {
           <app-event-card [event]="event"></app-event-card>
         }
       </div>
+
       @if (!canNext(sections.recent, recentIndex)) {
         <div class="for-you-more"><a routerLink="/explore">Ver todos los eventos →</a></div>
       }
@@ -189,44 +233,49 @@
 
 }
 
+<!-- Sección de resumen inteligente generado con IA -->
 <section class="ai-inline">
 
   <div class="ai-card">
 
+    <!-- Información introductoria de la herramienta de IA -->
     <div class="ai-left">
       <span class="ai-badge">✨ IA</span>
       <h3>Resumen inteligente de eventos</h3>
       <p>Descubre lo más relevante según categoría y momento</p>
     </div>
 
-  <div class="ai-controls">
+    <!-- Controles para configurar el resumen generado por IA -->
+    <div class="ai-controls">
 
-  <select [(ngModel)]="selectedCategory">
-    <option value="">Todas</option>
-    @for (cat of categories; track cat) {
-      <option [value]="cat">{{ cat }}</option>
-    }
-  </select>
-
-    <div class="ai-field">
-      <label>Filtro</label>
-      <select [(ngModel)]="selectedRange">
-        <option value="week">Esta semana</option>
-    <option value="today">Hoy</option>
-    <option value="">Todos</option>
+      <select [(ngModel)]="selectedCategory">
+        <option value="">Todas</option>
+        @for (cat of categories; track cat) {
+          <option [value]="cat">{{ cat }}</option>
+        }
       </select>
-    </div>
 
-    <button class="ai-btn" (click)="generateSummary()">
-      Generar
-    </button>
+      <div class="ai-field">
+        <label>Filtro</label>
+        <select [(ngModel)]="selectedRange">
+          <option value="week">Esta semana</option>
+          <option value="today">Hoy</option>
+          <option value="">Todos</option>
+        </select>
+      </div>
+
+      <button class="ai-btn" (click)="generateSummary()">
+        Generar
+      </button>
     </div>
   </div>
 
+  <!-- Estado de carga mientras la IA analiza los eventos -->
   @if (aiLoading) {
     <div class="ai-inline-loading">Analizando eventos...</div>
   }
 
+  <!-- Resultado textual del resumen generado por IA -->
   @if (aiSummary && !aiLoading) {
     <div class="ai-inline-result" *ngIf="aiSummary">
       <p *ngFor="let line of (aiSummary || '').toString().split('\n')">
@@ -234,6 +283,7 @@
       </p>
     </div>
 
+    <!-- Enlaces destacados hacia eventos mencionados por la IA -->
     <div class="ai-links" *ngIf="aiHighlights.length">
       @for (item of aiHighlights; track item.eventId) {
         <a class="ai-link"
@@ -246,14 +296,17 @@
 
 </section>
 
+<!-- Sección del asesor de planes mediante preguntas guiadas -->
 <section class="advisor">
   <div class="advisor-card">
 
+    <!-- Avatar del asistente visual de recomendaciones -->
     <img src="assets/images/Spike.svg" alt="Spike" class="advisor-avatar">
 
     <div class="advisor-content">
       <h2>SpAlk te aconseja, ¿qué buscas?</h2>
 
+      <!-- Primera pregunta: selección de acompañante -->
       @if (!selectedCompanion) {
         <p class="question">¿Con quién vas?</p>
         <div class="options">
@@ -263,6 +316,7 @@
         </div>
       }
 
+      <!-- Segunda pregunta: selección del tipo de plan buscado -->
       @if (selectedCompanion && !selectedVibe && !advisorLoading && recommendedEvents.length === 0) {
         <p class="question">Vas <strong>{{ selectedCompanion.label }}</strong> — ¿qué buscas?</p>
         <div class="options">
@@ -272,6 +326,7 @@
         </div>
       }
 
+      <!-- Estado de carga durante la búsqueda de recomendaciones -->
       @if (advisorLoading) {
         <div class="advisor-loading">
           <div class="advisor-spinner"></div>
@@ -279,10 +334,12 @@
         </div>
       }
 
+      <!-- Estado de error si no se pueden generar recomendaciones -->
       @if (advisorError) {
         <p class="advisor-error">No se pudo generar la recomendación 😔</p>
       }
 
+      <!-- Texto resumen de la recomendación generada -->
       @if (recommendedEvents.length > 0) {
         <p class="question">
           Planes para ir <strong>{{ selectedCompanion.label }}</strong>
@@ -293,6 +350,7 @@
 
   </div>
 
+  <!-- Resultados recomendados por el asesor de planes -->
   @if (recommendedEvents.length > 0) {
     <div class="advisor-results">
       <div class="advisor-events">
@@ -300,6 +358,8 @@
           <app-event-card [event]="event"></app-event-card>
         }
       </div>
+
+      <!-- Botón para reiniciar el flujo del asesor -->
       <button class="advisor-reset" (click)="resetAdvisor()">🔄 Buscar otro plan</button>
     </div>
   }

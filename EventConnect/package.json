@@ -1,4 +1,33 @@
 {
+  "_header": {
+    "aplicacion": "EventConnect - Plataforma de gestión de eventos",
+    "archivo": "package.json",
+    "descripcion": "Archivo principal de configuración y dependencias del frontend Angular de EventConnect.",
+    "autor": "Pablo Báscones, Mario Caudevilla, Mario Hernández y David Borrel"
+  },
+  "_documentation": {
+    "purpose": "Define los metadatos del proyecto frontend, scripts de ejecución, dependencias necesarias para Angular y herramientas de desarrollo y testing.",
+    "fields": {
+      "name": "Nombre identificador del proyecto.",
+      "version": "Versión actual del proyecto.",
+      "scripts": "Comandos disponibles para desarrollo, compilación, testing y SSR.",
+      "private": "Evita que el paquete pueda publicarse accidentalmente en npm.",
+      "packageManager": "Gestor y versión de paquetes utilizado en el proyecto.",
+      "dependencies": "Dependencias necesarias en tiempo de ejecución.",
+      "devDependencies": "Dependencias utilizadas únicamente durante desarrollo y testing."
+    },
+    "scripts": {
+      "ng": "Ejecuta Angular CLI.",
+      "start": "Inicia el servidor de desarrollo Angular.",
+      "build": "Genera la build de producción.",
+      "watch": "Compila automáticamente en modo desarrollo observando cambios.",
+      "test": "Ejecuta pruebas unitarias.",
+      "serve:ssr:EventConnect": "Ejecuta la versión SSR compilada.",
+      "test:e2e": "Ejecuta pruebas end-to-end con Playwright.",
+      "test:e2e:ui": "Ejecuta Playwright con interfaz visual."
+    },
+    "notes": "Este archivo utiliza formato JSON estricto. La documentación se integra mediante los objetos '_header' y '_documentation'."
+  },
   "name": "event-connect",
   "version": "0.0.0",
   "scripts": {

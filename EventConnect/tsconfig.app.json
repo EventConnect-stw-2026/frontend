@@ -1,16 +1,52 @@
-/* To learn more about Typescript configuration file: https://www.typescriptlang.org/docs/handbook/tsconfig-json.html. */
-/* To learn more about Angular compiler options: https://angular.dev/reference/configs/angular-compiler-options. */
+/**
+ * Aplicación: EventConnect - Plataforma de gestión de eventos
+ * Archivo: tsconfig.app.json
+ * Descripción: Configuración TypeScript específica de la
+ * aplicación Angular principal.
+ * Define:
+ * - directorio de salida de compilación
+ * - tipos utilizados
+ * - archivos incluidos y excluidos
+ * Autor: Pablo Báscones, Mario Caudevilla, Mario Hernández y David Borrel
+ */
+
+/* Documentación oficial TypeScript:
+https://www.typescriptlang.org/docs/handbook/tsconfig-json.html */
+
+/* Documentación oficial Angular Compiler:
+https://angular.dev/reference/configs/angular-compiler-options */
+
 {
+  /**
+   * Hereda la configuración base del proyecto.
+   */
   "extends": "./tsconfig.json",
+
   "compilerOptions": {
+
+    /**
+     * Carpeta de salida de archivos compilados.
+     */
     "outDir": "./out-tsc/app",
+
+    /**
+     * Tipos globales disponibles.
+     */
     "types": [
       "node"
     ]
   },
+
+  /**
+   * Archivos TypeScript incluidos.
+   */
   "include": [
     "src/**/*.ts"
   ],
+
+  /**
+   * Archivos excluidos de compilación.
+   */
   "exclude": [
     "src/**/*.spec.ts"
   ]

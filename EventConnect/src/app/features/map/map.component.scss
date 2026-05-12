@@ -1,5 +1,15 @@
+/* 
+  Aplicación: EventConnect - Plataforma de gestión de eventos
+  Archivo: map.component.scss
+  Descripción: Hoja de estilos de la pantalla de mapa, incluyendo buscador de ubicaciones,
+  resultados de búsqueda, mapa interactivo y panel de detalle del evento seleccionado.
+  Autor: Pablo Báscones, Mario Caudevilla, Mario Hernández y David Borrel
+*/
+
+/* Importación de la fuente principal utilizada en el chat. */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
+// Variables principales de color y transición utilizadas en la vista del mapa.
 $blue:      #2563eb;
 $blue-dark: #1d4ed8;
 $blue-soft: #eff6ff;
@@ -12,12 +22,17 @@ $t:         0.2s ease;
 
 * { font-family: 'Inter', sans-serif; }
 
+// Contenedor principal de la pantalla de mapa.
+// Usa top para respetar el header fijo sin depender de su altura exacta.
 .map-wrapper {
-  position: relative;
-  height: calc(100vh - 90px);
-  margin-top: 90px;
+  position: fixed;
+  top: 90px; /* altura del header en desktop */
+  left: 0;
+  right: 0;
+  bottom: 0;
 }
 
+// Contenedor donde se renderiza el mapa interactivo de Leaflet.
 #map {
   width: 100%;
   height: 100%;
@@ -25,15 +40,17 @@ $t:         0.2s ease;
 }
 
 // ── Barra de búsqueda ──────────────────────────────────────────────────────
+// Buscador flotante situado sobre el mapa.
 .search-bar {
   position: absolute;
   top: 24px;
   left: 50%;
   transform: translateX(-50%);
   width: min(440px, calc(100% - 32px));
-  z-index: 1000;
+  z-index: 40; /* Por debajo del header (z-index:50) y su menú móvil (z-index:100) */
 }
 
+// Caja principal del input de búsqueda.
 .search-input-wrapper {
   display: flex;
   align-items: center;
@@ -71,6 +88,7 @@ $t:         0.2s ease;
     &::placeholder { color: $text-soft; font-weight: 400; }
   }
 
+  // Botón para limpiar rápidamente el texto escrito en el buscador.
   .clear-btn {
     display: flex;
     align-items: center;
@@ -89,6 +107,7 @@ $t:         0.2s ease;
   }
 }
 
+// Listado flotante con los resultados de búsqueda de ubicaciones.
 .search-results {
   margin: 8px 0 0;
   padding: 0;
@@ -128,6 +147,7 @@ $t:         0.2s ease;
 }
 
 // ── Panel de evento ────────────────────────────────────────────────────────
+// Panel flotante que muestra el resumen del evento seleccionado en el mapa.
 .event-panel {
   position: absolute;
   bottom: 32px;
@@ -149,11 +169,13 @@ $t:         0.2s ease;
   }
 }
 
+// Animación de entrada del panel de evento seleccionado.
 @keyframes slideUp {
   from { opacity: 0; transform: translateY(16px) scale(0.97); }
   to   { opacity: 1; transform: translateY(0)    scale(1);    }
 }
 
+// Botón flotante para cerrar el panel del evento.
 .close-btn {
   position: absolute;
   top: 12px;
@@ -176,6 +198,7 @@ $t:         0.2s ease;
   &:hover { background: $white; color: $text; transform: scale(1.08); }
 }
 
+// Cuerpo textual del panel con categoría, título, fecha, ubicación y enlace.
 .panel-body {
   padding: 16px 18px 18px;
   display: flex;
@@ -183,6 +206,7 @@ $t:         0.2s ease;
   gap: 6px;
 }
 
+// Etiqueta de categoría del evento seleccionado.
 .panel-category {
   background: $blue;
   color: $white;
@@ -195,6 +219,7 @@ $t:         0.2s ease;
   letter-spacing: 0.3px;
 }
 
+// Título del evento limitado a dos líneas para mantener el tamaño del panel.
 .panel-body h3 {
   font-size: 15px;
   font-weight: 700;
@@ -207,6 +232,7 @@ $t:         0.2s ease;
   overflow: hidden;
 }
 
+// Metadatos del evento dentro del panel.
 .panel-date, .panel-location {
   display: flex;
   align-items: center;
@@ -219,8 +245,14 @@ $t:         0.2s ease;
   svg { flex-shrink: 0; }
 }
 
-.panel-date { color: $blue; svg { color: $blue; } }
+// La fecha se destaca con el color principal de la aplicación.
+.panel-date {
+  color: $blue;
 
+  svg { color: $blue; }
+}
+
+// Enlace hacia la página completa de detalle del evento.
 .panel-link {
   margin-top: 8px;
   padding-top: 12px;
@@ -234,4 +266,61 @@ $t:         0.2s ease;
   transition: letter-spacing $t;
 
   &:hover { letter-spacing: 0.6px; }
+}
+
+/* ── Responsive: móvil (max 768px) ───────────────────────────────────────── */
+@media (max-width: 768px) {
+  .map-wrapper {
+    top: 60px; /* altura del header en móvil */
+  }
+
+  .search-bar {
+    top: 52px; /* desplazada para no tapar los controles de zoom */
+    width: calc(100% - 24px);
+  }
+
+  .event-panel {
+    width: 100%;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: auto;
+    border-radius: 20px 20px 0 0;
+    max-height: 60svh;
+    overflow-y: auto;
+
+    img {
+      height: 160px;
+    }
+  }
+}
+
+/* ── Responsive: móvil pequeño (max 480px) ───────────────────────────────── */
+@media (max-width: 480px) {
+  .map-wrapper {
+    top: 60px;
+  }
+
+
+  .search-bar {
+    top: 10px;
+  }
+
+  .event-panel img {
+    height: 130px;
+  }
+}
+
+
+/* ── Controles de zoom de Leaflet ────────────────────────────────────────── */
+@media (max-width: 768px) {
+  :host ::ng-deep .leaflet-top.leaflet-left {
+    top: auto !important;
+    bottom: 80px !important;
+    left: 10px !important;
+  }
+
+  :host ::ng-deep .leaflet-control-zoom {
+    margin: 0 !important;
+  }
 }

@@ -1,54 +1,107 @@
-# See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
+# =========================================================
+# Aplicación: EventConnect - Plataforma de gestión de eventos
+# Archivo: .gitignore
+# Descripción:
+# Define los archivos y carpetas que no deben subirse
+# al repositorio Git.
+#
+# Autores:
+# - Mario Caudevilla Ruiz
+# - Pablo Báscones
+# - Mario Hernández
+# - David Borrel
+# =========================================================
 
-# Compiled output
+# =========================================================
+# ARCHIVOS COMPILADOS
+# =========================================================
+
 /dist
 /tmp
 /out-tsc
 /bazel-out
 
-# Node
+# =========================================================
+# NODE.JS
+# =========================================================
+
 /node_modules
+
 npm-debug.log
 yarn-error.log
 
-# IDEs and editors
+# =========================================================
+# IDES Y EDITORES
+# =========================================================
+
 .idea/
 .project
 .classpath
+
 .c9/
 *.launch
+
 .settings/
+
 *.sublime-workspace
 
-# Visual Studio Code
+# =========================================================
+# VISUAL STUDIO CODE
+# =========================================================
+
 .vscode/*
+
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
 !.vscode/mcp.json
+
 .history/*
 
-# Miscellaneous
+# =========================================================
+# ARCHIVOS TEMPORALES Y CACHE
+# =========================================================
+
 /.angular/cache
+
 .sass-cache/
+
 /connect.lock
+
 /coverage
+
 /libpeerconnection.log
+
 testem.log
+
 /typings
+
 __screenshots__/
 
-# Environment files
+# =========================================================
+# VARIABLES DE ENTORNO
+# =========================================================
+
 .env
 .env.*
+
 !.env.example
 
-# Playwright
+# =========================================================
+# PLAYWRIGHT
+# =========================================================
+
 /test-results
+
 /playwright-report
+
 /playwright/.cache
 
-# System files
+# =========================================================
+# ARCHIVOS DEL SISTEMA
+# =========================================================
+
 .DS_Store
+
 Thumbs.db

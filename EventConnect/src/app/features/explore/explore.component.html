@@ -1,10 +1,21 @@
+<!-- 
+  Aplicación: EventConnect - Plataforma de gestión de eventos
+  Archivo: explore.component.html
+  Descripción: Plantilla HTML de la pantalla de exploración de eventos, con buscador,
+  filtros por categoría y fecha, listado de eventos y paginación.
+  Autor: Pablo Báscones, Mario Caudevilla, Mario Hernández y David Borrel
+-->
+
+<!-- Cabecera principal de la aplicación -->
 <app-header></app-header>
 
+<!-- Contenedor principal de la página de exploración -->
 <div class="explore-wrapper">
 
+  <!-- Barra superior con filtros de búsqueda, categoría y fechas -->
   <div class="filters-bar">
 
-    <!-- 1. Buscador -->
+    <!-- Buscador de eventos por texto -->
     <div class="search-box">
       <input [(ngModel)]="searchText" (keyup.enter)="onSearch()" placeholder="Busca eventos por su nombre">
       <button (click)="onSearch()" aria-label="Buscar">
@@ -14,15 +25,19 @@
       </button>
     </div>
 
-    <!-- 2. Categorías -->
+    <!-- Listado horizontal de categorías disponibles -->
     <div class="categories-wrapper">
       <div class="categories">
+
+        <!-- Botones generados dinámicamente para filtrar por categoría -->
         @for (cat of categories; track cat) {
           <button class="cat-btn" [class.active]="selectedCategory === cat" (click)="selectCategory(cat)">
             {{ cat }}
           </button>
         }
       </div>
+
+      <!-- Indicador visual de desplazamiento horizontal en categorías -->
       <div class="categories-arrow">
         <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
           <polyline points="9 18 15 12 9 6"/>
@@ -30,17 +45,21 @@
       </div>
     </div>
 
-    <!-- 3. Fechas -->
+    <!-- Filtros de fecha para limitar los eventos por rango temporal -->
     <div class="date-filters">
       <div class="date-input">
         <label>Desde</label>
         <input type="date" [(ngModel)]="dateFrom" (change)="onDateChange()" onkeydown="return false">
       </div>
+
       <span class="date-separator">→</span>
+
       <div class="date-input">
         <label>Hasta</label>
         <input type="date" [(ngModel)]="dateTo" (change)="onDateChange()" onkeydown="return false">
       </div>
+
+      <!-- Botón para limpiar el rango de fechas seleccionado -->
       @if (dateFrom || dateTo) {
         <button class="clear-dates" (click)="clearDates()">✕</button>
       }
@@ -48,23 +67,38 @@
 
   </div>
 
+  <!-- Estado mostrado mientras se están cargando los eventos -->
   @if (loading) {
     <div class="loading-state"><div class="spinner"></div></div>
+
+  <!-- Estado mostrado si ocurre un error al cargar los eventos -->
   } @else if (error) {
     <div class="empty-state"><p>Error al cargar los eventos.</p></div>
+
+  <!-- Estado mostrado cuando no hay resultados para los filtros aplicados -->
   } @else if (events.length === 0) {
     <div class="empty-state"><p>No se encontraron eventos con estos filtros.</p></div>
+
+  <!-- Listado principal de eventos encontrados -->
   } @else {
     <div class="events-grid">
+
+      <!-- Tarjetas de eventos generadas dinámicamente -->
       @for (event of events; track event._id) {
         <a class="event-card" [routerLink]="['/events', event._id]">
+
+          <!-- Imagen principal del evento con etiquetas de categoría y gratuidad -->
           <div class="card-image">
             <img [src]="getImage(event)" (error)="onImageError($event)" [alt]="event.title">
             <span class="card-category">{{ event.category }}</span>
             @if (event.isFree) { <span class="card-free">Gratis</span> }
           </div>
+
+          <!-- Información resumida del evento -->
           <div class="card-body">
             <h3>{{ event.title }}</h3>
+
+            <!-- Fecha de inicio del evento, si está disponible -->
             @if (event.startDate) {
               <p class="card-date">
                 <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -73,19 +107,26 @@
                 {{ event.startDate | date:'dd MMM · HH:mm' }}
               </p>
             }
+
+            <!-- Ubicación del evento -->
             <p class="card-location">
               <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
               </svg>
               {{ event.locationName }}
             </p>
+
+            <!-- Descripción del evento sin etiquetas HTML -->
             <p class="card-desc">{{ event.description | stripHtml }}</p>
+
+            <!-- Enlace visual hacia el detalle del evento -->
             <span class="card-link">Ver más →</span>
           </div>
         </a>
       }
     </div>
 
+    <!-- Controles de paginación del listado de eventos -->
     <div class="pagination">
       <button (click)="prevPage()" [disabled]="page === 1">← Anterior</button>
       <span>Página {{ page }} de {{ totalPages }}</span>
