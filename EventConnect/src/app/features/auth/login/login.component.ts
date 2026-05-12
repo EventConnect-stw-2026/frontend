@@ -126,6 +126,11 @@ export class LoginComponent {
     .subscribe({
       next: (response) => {
         this.ngZone.run(() => {
+          if (!response?.user) {
+            this.errorMessage = response?.message || 'Correo o contraseña inválidos';
+            this.cdr.detectChanges();
+            return;
+          }
           this.errorMessage = '';
           this.cdr.detectChanges();
 
@@ -165,6 +170,12 @@ export class LoginComponent {
       next: (authResponse) => {
         this.ngZone.run(() => {
           this.isSubmitting = false;
+          if (!authResponse?.user) {
+            this.errorMessage = authResponse?.message || 'Error al autenticar con Google';
+            this.cdr.detectChanges();
+            return;
+          }
+          this.errorMessage = '';
           this.cdr.detectChanges();
 
           // Redirección diferenciada según el rol recibido desde el backend.

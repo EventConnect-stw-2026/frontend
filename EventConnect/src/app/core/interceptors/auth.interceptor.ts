@@ -17,10 +17,14 @@ import { throwError } from 'rxjs';
 // se reintentará la solicitud original. Si el refresh falla, se limpiará la sesión del usuario.
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
-  console.log('[AuthInterceptor] intercepting:', req.method, req.url);
   return next(req).pipe(
     catchError((error) => {
-      console.log('[AuthInterceptor] error status:', error.status, 'url:', error.url);
+      // Don't log 401s from login/register endpoints - they're expected authentication errors
+      const isAuthRequest = req.url.includes('/login') || req.url.includes('/register');
+      if (!isAuthRequest) {
+        console.log('[AuthInterceptor] error status:', error.status, 'url:', error.url);
+      }
+      
       if (error.status === 401 && !req.url.endsWith('/refresh') && !!authService.getCurrentUser()) {
         console.log('[AuthInterceptor] 401 detected, attempting refresh...');
         // Intentar refresh
