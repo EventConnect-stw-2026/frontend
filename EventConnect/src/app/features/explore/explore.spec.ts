@@ -6,32 +6,31 @@
  */
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 
-import { Explore } from './explore';
+import { ExploreComponent } from './explore.component';
 
-// Suite principal de pruebas del componente Explore.
-// Configura el entorno de testing necesario
-// y valida el funcionamiento básico del componente.
-describe('Explore', () => {
-
-  // Instancia del componente utilizada en las pruebas.
-  let component: Explore;
-
-  // Fixture utilizado para acceder al componente y su template.
-  let fixture: ComponentFixture<Explore>;
+describe('ExploreComponent', () => {
+  let component: ExploreComponent;
+  let fixture: ComponentFixture<ExploreComponent>;
 
   // Configuración ejecutada antes de cada prueba.
   // Inicializa el módulo de testing y crea el componente.
   // También espera a que finalicen las tareas asíncronas pendientes.
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Explore],
+      imports: [ExploreComponent],
+      providers: [
+        provideRouter([]),
+        provideHttpClient(),
+        provideHttpClientTesting()
+      ]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(Explore);
+    fixture = TestBed.createComponent(ExploreComponent);
     component = fixture.componentInstance;
-
-    await fixture.whenStable();
   });
 
   // Prueba básica para comprobar que el componente se crea correctamente.

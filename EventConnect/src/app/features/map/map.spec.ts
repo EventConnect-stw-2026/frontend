@@ -6,32 +6,31 @@
  */
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 
-import { Map } from './map.component';
+import { MapComponent } from './map.component';
 
-// Suite principal de pruebas del componente Map.
-// Configura el entorno de testing necesario
-// y comprueba que el componente pueda crearse correctamente.
-describe('Map', () => {
-
-  // Instancia del componente utilizada durante las pruebas.
-  let component: Map;
-
-  // Fixture utilizado para acceder al componente y a su template.
-  let fixture: ComponentFixture<Map>;
+describe('MapComponent', () => {
+  let component: MapComponent;
+  let fixture: ComponentFixture<MapComponent>;
 
   // Configuración ejecutada antes de cada prueba.
   // Inicializa el módulo de testing y crea el componente.
   // También espera a que finalicen las tareas asíncronas pendientes.
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Map],
+      imports: [MapComponent],
+      providers: [
+        provideRouter([]),
+        provideHttpClient(),
+        provideHttpClientTesting()
+      ]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(Map);
+    fixture = TestBed.createComponent(MapComponent);
     component = fixture.componentInstance;
-
-    await fixture.whenStable();
   });
 
   // Prueba básica para comprobar que el componente se crea correctamente.

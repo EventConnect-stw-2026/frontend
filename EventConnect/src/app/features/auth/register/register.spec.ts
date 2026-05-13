@@ -6,8 +6,10 @@
  */
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { Router, provideRouter } from '@angular/router';
+import { of, throwError } from 'rxjs';
 import { RegisterComponent } from './register.component';
+import { AuthService } from '../../../core/services/auth.service';
 
 // Bloque principal de pruebas del componente RegisterComponent.
 // Aquí se definen todas las pruebas relacionadas con el componente.
@@ -18,25 +20,39 @@ describe('RegisterComponent', () => {
 
   // Fixture utilizado para acceder al componente y al DOM asociado.
   let fixture: ComponentFixture<RegisterComponent>;
+  let authServiceSpy: { register: ReturnType<typeof vi.fn>; loginWithGoogle: ReturnType<typeof vi.fn> };
+  let navigateSpy: ReturnType<typeof vi.fn>;
 
-  // Configuración previa que se ejecuta antes de cada prueba.
-  // Inicializa el entorno de testing y crea una instancia del componente.
+  const validPayload = {
+    name: 'Pablo Bueno',
+    username: 'pablob',
+    email: 'pablob@example.com',
+    password: '12345678',
+    confirmPassword: '12345678'
+  };
+
   beforeEach(async () => {
+    authServiceSpy = {
+      register: vi.fn(),
+      loginWithGoogle: vi.fn()
+    };
 
-    // Configuración del módulo de pruebas.
-    // Se importa el componente standalone directamente.
     await TestBed.configureTestingModule({
       imports: [RegisterComponent],
+      providers: [
+        provideRouter([]),
+        { provide: AuthService, useValue: authServiceSpy }
+      ]
     }).compileComponents();
 
-    // Creación del fixture asociado al componente.
+    const router = TestBed.inject(Router);
+    navigateSpy = vi.fn().mockResolvedValue(true);
+    vi.spyOn(router, 'navigate').mockImplementation(navigateSpy as any);
+
     fixture = TestBed.createComponent(RegisterComponent);
 
     // Obtención de la instancia del componente.
     component = fixture.componentInstance;
-
-    // Espera a que finalicen las tareas asíncronas pendientes.
-    await fixture.whenStable();
   });
 
   // Prueba unitaria básica.
@@ -45,5 +61,85 @@ describe('RegisterComponent', () => {
 
     // Comprueba que la instancia del componente exista.
     expect(component).toBeTruthy();
+  });
+
+  it('inicia con el formulario inválido', () => {
+    expect(component.registerForm.invalid).toBe(true);
+  });
+
+  it('exige nombre con al menos 2 caracteres', () => {
+    component.registerForm.patchValue({ ...validPayload, name: 'a' });
+    expect(component.name?.errors?.['minlength']).toBeTruthy();
+  });
+
+  it('exige username con al menos 3 caracteres', () => {
+    component.registerForm.patchValue({ ...validPayload, username: 'ab' });
+    expect(component.username?.errors?.['minlength']).toBeTruthy();
+  });
+
+  it('exige email con formato válido', () => {
+    component.registerForm.patchValue({ ...validPayload, email: 'no-email' });
+    expect(component.email?.errors?.['email']).toBeTruthy();
+  });
+
+  it('exige password con al menos 6 caracteres', () => {
+    component.registerForm.patchValue({ ...validPayload, password: '123', confirmPassword: '123' });
+    expect(component.password?.errors?.['minlength']).toBeTruthy();
+  });
+
+  it('marca passwordMismatch cuando password y confirmPassword no coinciden', () => {
+    component.registerForm.patchValue({
+      ...validPayload,
+      password: '12345678',
+      confirmPassword: 'distinto'
+    });
+    expect(component.registerForm.errors?.['passwordMismatch']).toBe(true);
+    expect(component.registerForm.valid).toBe(false);
+  });
+
+  it('es válido cuando todos los campos cumplen las reglas', () => {
+    component.registerForm.patchValue(validPayload);
+    expect(component.registerForm.valid).toBe(true);
+  });
+
+  it('no llama a authService.register si el formulario es inválido', () => {
+    component.registerForm.patchValue({ ...validPayload, email: 'no-email' });
+    component.onSubmit();
+    expect(authServiceSpy.register).not.toHaveBeenCalled();
+  });
+
+  it('envía el payload sin confirmPassword al backend', () => {
+    authServiceSpy.register.mockReturnValue(of({ user: { role: 'user' } } as any));
+    component.registerForm.patchValue(validPayload);
+
+    component.onSubmit();
+
+    expect(authServiceSpy.register).toHaveBeenCalledWith({
+      name: 'Pablo Bueno',
+      username: 'pablob',
+      email: 'pablob@example.com',
+      password: '12345678'
+    });
+  });
+
+  it('navega a /home tras registro correcto', () => {
+    authServiceSpy.register.mockReturnValue(of({ user: { role: 'user' } } as any));
+    component.registerForm.patchValue(validPayload);
+
+    component.onSubmit();
+
+    expect(navigateSpy).toHaveBeenCalledWith(['/home']);
+  });
+
+  it('expone el mensaje de error del backend si el registro falla', () => {
+    authServiceSpy.register.mockReturnValue(
+      throwError(() => ({ error: { message: 'El email ya existe' } }))
+    );
+    component.registerForm.patchValue(validPayload);
+
+    component.onSubmit();
+
+    expect(component.errorMessage).toBe('El email ya existe');
+    expect(navigateSpy).not.toHaveBeenCalled();
   });
 });

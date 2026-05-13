@@ -7,11 +7,15 @@
  */
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 
 import { HeaderComponent } from './header';
 
-// Bloque principal de pruebas del componente de cabecera.
 describe('HeaderComponent', () => {
+  let component: HeaderComponent;
+  let fixture: ComponentFixture<HeaderComponent>;
 
   // Instancia del componente que será utilizada en los tests.
   let component: HeaderComponent;
@@ -25,16 +29,15 @@ describe('HeaderComponent', () => {
     // Se configura el entorno de pruebas importando el componente standalone.
     await TestBed.configureTestingModule({
       imports: [HeaderComponent],
+      providers: [
+        provideRouter([]),
+        provideHttpClient(),
+        provideHttpClientTesting()
+      ]
     }).compileComponents();
 
-    // Se crea una instancia real del componente.
     fixture = TestBed.createComponent(HeaderComponent);
-
-    // Se obtiene la referencia a la instancia creada.
     component = fixture.componentInstance;
-
-    // Espera a que Angular finalice las tareas asíncronas pendientes.
-    await fixture.whenStable();
   });
 
   // Test básico que comprueba que el componente existe correctamente.

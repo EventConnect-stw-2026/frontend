@@ -7,11 +7,15 @@
  */
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 
 import { StatsComponent } from './stats.component';
 
-// Bloque principal de pruebas del componente de estadísticas.
 describe('StatsComponent', () => {
+  let component: StatsComponent;
+  let fixture: ComponentFixture<StatsComponent>;
 
   // Instancia del componente que será utilizada en los tests.
   let component: StatsComponent;
@@ -25,16 +29,15 @@ describe('StatsComponent', () => {
     // Se configura el entorno de pruebas importando el componente standalone.
     await TestBed.configureTestingModule({
       imports: [StatsComponent],
+      providers: [
+        provideRouter([]),
+        provideHttpClient(),
+        provideHttpClientTesting()
+      ]
     }).compileComponents();
 
-    // Se crea una instancia real del componente.
     fixture = TestBed.createComponent(StatsComponent);
-
-    // Se obtiene la referencia al componente creado.
     component = fixture.componentInstance;
-
-    // Espera a que Angular termine todas las tareas asíncronas pendientes.
-    await fixture.whenStable();
   });
 
   // Test básico que verifica que el componente se crea correctamente.

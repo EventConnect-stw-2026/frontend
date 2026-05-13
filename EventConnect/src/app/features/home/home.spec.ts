@@ -7,6 +7,9 @@
  */
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 
 import { HomeComponent } from './home.component';
 
@@ -29,7 +32,11 @@ describe('HomeComponent', () => {
 
       // Se importa directamente el componente standalone.
       imports: [HomeComponent],
-
+      providers: [
+        provideRouter([]),
+        provideHttpClient(),
+        provideHttpClientTesting()
+      ]
     }).compileComponents();
 
     // Creación del fixture y obtención de la instancia del componente.
