@@ -1,19 +1,26 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 
-import { Map } from './map.component';
+import { MapComponent } from './map.component';
 
-describe('Map', () => {
-  let component: Map;
-  let fixture: ComponentFixture<Map>;
+describe('MapComponent', () => {
+  let component: MapComponent;
+  let fixture: ComponentFixture<MapComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Map],
+      imports: [MapComponent],
+      providers: [
+        provideRouter([]),
+        provideHttpClient(),
+        provideHttpClientTesting()
+      ]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(Map);
+    fixture = TestBed.createComponent(MapComponent);
     component = fixture.componentInstance;
-    await fixture.whenStable();
   });
 
   it('should create', () => {
