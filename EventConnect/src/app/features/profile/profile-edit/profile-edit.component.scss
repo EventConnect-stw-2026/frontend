@@ -1,9 +1,20 @@
+/* 
+  Aplicación: EventConnect - Plataforma de gestión de eventos
+  Archivo: edit-profile.component.scss
+  Descripción: Hoja de estilos de la pantalla de edición de perfil, incluyendo avatar,
+  datos personales, cambio de contraseña, selección de intereses y diseño responsive.
+  Autor: Pablo Báscones, Mario Caudevilla, Mario Hernández y David Borrel
+*/
+
+/* Importación de la fuente principal utilizada en el chat. */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
+// Define que el componente se comporte como un bloque dentro de la aplicación.
 :host {
   display: block;
 }
 
+// Contenedor principal de la pantalla de edición de perfil.
 .edit-profile-page {
   min-height: 100vh;
   background: #ffffff;
@@ -13,11 +24,13 @@
   margin-top: 90px;
 }
 
+// Limita el ancho del contenido para mantener el formulario centrado.
 .edit-profile-wrapper {
   max-width: 1040px;
   margin: 0 auto;
 }
 
+// Título principal de la pantalla.
 .page-title {
   text-align: center;
   font-size: 2.5rem;
@@ -27,6 +40,7 @@
   letter-spacing: -0.6px;
 }
 
+// Tarjeta superior con avatar y datos básicos del usuario.
 .profile-card {
   background: #f3f4f6;
   border: 2px solid #000000;
@@ -37,6 +51,7 @@
   transition: box-shadow 0.2s ease;
 }
 
+// Tarjetas secundarias para contraseña e intereses.
 .password-card,
 .favorites-card {
   background: #f3f4f6;
@@ -48,29 +63,34 @@
   transition: box-shadow 0.2s ease;
 }
 
+// Efecto visual común al pasar el ratón sobre las tarjetas.
 .profile-card:hover,
 .password-card:hover,
 .favorites-card:hover {
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
 }
 
+// Distribución horizontal del avatar y la información del perfil.
 .profile-main {
   display: flex;
   align-items: center;
   gap: 28px;
 }
 
+// Contenedor del avatar y el botón de edición de imagen.
 .avatar-section {
   position: relative;
   width: 136px;
   flex: 0 0 136px;
 }
 
+// Marco del avatar del usuario.
 .avatar-wrapper {
   width: 136px;
   height: 136px;
 }
 
+// Imagen de perfil circular.
 .avatar {
   width: 100%;
   height: 100%;
@@ -79,6 +99,7 @@
   display: block;
 }
 
+// Botón flotante para seleccionar una nueva foto de perfil.
 .avatar-edit-btn {
   position: absolute;
   right: -6px;
@@ -101,10 +122,12 @@
   transform: scale(1.05);
 }
 
+// Bloque de campos principales del usuario.
 .profile-info {
   flex: 1;
 }
 
+// Campo principal para editar el nombre.
 .name-input {
   width: 100%;
   border: 1.5px solid #d1d5db;
@@ -125,6 +148,7 @@
   box-shadow: 0 0 0 3px rgba(26, 86, 196, 0.1);
 }
 
+// Fila de información con icono y campo asociado.
 .info-row {
   display: flex;
   align-items: center;
@@ -132,6 +156,7 @@
   margin-bottom: 8px;
 }
 
+// Icono de cada fila de información.
 .icon {
   font-size: 2rem;
   line-height: 1;
@@ -139,6 +164,7 @@
   text-align: center;
 }
 
+// Campo pequeño usado para email y username.
 .inline-input {
   flex: 1;
   min-height: 42px;
@@ -158,22 +184,26 @@
   box-shadow: 0 0 0 3px rgba(26, 86, 196, 0.1);
 }
 
+// Estilo del email bloqueado para indicar que no es editable.
 .inline-input:disabled {
   background: #f3f4f6;
   color: #9ca3af;
   cursor: not-allowed;
 }
 
+// Fila específica del username con botón de edición.
 .username-row {
   align-items: center;
 }
 
+// Valor del username cuando se muestra en modo lectura.
 .username-value {
   font-size: 1.5rem;
   font-weight: 600;
   color: #111;
 }
 
+// Botón para alternar la edición del username.
 .edit-icon-btn {
   width: 40px;
   height: 40px;
@@ -188,6 +218,7 @@
   transform: scale(1.1);
 }
 
+// Títulos de las tarjetas de contraseña e intereses.
 .password-card h2,
 .favorites-card h2 {
   margin: 0 0 16px;
@@ -196,12 +227,14 @@
   color: #111827;
 }
 
+// Rejilla de campos de contraseña.
 .password-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 14px 22px;
 }
 
+// Campos individuales de contraseña.
 .password-field input {
   width: 100%;
   min-height: 46px;
@@ -222,6 +255,7 @@
   box-shadow: 0 0 0 3px rgba(26, 86, 196, 0.1);
 }
 
+// Texto de ayuda para seleccionar intereses.
 .favorites-hint {
   font-size: 13px;
   color: #9ca3af;
@@ -229,12 +263,14 @@
   margin: -8px 0 20px;
 }
 
+// Contenedor flexible de categorías favoritas.
 .favorites-grid {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
 }
 
+// Botón individual de interés seleccionable.
 .favorite-item {
   display: inline-flex;
   align-items: center;
@@ -257,6 +293,7 @@
   box-shadow: 0 4px 12px rgba(26, 86, 196, 0.12);
 }
 
+// Estado seleccionado de un interés.
 .favorite-item.selected {
   background: #1a56c4;
   border-color: #1a56c4;
@@ -268,6 +305,7 @@
   .favorite-check { opacity: 1; }
 }
 
+// Icono SVG de cada interés.
 .favorite-svg {
   display: flex;
   align-items: center;
@@ -280,6 +318,7 @@
   stroke: #1a56c4;
 }
 
+// Texto de cada interés.
 .favorite-label {
   font-size: 14px;
   font-weight: 600;
@@ -288,6 +327,7 @@
   white-space: nowrap;
 }
 
+// Check visual mostrado al seleccionar un interés.
 .favorite-check {
   display: flex;
   align-items: center;
@@ -298,22 +338,26 @@
   svg { display: block; stroke: white; }
 }
 
+// Bloque reservado para mensajes de éxito o error.
 .messages {
   min-height: 28px;
   margin-bottom: 0;
 }
 
+// Mensaje de éxito tras guardar cambios.
 .success-message {
   color: #1e8e3e;
   font-weight: 600;
 }
 
+// Mensajes de error de validación o guardado.
 .error,
 .error-message {
   color: #d93025;
   font-size: 0.9rem;
 }
 
+// Contenedor de acciones finales del formulario.
 .actions {
   display: flex;
   justify-content: flex-end;
@@ -321,6 +365,7 @@
   margin-top: 0;
 }
 
+// Estilos comunes de los botones principales y secundarios.
 .primary-btn,
 .secondary-btn {
   min-width: 150px;
@@ -334,6 +379,7 @@
   font-family: 'Inter', sans-serif;
 }
 
+// Botón principal para guardar los cambios.
 .primary-btn {
   background: linear-gradient(90deg, #1a56c4 0%, #2d74e0 100%);
   color: white;
@@ -346,6 +392,7 @@
   transform: translateY(-2px);
 }
 
+// Botón secundario para cancelar y volver al perfil.
 .secondary-btn {
   background: #ffffff;
   color: #111827;
@@ -356,8 +403,11 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-/* Tablet */
+// ── Responsive tablet ──────────────────────────────────────────────────────
+// Adaptaciones para pantallas de tamaño medio.
 @media (max-width: 768px) {
+  .edit-profile-page { margin-top: 0; }
+
   .page-title {
     font-size: 1.9rem;
   }
@@ -391,10 +441,12 @@
   }
 }
 
-/* Móvil */
+// ── Responsive móvil ───────────────────────────────────────────────────────
+// Adaptaciones para móviles, colocando el formulario en una sola columna.
 @media (max-width: 480px) {
   .edit-profile-page {
-    padding: 16px 12px 32px;
+    margin-top: 0;
+    padding: 12px 12px 32px;
   }
 
   .page-title {
@@ -444,12 +496,30 @@
   }
 
   .favorites-grid {
-    gap: 12px;
+    gap: 8px;
+    justify-content: center;
   }
 
   .favorite-item {
-    width: 64px;
-    height: 64px;
+    flex-direction: column;
+    width: calc(33% - 8px);
+    min-width: 90px;
+    height: auto;
+    padding: 12px 8px;
+    text-align: center;
+    border-radius: 14px;
+    gap: 6px;
+  }
+
+  .favorite-label {
+    font-size: 11px;
+    white-space: normal;
+    text-align: center;
+  }
+
+  .favorite-svg svg {
+    width: 22px;
+    height: 22px;
   }
 
   .favorite-emoji {

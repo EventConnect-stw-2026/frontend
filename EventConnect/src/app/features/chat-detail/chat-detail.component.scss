@@ -1,6 +1,14 @@
+/* 
+  Aplicación: EventConnect - Plataforma de gestión de eventos
+  Archivo: chat-detail.component.scss
+  Descripción: Estilos SCSS de la pantalla de conversación privada entre usuarios.
+  Autor: Pablo Báscones, Mario Caudevilla, Mario Hernández y David Borrel
+*/
+
+/* Importación de la fuente principal utilizada en el chat. */
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
 
-// ─── Tokens ───────────────────────────────────────────────────────────────────
+/* Variables visuales generales del componente de chat. */
 :host {
   --font: 'Plus Jakarta Sans', sans-serif;
 
@@ -45,17 +53,18 @@
   overflow: hidden;
 }
 
-// ─── Page — zero body scroll ──────────────────────────────────────────────────
+/* Página principal del chat sin scroll global. */
 .chat-page {
   height: 100vh;
   overflow: hidden;
   display: flex;
   flex-direction: column;
   background: var(--page-bg);
-  padding-top: 64px; // offset for fixed app-header
+  padding-top: 64px;
   box-sizing: border-box;
 }
 
+/* Contenedor centrado de la conversación. */
 .chat-wrapper {
   flex: 1;
   min-height: 0;
@@ -68,7 +77,7 @@
   box-sizing: border-box;
 }
 
-// ─── Shell ────────────────────────────────────────────────────────────────────
+/* Estructura principal del chat. */
 .chat-shell {
   flex: 1;
   min-height: 0;
@@ -82,7 +91,7 @@
     0 8px 32px rgba(0,0,0,0.08);
 }
 
-// ─── Topbar ───────────────────────────────────────────────────────────────────
+/* Barra superior con información del usuario y botón de volver. */
 .chat-topbar {
   flex-shrink: 0;
   display: flex;
@@ -93,6 +102,7 @@
   border-bottom: 1px solid var(--topbar-border);
 }
 
+/* Botón de regreso a la pantalla anterior. */
 .back-btn {
   width: 40px;
   height: 40px;
@@ -117,6 +127,7 @@
   &:active { background: rgba(0,0,0,0.10); }
 }
 
+/* Bloque con avatar y datos del otro usuario. */
 .chat-user-block {
   display: flex;
   align-items: center;
@@ -124,6 +135,7 @@
   min-width: 0;
 }
 
+/* Anillo exterior del avatar. */
 .avatar-ring {
   position: relative;
   flex-shrink: 0;
@@ -135,6 +147,7 @@
   box-sizing: border-box;
 }
 
+/* Imagen de avatar del usuario. */
 .avatar {
   width: 100%;
   height: 100%;
@@ -144,6 +157,7 @@
   display: block;
 }
 
+/* Información textual del usuario del chat. */
 .chat-user-info {
   min-width: 0;
 
@@ -171,9 +185,10 @@
   }
 }
 
+/* Divisor actualmente oculto. */
 .chat-divider { display: none; }
 
-// ─── Messages ─────────────────────────────────────────────────────────────────
+/* Zona desplazable donde se muestran los mensajes. */
 .chat-messages {
   flex: 1;
   min-height: 0;
@@ -195,13 +210,14 @@
   }
 }
 
-// ─── Rows ─────────────────────────────────────────────────────────────────────
+/* Fila base de cada mensaje. */
 .message-row {
   display: flex;
   justify-content: flex-start;
   padding: 1px 4px;
 }
 
+/* Variante para mensajes enviados por el usuario actual. */
 .message-row.own {
   justify-content: flex-end;
 
@@ -221,7 +237,7 @@
   }
 }
 
-
+/* Burbuja individual de mensaje. */
 .message-bubble {
   position: relative;
   max-width: min(65%, 520px);
@@ -231,7 +247,7 @@
   box-shadow: 0 1px 2px rgba(0,0,0,0.10);
   word-break: break-word;
 
-  // Tail (incoming, left)
+  /* Punta visual de la burbuja recibida. */
   &::after {
     content: '';
     position: absolute;
@@ -253,6 +269,7 @@
   }
 }
 
+/* Hora asociada a cada mensaje. */
 .message-time {
   display: block;
   text-align: right;
@@ -262,7 +279,7 @@
   line-height: 1;
 }
 
-// ─── Empty ────────────────────────────────────────────────────────────────────
+/* Tarjeta mostrada cuando la conversación está vacía. */
 .empty-chat-card {
   margin: auto;
   width: min(100%, 320px);
@@ -287,6 +304,7 @@
   }
 }
 
+/* Icono de estado vacío. */
 .empty-icon {
   width: 58px;
   height: 58px;
@@ -300,7 +318,7 @@
   .material-symbols-rounded { font-size: 28px; }
 }
 
-// ─── Input Zone ───────────────────────────────────────────────────────────────
+/* Zona inferior donde se escribe el nuevo mensaje. */
 .chat-input-zone {
   flex-shrink: 0;
   padding: 10px 14px 12px;
@@ -308,6 +326,7 @@
   border-top: 1px solid rgba(0,0,0,0.06);
 }
 
+/* Contenedor del input y botón de envío. */
 .chat-input-shell {
   display: flex;
   align-items: center;
@@ -341,6 +360,7 @@
   }
 }
 
+/* Botón circular de envío de mensaje. */
 .send-btn {
   width: 44px;
   height: 44px;
@@ -373,7 +393,7 @@
   }
 }
 
-// ─── Loading ──────────────────────────────────────────────────────────────────
+/* Estado de carga centrado en pantalla. */
 .loading-state {
   flex: 1;
   display: grid;
@@ -381,6 +401,7 @@
   background: var(--page-bg);
 }
 
+/* Estilo común para tarjetas y mensajes de carga. */
 .loading-card,
 .loading-inline {
   display: flex;
@@ -393,6 +414,7 @@
   p { margin: 0; }
 }
 
+/* Tarjeta de carga principal. */
 .loading-card {
   padding: 16px 22px;
   border-radius: 12px;
@@ -401,39 +423,107 @@
   box-shadow: 0 2px 12px rgba(0,0,0,0.06);
 }
 
+/* Carga interna de mensajes. */
 .loading-inline {
   justify-content: center;
   padding: 32px 0;
 }
 
+/* Icono giratorio de carga. */
 .spin {
   animation: spinAnim 0.85s linear infinite;
   color: var(--send-bg);
   font-size: 22px;
 }
 
+/* Animación de giro para iconos de carga. */
 @keyframes spinAnim { to { transform: rotate(360deg); } }
 
-// ─── Responsive ───────────────────────────────────────────────────────────────
+/* ── Responsive: tablet (max 768px) ─────────────────────────────────────── */
 @media (max-width: 768px) {
-  .chat-page { padding-top: 56px; }
+  /* El host de app-header ocupa su espacio natural,
+     el chat-page rellena el resto con flex en el body */
+  :host {
+    display: flex;
+    flex-direction: column;
+    height: 100svh;
+    overflow: hidden;
+  }
 
-  .chat-wrapper { padding: 0; }
+  .chat-page {
+    flex: 1;
+    min-height: 0;
+    padding-top: 0;
+    height: auto;
+  }
+
+  .chat-wrapper {
+    padding: 0;
+    max-width: 100%;
+    flex: 1;
+    min-height: 0;
+  }
 
   .chat-shell {
     border-radius: 0;
     box-shadow: none;
+    flex: 1;
+    min-height: 0;
   }
 
-  .chat-topbar { padding: 12px 14px; }
+  .chat-topbar {
+    padding: 10px 14px;
+    min-height: 56px;
+  }
 
-  .chat-messages { padding: 12px 10px; }
+  .chat-topbar h2 { font-size: 15px; }
+  .chat-topbar p  { font-size: 12px; }
 
-  .chat-input-zone { padding: 8px 10px 10px; }
+  .avatar { width: 36px; height: 36px; }
+  .avatar-ring { width: 38px; height: 38px; }
 
-  .message-bubble { max-width: 82%; }
+  .chat-messages {
+    padding: 10px 10px;
+    /* El flex: 1 ya gestiona la altura, no hace falta calc */
+  }
+
+  .chat-input-zone {
+    padding: 8px 10px;
+    padding-bottom: max(10px, env(safe-area-inset-bottom)); /* notch de iPhone */
+  }
+
+  .chat-input-shell input {
+    font-size: 15px; /* evita zoom automático en iOS */
+  }
+
+  .message-bubble {
+    max-width: 82%;
+    font-size: 14px;
+  }
 }
 
-@media (max-width: 400px) {
-  .message-bubble { max-width: 88%; }
+/* ── Responsive: móvil pequeño (max 480px) ───────────────────────────────── */
+@media (max-width: 480px) {
+  .chat-topbar { gap: 8px; padding: 8px 12px; }
+
+  .back-btn {
+    width: 34px;
+    height: 34px;
+  }
+
+  .message-bubble {
+    max-width: 88%;
+    padding: 8px 12px;
+  }
+
+  .send-btn {
+    width: 38px;
+    height: 38px;
+  }
+}
+
+/* ── Responsive: pantalla muy estrecha (max 360px) ───────────────────────── */
+@media (max-width: 360px) {
+  .chat-topbar h2 { font-size: 14px; }
+  .message-bubble { max-width: 92%; font-size: 13px; }
 }

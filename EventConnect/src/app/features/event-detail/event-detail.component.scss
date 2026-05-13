@@ -1,5 +1,15 @@
+/* 
+  Aplicación: EventConnect - Plataforma de gestión de eventos
+  Archivo: event-detail.component.scss
+  Descripción: Hoja de estilos para la página de detalle de un evento, incluyendo información principal,
+  acciones de asistencia, mapa, chat, listado de amigos, notificaciones toast y modal de denuncia.
+  Autor: Pablo Báscones, Mario Caudevilla, Mario Hernández y David Borrel
+*/
+
+/* Importación de la fuente principal utilizada en el chat. */
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap');
 
+// Variables de color y transición reutilizadas en toda la vista para mantener coherencia visual.
 $blue:      #2563eb;
 $blue-dark: #1d4ed8;
 $blue-soft: #eff6ff;
@@ -15,6 +25,8 @@ $t:         0.2s ease;
 * { box-sizing: border-box; }
 
 // ── Loading / Error ────────────────────────────────────────────────────────
+// Estados visuales para mostrar carga o error cuando todavía no se ha recuperado
+// correctamente la información del evento.
 .loading-screen, .error-screen {
   display: flex;
   flex-direction: column;
@@ -33,6 +45,7 @@ $t:         0.2s ease;
   }
 }
 
+// Spinner circular reutilizado en estados de carga.
 .spinner {
   width: 40px; height: 40px;
   border: 3px solid $border;
@@ -40,9 +53,11 @@ $t:         0.2s ease;
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
+
 @keyframes spin { to { transform: rotate(360deg); } }
 
 // ── Page shell ─────────────────────────────────────────────────────────────
+// Contenedor general de la página de detalle, dejando espacio superior para el header fijo.
 .detail-page {
   padding-top: 90px;
   background: $bg;
@@ -51,6 +66,7 @@ $t:         0.2s ease;
 }
 
 // ── Layout ─────────────────────────────────────────────────────────────────
+// Layout principal en dos columnas: información del evento a la izquierda y acciones/chat a la derecha.
 .detail-layout {
   display: grid;
   grid-template-columns: 1fr 360px;
@@ -62,6 +78,7 @@ $t:         0.2s ease;
 }
 
 // ── LEFT COL ───────────────────────────────────────────────────────────────
+// Columna izquierda donde se muestra la imagen, título, badges, metadatos y descripción del evento.
 .left-col {
   display: flex;
   flex-direction: column;
@@ -85,7 +102,6 @@ $t:         0.2s ease;
     object-fit: cover;
     display: block;
   }
-
 }
 
 .event-info {
@@ -107,6 +123,7 @@ $t:         0.2s ease;
   }
 }
 
+// Etiquetas visuales del evento, como categoría o si el evento es gratuito.
 .badges {
   display: flex;
   gap: 8px;
@@ -125,6 +142,7 @@ $t:         0.2s ease;
   &.free      { background: #f0fdf4;   color: $green; }
 }
 
+// Filas de información secundaria del evento: fecha, ubicación u otros metadatos.
 .meta-row {
   display: flex;
   align-items: center;
@@ -137,6 +155,7 @@ $t:         0.2s ease;
   .meta-icon { font-size: 16px; line-height: 1; }
 }
 
+// Bloque descriptivo separado visualmente del resto de datos principales.
 .description {
   margin-top: 24px;
   padding-top: 24px;
@@ -147,6 +166,7 @@ $t:         0.2s ease;
 }
 
 // ── RIGHT COL ──────────────────────────────────────────────────────────────
+// Columna derecha fija al hacer scroll, con acciones, mapa, chat y elementos sociales.
 .right-col {
   display: flex;
   flex-direction: column;
@@ -156,6 +176,7 @@ $t:         0.2s ease;
 }
 
 // ── Action buttons ─────────────────────────────────────────────────────────
+// Tarjeta lateral que agrupa los botones principales de interacción con el evento.
 .action-buttons {
   background: $white;
   border-radius: 16px;
@@ -167,6 +188,7 @@ $t:         0.2s ease;
   gap: 10px;
 }
 
+// Botón de asistencia al evento. Cambia a verde cuando el usuario ya está apuntado.
 .attend-btn {
   display: block;
   width: 100%;
@@ -192,6 +214,7 @@ $t:         0.2s ease;
   }
 }
 
+// Enlace a la fuente externa del evento, manteniendo aspecto de botón secundario.
 .source-btn {
   display: block;
   width: 100%;
@@ -211,6 +234,7 @@ $t:         0.2s ease;
 }
 
 // ── Mini map ───────────────────────────────────────────────────────────────
+// Tarjeta que contiene el mapa reducido del evento o un estado alternativo si no hay coordenadas.
 .mini-map-card {
   border-radius: 16px;
   overflow: hidden;
@@ -226,6 +250,7 @@ $t:         0.2s ease;
   filter: saturate(0.9) contrast(1.05);
 }
 
+// Estado mostrado cuando el evento no dispone de ubicación válida para pintar el mapa.
 .no-map {
   width: 100%;
   height: 100%;
@@ -255,6 +280,7 @@ $t:         0.2s ease;
 }
 
 // ── Chat card ──────────────────────────────────────────────────────────────
+// Tarjeta de chat asociada al evento, con pestañas para cambiar entre conversación y usuarios/amigos.
 .chat-card {
   background: $white;
   border-radius: 16px;
@@ -306,6 +332,7 @@ $t:         0.2s ease;
   justify-content: center;
 }
 
+// Estado vacío del chat cuando todavía no hay mensajes que mostrar.
 .empty-chat {
   text-align: center;
   color: $text-soft;
@@ -318,6 +345,7 @@ $t:         0.2s ease;
   p { font-size: 13px; font-weight: 500; margin: 0; line-height: 1.5; }
 }
 
+// Barra inferior de entrada del chat en su estado inicial o bloqueado.
 .chat-input-bar {
   display: flex;
   border-top: 1.5px solid $border;
@@ -356,7 +384,9 @@ $t:         0.2s ease;
 }
 
 // ── Responsive ─────────────────────────────────────────────────────────────
+// En pantallas pequeñas se elimina la segunda columna y los bloques laterales pasan debajo del contenido.
 @media (max-width: 900px) {
+  .detail-page { padding-top: 12px; }
   .detail-layout {
     grid-template-columns: 1fr;
     padding: 16px 20px 48px;
@@ -367,6 +397,7 @@ $t:         0.2s ease;
 }
 
 // ── Toast ──────────────────────────────────────────────────────────────────
+// Notificación flotante usada para confirmar acciones o mostrar errores al usuario.
 .toast {
   position: fixed;
   bottom: 32px;
@@ -396,6 +427,7 @@ $t:         0.2s ease;
 }
 
 // ── Chat messages ──────────────────────────────────────────────────────────
+// Contenedor scrollable de mensajes. Cuando está vacío, centra el estado informativo.
 .chat-messages {
   flex: 1;
   padding: 16px;
@@ -404,15 +436,16 @@ $t:         0.2s ease;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;  // contenido arriba siempre
+  justify-content: flex-start;
 
-  // Solo centrar cuando está el empty-state
+  // Solo se centra el contenido cuando se muestra el estado vacío del chat.
   &:has(.empty-chat) {
     justify-content: center;
     align-items: center;
   }
 }
 
+// Listado vertical de burbujas de mensaje.
 .messages-list {
   display: flex;
   flex-direction: column;
@@ -420,6 +453,7 @@ $t:         0.2s ease;
   width: 100%;
 }
 
+// Burbuja base del mensaje. Puede ser clicable para abrir acciones asociadas al usuario.
 .message-bubble {
   display: flex;
   align-items: flex-end;
@@ -440,6 +474,7 @@ $t:         0.2s ease;
     }
   }
 
+  // Los mensajes propios se alinean a la derecha y usan el color principal de la aplicación.
   &.own {
     flex-direction: row-reverse;
 
@@ -494,6 +529,7 @@ $t:         0.2s ease;
 }
 
 // ── Chat input ─────────────────────────────────────────────────────────────
+// Barra de escritura del chat. Activa estilos visuales cuando hay contenido listo para enviar.
 .chat-input-bar {
   display: flex;
   border-top: 1.5px solid $border;
@@ -514,11 +550,14 @@ $t:         0.2s ease;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
 
     &:focus { border-color: $blue; }
+
+    // Indica visualmente que el usuario ya ha escrito texto en el input.
     &.has-content {
       border-color: $blue;
       background: white;
       box-shadow: 0 0 0 3px rgba(37,99,235,0.08);
     }
+
     &::placeholder { color: $text-soft; }
     &:disabled { opacity: 0.5; cursor: not-allowed; }
   }
@@ -540,6 +579,7 @@ $t:         0.2s ease;
 
     svg { width: 20px; height: 20px; display: block; }
 
+    // Estado activo del botón de enviar cuando el mensaje puede mandarse.
     &.active {
       background: #2563eb;
       color: white;
@@ -550,6 +590,7 @@ $t:         0.2s ease;
 }
 
 // ── Friends list ───────────────────────────────────────────────────────────
+// Listado lateral de amigos/usuarios relacionados con el evento.
 .friends-list {
   display: flex;
   flex-direction: column;
@@ -593,6 +634,7 @@ $t:         0.2s ease;
   color: $text-soft;
 }
 
+// Spinner compacto usado durante la carga del listado de amigos.
 .friends-spinner {
   width: 28px;
   height: 28px;
@@ -602,6 +644,7 @@ $t:         0.2s ease;
   animation: spin 0.7s linear infinite;
 }
 
+// Mensaje inferior mostrado cuando el chat no está disponible para el usuario.
 .chat-locked {
   display: flex;
   align-items: center;
@@ -617,7 +660,8 @@ $t:         0.2s ease;
   svg { flex-shrink: 0; }
 }
 
-/* Report event button */
+// ── Report event ───────────────────────────────────────────────────────────
+// Botón destacado para denunciar un evento desde la vista de detalle.
 .report-event-btn {
   display: block;
   width: 100%;
@@ -632,13 +676,25 @@ $t:         0.2s ease;
   transition: transform 0.18s ease, box-shadow 0.18s ease;
   box-shadow: 0 6px 18px rgba(255,77,109,0.18);
 }
-.report-event-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(255,77,109,0.22); }
 
-/* Clickable avatar in messages */
-.msg-avatar.report-clickable { cursor: pointer; transition: transform 0.15s ease, box-shadow 0.15s ease; }
-.msg-avatar.report-clickable:hover { transform: scale(1.06); box-shadow: 0 6px 18px rgba(15,23,42,0.08); }
+.report-event-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(255,77,109,0.22);
+}
 
-/* Report modal */
+// Avatar clicable dentro de mensajes para abrir acciones relacionadas con denuncia o usuario.
+.msg-avatar.report-clickable {
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.msg-avatar.report-clickable:hover {
+  transform: scale(1.06);
+  box-shadow: 0 6px 18px rgba(15,23,42,0.08);
+}
+
+// ── Report modal ───────────────────────────────────────────────────────────
+// Capa oscura que bloquea la interacción con el fondo mientras el modal está abierto.
 .report-modal-backdrop {
   position: fixed;
   left: 0; right: 0; top: 0; bottom: 0;
@@ -648,6 +704,8 @@ $t:         0.2s ease;
   justify-content: center;
   z-index: 9999;
 }
+
+// Modal principal para seleccionar motivo y escribir la descripción de la denuncia.
 .report-modal {
   width: 92%; max-width: 520px;
   background: $white;
@@ -659,9 +717,47 @@ $t:         0.2s ease;
   flex-direction: column;
   gap: 10px;
 }
-.report-modal h3 { margin: 0 0 4px; font-size: 18px; color: $text; }
-.report-modal label { font-size: 13px; color: $text-mid; font-weight: 600; }
-.report-modal select, .report-modal textarea { width: 100%; border-radius: 8px; border: 1px solid $border; padding: 8px 10px; font-family: 'Inter', sans-serif; }
-.modal-actions { display:flex; gap:10px; justify-content:flex-end; margin-top:6px; }
-.btn { padding: 8px 12px; border-radius: 8px; border: 1px solid $border; background: #fff; cursor:pointer; }
-.btn.primary { background: $blue; color: #fff; border:none; font-weight:700; }
+
+.report-modal h3 {
+  margin: 0 0 4px;
+  font-size: 18px;
+  color: $text;
+}
+
+.report-modal label {
+  font-size: 13px;
+  color: $text-mid;
+  font-weight: 600;
+}
+
+.report-modal select,
+.report-modal textarea {
+  width: 100%;
+  border-radius: 8px;
+  border: 1px solid $border;
+  padding: 8px 10px;
+  font-family: 'Inter', sans-serif;
+}
+
+// Acciones inferiores del modal: cancelar o confirmar denuncia.
+.modal-actions {
+  display:flex;
+  gap:10px;
+  justify-content:flex-end;
+  margin-top:6px;
+}
+
+.btn {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid $border;
+  background: #fff;
+  cursor:pointer;
+}
+
+.btn.primary {
+  background: $blue;
+  color: #fff;
+  border:none;
+  font-weight:700;
+}

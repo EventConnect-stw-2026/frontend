@@ -1,15 +1,60 @@
+<!--
+  Aplicación: EventConnect - Plataforma de gestión de eventos
+  Archivo: index.html
+  Descripción: Documento HTML principal cargado por Angular.
+  Define metadatos globales, recursos externos y el componente raíz.
+  Autor: Pablo Báscones, Mario Caudevilla, Mario Hernández y David Borrel
+-->
+
 <!doctype html>
+
 <html lang="en">
+
 <head>
+
+  <!-- Codificación de caracteres -->
   <meta charset="utf-8">
+
+  <!-- Título mostrado en la pestaña del navegador -->
   <title>EventConnect</title>
+
+  <!-- Ruta base de la aplicación Angular -->
   <base href="/">
+
+  <!-- Configuración responsive para dispositivos móviles -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Favicon de la aplicación -->
   <link rel="icon" type="image/x-icon" href="favicon.ico">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,500,0,0" />
-  <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+  <!--
+    Fuente de iconos Material Symbols Rounded
+    utilizada en distintos componentes de la interfaz
+  -->
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,500,0,0"
+  />
+
+  <!--
+    SDK oficial de Google Identity Services.
+    Se utiliza para autenticación mediante Google OAuth.
+  -->
+  <script
+    src="https://accounts.google.com/gsi/client"
+    async
+    defer>
+  </script>
+
 </head>
+
 <body>
+
+  <!--
+    Componente raíz principal de Angular.
+    Desde aquí se renderiza toda la aplicación.
+  -->
   <app-root></app-root>
+
 </body>
 </html>

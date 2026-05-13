@@ -1,10 +1,35 @@
+<!-- 
+  Aplicación: EventConnect - Plataforma de gestión de eventos
+  Archivo: admin-topbar.component.html
+  Descripción: Plantilla HTML de la barra superior del panel de administración.
+  Autor: Pablo Báscones, Mario Caudevilla, Mario Hernández y David Borrel
+-->
+
+<!-- Barra superior principal del panel de administración -->
 <header class="topbar">
+
+  <!-- Título dinámico de la sección actual -->
   <h1>{{ title }}</h1>
 
+  <!-- 
+    Contenedor del perfil de administrador.
+    Permite mostrar y desplegar el menú de opciones.
+  -->
   <div class="admin-chip" (click)="toggleMenu()" tabindex="0">
+
+    <!-- Avatar visual del administrador -->
     <span class="avatar">A</span>
+
+    <!-- Nombre mostrado del usuario administrador -->
     <span>Admin</span>
+
+    <!-- 
+      Menú desplegable del administrador.
+      Solo se muestra cuando showMenu es verdadero.
+    -->
     <div class="admin-menu" *ngIf="showMenu" (click)="$event.stopPropagation()">
+
+      <!-- Botón para cerrar sesión -->
       <button (click)="logout(); closeMenu()">Cerrar sesión</button>
     </div>
   </div>

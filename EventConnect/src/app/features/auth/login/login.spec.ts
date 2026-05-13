@@ -4,12 +4,21 @@ import { of, throwError } from 'rxjs';
 import { LoginComponent } from './login.component';
 import { AuthService } from '../../../core/services/auth.service';
 
+// Bloque principal de pruebas del componente LoginComponent.
 describe('LoginComponent', () => {
+
+  // Instancia del componente que será utilizada en las pruebas.
   let component: LoginComponent;
+
+  // Fixture que permite acceder al componente y al DOM renderizado.
   let fixture: ComponentFixture<LoginComponent>;
   let authServiceSpy: { login: ReturnType<typeof vi.fn>; loginWithGoogle: ReturnType<typeof vi.fn> };
   let navigateSpy: ReturnType<typeof vi.fn>;
 
+  /**
+   * Configuración inicial ejecutada antes de cada prueba.
+   * Se compila el componente y se crea una nueva instancia limpia.
+   */
   beforeEach(async () => {
     authServiceSpy = {
       login: vi.fn(),
@@ -29,9 +38,19 @@ describe('LoginComponent', () => {
     vi.spyOn(router, 'navigate').mockImplementation(navigateSpy as any);
 
     fixture = TestBed.createComponent(LoginComponent);
+
+    // Obtención de la instancia real del componente.
     component = fixture.componentInstance;
+
+    // Espera a que Angular termine de inicializar el componente.
+    await fixture.whenStable();
   });
 
+  /**
+   * Verifica que el componente se crea correctamente.
+   * Esta prueba asegura que Angular puede instanciar el componente
+   * sin producir errores de dependencias o inicialización.
+   */
   it('should create', () => {
     expect(component).toBeTruthy();
   });

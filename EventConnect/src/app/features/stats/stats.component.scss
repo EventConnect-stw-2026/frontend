@@ -1,5 +1,15 @@
+/* 
+  Aplicación: EventConnect - Plataforma de gestión de eventos
+  Archivo: stats.component.scss
+  Descripción: Hoja de estilos de la pantalla de estadísticas, incluyendo selector de pestañas,
+  tarjetas resumen, gráficas de barras, ranking de categorías y diseño responsive.
+  Autor: Pablo Báscones, Mario Caudevilla, Mario Hernández y David Borrel
+*/
+
+/* Importación de la fuente principal utilizada en el chat. */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
+// Variables principales de color, fondo, borde y transición utilizadas en estadísticas.
 $blue:     #2563eb;
 $text:     #0f172a;
 $text-mid: #475569;
@@ -9,8 +19,10 @@ $bg:       #f8fafc;
 $white:    #ffffff;
 $t:        0.2s ease;
 
+// Ajuste global para usar border-box y la fuente principal.
 * { box-sizing: border-box; font-family: 'Inter', sans-serif; }
 
+// Contenedor principal de la pantalla de estadísticas.
 .stats-wrapper {
   padding: 110px 64px 80px;
   background: $bg;
@@ -18,6 +30,7 @@ $t:        0.2s ease;
 }
 
 // ── Tab switcher ───────────────────────────────────────────────────────────
+// Selector superior para alternar entre estadísticas personales y globales.
 .tab-switcher {
   display: flex;
   justify-content: center;
@@ -40,6 +53,7 @@ $t:        0.2s ease;
     transition: all $t;
     font-family: 'Inter', sans-serif;
 
+    // Estado activo de la pestaña seleccionada.
     &.active {
       background: $white;
       color: $text;
@@ -51,16 +65,19 @@ $t:        0.2s ease;
 }
 
 // ── Global grid ────────────────────────────────────────────────────────────
+// Rejilla usada para organizar las estadísticas globales.
 .global-stats {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 20px;
 }
 
+// Clases auxiliares para ampliar tarjetas dentro de la rejilla.
 .col-span-2 { grid-column: span 2; }
 .col-span-3 { grid-column: span 3; }
 
 // ── Personal grid ──────────────────────────────────────────────────────────
+// Rejilla de estadísticas personales del usuario.
 .personal-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -70,6 +87,7 @@ $t:        0.2s ease;
 }
 
 // ── Chart card ─────────────────────────────────────────────────────────────
+// Tarjeta base que contiene una gráfica o ranking.
 .chart-card {
   background: $white;
   border-radius: 20px;
@@ -88,6 +106,7 @@ $t:        0.2s ease;
 }
 
 // ── Bar chart ──────────────────────────────────────────────────────────────
+// Contenedor principal de las gráficas de barras.
 .bar-chart {
   display: flex;
   align-items: flex-end;
@@ -95,9 +114,11 @@ $t:        0.2s ease;
   height: 220px;
   gap: 8px;
 
+  // Variante más baja para gráficas por días.
   &--days { height: 160px; }
 }
 
+// Elemento individual de una barra con valor, barra y etiqueta.
 .bar-item {
   display: flex;
   flex-direction: column;
@@ -108,12 +129,14 @@ $t:        0.2s ease;
   gap: 6px;
 }
 
+// Valor numérico mostrado encima de cada barra.
 .bar-value {
   font-size: 11px;
   font-weight: 700;
   color: $text-mid;
 }
 
+// Barra visual proporcional al valor de cada estadística.
 .bar-fill {
   width: 100%;
   border-radius: 8px 8px 0 0;
@@ -124,6 +147,7 @@ $t:        0.2s ease;
   &--blue { background: $blue; }
 }
 
+// Etiqueta inferior de cada barra.
 .bar-label {
   font-size: 10px;
   color: $text-soft;
@@ -136,12 +160,14 @@ $t:        0.2s ease;
 }
 
 // ── Top list ───────────────────────────────────────────────────────────────
+// Lista vertical con el ranking de categorías principales.
 .top-list {
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
 
+// Elemento individual del ranking.
 .top-item {
   display: flex;
   align-items: center;
@@ -150,6 +176,7 @@ $t:        0.2s ease;
 
 .top-rank { flex-shrink: 0; }
 
+// Medalla numérica del ranking.
 .medal {
   width: 32px;
   height: 32px;
@@ -167,6 +194,7 @@ $t:        0.2s ease;
   &.bronze { background: linear-gradient(135deg, #cd7c4b, #a05a2c); box-shadow: 0 2px 8px rgba(160,90,44,0.4); }
 }
 
+// Información textual y barra horizontal de cada categoría del ranking.
 .top-info {
   flex: 1;
   display: flex;
@@ -174,6 +202,7 @@ $t:        0.2s ease;
   gap: 6px;
 }
 
+// Cabecera de cada fila del ranking con nombre y valor.
 .top-header {
   display: flex;
   justify-content: space-between;
@@ -192,6 +221,7 @@ $t:        0.2s ease;
   color: $text-mid;
 }
 
+// Fondo de la barra horizontal del ranking.
 .top-bar {
   width: 100%;
   height: 6px;
@@ -200,6 +230,7 @@ $t:        0.2s ease;
   overflow: hidden;
 }
 
+// Relleno proporcional de la barra horizontal del ranking.
 .top-bar-fill {
   height: 100%;
   border-radius: 4px;
@@ -207,6 +238,7 @@ $t:        0.2s ease;
 }
 
 // ── Stat cards ─────────────────────────────────────────────────────────────
+// Tarjetas resumen de estadísticas personales.
 .stat-card {
   background: $white;
   border-radius: 20px;
@@ -217,12 +249,14 @@ $t:        0.2s ease;
   flex-direction: column;
   gap: 12px;
 
+  // Variante destacada para la estadística más importante.
   &.highlight {
     align-items: center;
     text-align: center;
   }
 }
 
+// Icono superior de cada tarjeta estadística.
 .stat-icon {
   width: 52px;
   height: 52px;
@@ -235,6 +269,7 @@ $t:        0.2s ease;
   flex-shrink: 0;
 }
 
+// Etiqueta descriptiva de cada tarjeta.
 .stat-label {
   font-size: 13px;
   color: $text-soft;
@@ -242,6 +277,7 @@ $t:        0.2s ease;
   margin: 0;
 }
 
+// Valor principal de cada tarjeta.
 .stat-value {
   font-size: 36px;
   font-weight: 800;
@@ -249,12 +285,14 @@ $t:        0.2s ease;
   margin: 0;
   letter-spacing: -1px;
 
+  // Variante para textos largos como categorías o días.
   &--sm {
     font-size: 20px;
     letter-spacing: -0.3px;
   }
 }
 
+// Tarjeta vacía cuando todavía no hay datos personales suficientes.
 .empty-card {
   display: flex;
   justify-content: center;
@@ -271,14 +309,80 @@ $t:        0.2s ease;
 }
 
 // ── Responsive ─────────────────────────────────────────────────────────────
+// En pantallas medianas, las estadísticas personales pasan a dos columnas.
 @media (max-width: 1100px) {
   .personal-grid { grid-template-columns: repeat(2, 1fr); }
   .personal-grid .wide { grid-column: span 2; }
 }
 
+// ── Tablet (max 768px) ────────────────────────────────────────────────────
 @media (max-width: 768px) {
-  .stats-wrapper { padding: 100px 20px 48px; }
-  .global-stats { grid-template-columns: 1fr; }
+  .stats-wrapper {
+    padding: 12px 16px 48px;
+  }
+
+  .tab-switcher {
+    width: 100%;
+    button { flex: 1; padding: 10px 12px; font-size: 13px; }
+  }
+
+  .global-stats {
+    grid-template-columns: 1fr;
+  }
   .col-span-2, .col-span-3 { grid-column: span 1; }
-  .personal-grid { grid-template-columns: 1fr 1fr; }
+
+  .personal-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .personal-grid .wide { grid-column: span 2; }
+
+  // Gráficas: scroll horizontal en móvil para no recortar barras
+  .chart-card {
+    padding: 18px 14px;
+    overflow-x: auto;
+    h3 { font-size: 13px; margin-bottom: 18px; }
+  }
+
+  .bar-chart {
+    height: 160px;
+    gap: 6px;
+    min-width: max-content; /* permite scroll si hay muchas barras */
+    justify-content: flex-start;
+    &--days { height: 120px; min-width: unset; justify-content: space-around; }
+  }
+
+  .bar-item {
+    min-width: 40px;
+    max-width: 52px;
+  }
+
+  .bar-label {
+    font-size: 10px;
+    white-space: nowrap;
+  }
+
+  .bar-value {
+    font-size: 10px;
+  }
+
+  .stat-card { padding: 20px; }
+  .stat-value { font-size: 28px; }
+  .stat-icon { width: 44px; height: 44px; }
+}
+
+// ── Móvil pequeño (max 480px) ─────────────────────────────────────────────
+@media (max-width: 480px) {
+  .personal-grid {
+    grid-template-columns: 1fr;
+  }
+  .personal-grid .wide { grid-column: span 1; }
+
+  .bar-chart {
+    height: 130px;
+    gap: 3px;
+  }
+
+  .tab-switcher {
+    button { font-size: 12px; padding: 9px 8px; }
+  }
 }

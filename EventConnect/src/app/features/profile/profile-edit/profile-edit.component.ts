@@ -1,3 +1,11 @@
+/**
+ * Aplicación: EventConnect - Plataforma de gestión de eventos
+ * Archivo: profile-edit.component.ts
+ * Descripción: Componente encargado de gestionar la edición del perfil de usuario,
+ * incluyendo datos personales, avatar, contraseña e intereses.
+ * Autor: Pablo Báscones, Mario Caudevilla, Mario Hernández y David Borrel
+ */
+
 import {
   ChangeDetectorRef,
   Component,
@@ -17,6 +25,7 @@ import { Router } from '@angular/router';
 import { HeaderComponent } from '../../../layout/components/header/header';
 import { AuthService } from '../../../core/services/auth.service';
 
+// Modelo local con los datos principales del perfil del usuario.
 interface UserProfile {
   _id?: string;
   name: string;
@@ -28,6 +37,7 @@ interface UserProfile {
   interests?: string[];
 }
 
+// Modelo local para representar cada categoría de interés seleccionable.
 interface FavoriteCategory {
   key: string;
   label: string;
@@ -35,6 +45,8 @@ interface FavoriteCategory {
   selected: boolean;
 }
 
+// Validador personalizado para comprobar que la nueva contraseña y su confirmación coinciden.
+// Si ambos campos están vacíos, no aplica error porque el cambio de contraseña es opcional.
 const passwordMatchValidator: ValidatorFn = (
   control: AbstractControl
 ): ValidationErrors | null => {
@@ -52,6 +64,9 @@ const passwordMatchValidator: ValidatorFn = (
   return null;
 };
 
+// Componente encargado de gestionar el formulario de edición de perfil.
+// Carga los datos actuales del usuario, permite modificarlos
+// y envía los cambios al backend mediante el servicio de autenticación.
 @Component({
   selector: 'app-profile-edit',
   standalone: true,
@@ -60,17 +75,35 @@ const passwordMatchValidator: ValidatorFn = (
   styleUrl: './profile-edit.component.scss'
 })
 export class ProfileEditComponent {
-  private fb        = inject(FormBuilder);
+
+  // Constructor de formularios reactivos.
+  private fb = inject(FormBuilder);
+
+  // Servicio usado para permitir renderizar SVGs inline de forma segura.
   private sanitizer = inject(DomSanitizer);
+
+  // Servicio de navegación entre pantallas.
   private router = inject(Router);
+
+  // Servicio de autenticación utilizado para obtener y actualizar el perfil.
   private authService = inject(AuthService);
+
+  // Referencia para forzar la detección de cambios al actualizar datos.
   private cdr = inject(ChangeDetectorRef);
 
+  // Indica si el formulario se está enviando al backend.
   isSubmitting = false;
+
+  // Mensaje mostrado cuando el perfil se actualiza correctamente.
   successMessage = '';
+
+  // Mensaje mostrado cuando ocurre un error al actualizar el perfil.
   errorMessage = '';
+
+  // Controla si el username se muestra como texto o como campo editable.
   isEditingUsername = false;
 
+  // Datos del usuario mostrados en la pantalla de edición.
   user: UserProfile = {
     name: '',
     email: '',
@@ -81,6 +114,7 @@ export class ProfileEditComponent {
     interests: []
   };
 
+  // Categorías de intereses disponibles para personalizar recomendaciones.
   favorites: FavoriteCategory[] = [
     { key: 'culture',     label: 'Cultura',      emoji: '🎭', selected: true  },
     { key: 'sports',      label: 'Deporte',       emoji: '🏀', selected: true  },
@@ -91,11 +125,14 @@ export class ProfileEditComponent {
     { key: 'wellness',    label: 'Bienestar',     emoji: '🙌', selected: false }
   ];
 
-  // SVGs por categoría de interés
+  // Método para obtener el SVG de una categoría de interés.
+  // Se sanitiza el HTML para poder insertarlo en la plantilla.
+  // Si no existe la clave, devuelve una cadena vacía.
   getSvg(key: string): SafeHtml {
     return this.sanitizer.bypassSecurityTrustHtml(this.interestSvgs[key] ?? '');
   }
 
+  // Diccionario de SVGs usados como iconos visuales de intereses.
   readonly interestSvgs: Record<string, string> = {
     // Cultura — máscaras de teatro
     culture: `<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="10" r="6"/><path d="M12.5 10a3.5 3.5 0 0 1-7 0"/><circle cx="17" cy="10" r="4"/><path d="M19.5 10a2.5 2.5 0 0 1-5 0"/><path d="M15 16.5c1 1 2.5 1.5 4 1"/><path d="M9 17c1.5 1.5 4 2 6 1.5"/></svg>`,
@@ -113,6 +150,9 @@ export class ProfileEditComponent {
     wellness: `<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>`,
   };
 
+  // Formulario reactivo con validaciones básicas de nombre, email, username y contraseña.
+  // El email se mantiene deshabilitado porque se muestra como dato informativo.
+  // También aplica el validador personalizado para confirmar la nueva contraseña.
   profileForm = this.fb.group(
     {
       name: ['', [Validators.required, Validators.minLength(2)]],
@@ -126,6 +166,9 @@ export class ProfileEditComponent {
     { validators: passwordMatchValidator }
   );
 
+  // Método del ciclo de vida ejecutado al inicializar el componente.
+  // Recupera el perfil del usuario desde el backend.
+  // Rellena el formulario y sincroniza los intereses seleccionados.
   ngOnInit(): void {
     this.authService.getProfile().subscribe({
       next: (profile: UserProfile) => {
@@ -168,10 +211,15 @@ export class ProfileEditComponent {
     });
   }
 
+  // Método para activar o desactivar la edición del username.
+  // Alterna entre mostrar el username como texto o como input editable.
   toggleUsernameEdit(): void {
     this.isEditingUsername = !this.isEditingUsername;
   }
 
+  // Método ejecutado cuando el usuario selecciona una nueva imagen de avatar.
+  // Lee el fichero como base64 y lo muestra inmediatamente en la vista.
+  // No envía la imagen hasta que se guardan los cambios del perfil.
   onAvatarChange(event: Event): void {
     const input = event.target as HTMLInputElement;
 
@@ -190,10 +238,15 @@ export class ProfileEditComponent {
     reader.readAsDataURL(file);
   }
 
+  // Método para seleccionar o deseleccionar una categoría de interés.
+  // Cambia el estado selected de la categoría recibida.
   toggleFavorite(category: FavoriteCategory): void {
     category.selected = !category.selected;
   }
 
+  // Método principal de envío del formulario.
+  // Valida los campos, comprueba contraseñas actuales y construye el payload.
+  // Envía los cambios al backend y actualiza localStorage con los datos esenciales.
   onSubmit(): void {
     this.successMessage = '';
     this.errorMessage = '';
@@ -242,7 +295,9 @@ export class ProfileEditComponent {
       next: (res) => {
         this.isSubmitting = false;
         this.successMessage = 'Perfil actualizado correctamente';
+
         setTimeout(() => this.router.navigate(['/profile']), 1000);
+
         this.user = {
           ...this.user,
           name: res.user.name,
@@ -251,7 +306,8 @@ export class ProfileEditComponent {
           avatarUrl: res.user.avatarUrl,
           interests: res.user.interests
         };
-        // Guardar solo datos esenciales, sin avatar en base64
+
+        // Se guardan en localStorage solo los datos esenciales y se evita almacenar avatar en base64.
         const userToStore = {
           _id: res.user._id,
           name: res.user.name,
@@ -264,6 +320,7 @@ export class ProfileEditComponent {
           location: res.user.location,
           interests: res.user.interests
         };
+
         localStorage.setItem('user', JSON.stringify(userToStore));
         this.cdr.detectChanges();
       },
@@ -275,10 +332,14 @@ export class ProfileEditComponent {
     });
   }
 
+  // Método para volver a la pantalla de perfil sin guardar cambios.
   goBackToProfile(): void {
     this.router.navigate(['/profile']);
   }
 
+  // Método para cerrar sesión desde la pantalla de edición.
+  // Limpia los datos locales del usuario, llama al servicio de logout
+  // y redirige a la pantalla de inicio de sesión.
   logout(): void {
     this.user = {
       name: '',
@@ -294,30 +355,37 @@ export class ProfileEditComponent {
     this.router.navigate(['/login']);
   }
 
+  // Getter para acceder fácilmente al control name desde la plantilla.
   get name() {
     return this.profileForm.get('name');
   }
 
+  // Getter para acceder fácilmente al control email desde la plantilla.
   get email() {
     return this.profileForm.get('email');
   }
 
+  // Getter para acceder fácilmente al control username desde la plantilla.
   get username() {
     return this.profileForm.get('username');
   }
 
+  // Getter para acceder fácilmente al control currentPassword desde la plantilla.
   get currentPassword() {
     return this.profileForm.get('currentPassword');
   }
 
+  // Getter para acceder fácilmente al control confirmCurrentPassword desde la plantilla.
   get confirmCurrentPassword() {
     return this.profileForm.get('confirmCurrentPassword');
   }
 
+  // Getter para acceder fácilmente al control newPassword desde la plantilla.
   get newPassword() {
     return this.profileForm.get('newPassword');
   }
 
+  // Getter para acceder fácilmente al control confirmNewPassword desde la plantilla.
   get confirmNewPassword() {
     return this.profileForm.get('confirmNewPassword');
   }

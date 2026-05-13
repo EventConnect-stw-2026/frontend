@@ -1,3 +1,11 @@
+/* 
+  Aplicación: EventConnect - Plataforma de gestión de eventos
+  Archivo: admin-reports.component.scss
+  Descripción: Estilos SCSS de la vista de reportes del panel de administración.
+  Autor: Pablo Báscones, Mario Caudevilla, Mario Hernández y David Borrel
+*/
+
+/* Cuadrícula superior con las tarjetas de resumen de reportes. */
 .summary-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -5,6 +13,7 @@
   margin-bottom: 16px;
 }
 
+/* Estilo común para las tarjetas de resumen y el panel principal de reportes. */
 .summary-card,
 .reports-panel {
   background: #fff;
@@ -13,32 +22,38 @@
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
 }
 
+/* Tarjeta individual de resumen. */
 .summary-card {
   display: flex;
   align-items: center;
   gap: 16px;
 }
 
+/* Variante de tarjeta para alertas más graves. */
 .summary-card.danger {
   background: linear-gradient(180deg, #ff746d, #ff645d);
   color: white;
 }
 
+/* Variante de tarjeta para avisos importantes. */
 .summary-card.warning {
   background: #ffe4bc;
   color: #2b2b2b;
 }
 
+/* Variante de tarjeta para avisos suaves. */
 .summary-card.soft-warning {
   background: #fff6d9;
   color: #2b2b2b;
 }
 
+/* Icono mostrado en cada tarjeta resumen. */
 .summary-icon {
   font-size: 2rem;
   line-height: 1;
 }
 
+/* Valor numérico principal de la tarjeta. */
 .summary-value {
   font-size: 2rem;
   font-weight: 700;
@@ -46,11 +61,13 @@
   margin-bottom: 4px;
 }
 
+/* Texto descriptivo de la tarjeta resumen. */
 .summary-label {
   font-size: 1rem;
   font-weight: 500;
 }
 
+/* Contenedor de pestañas de categorías de reportes. */
 .tabs {
   display: flex;
   gap: 8px;
@@ -58,6 +75,7 @@
   flex-wrap: wrap;
 }
 
+/* Botón individual de pestaña. */
 .tab-btn {
   border: none;
   background: #edf1f8;
@@ -68,11 +86,13 @@
   font-weight: 600;
 }
 
+/* Estado activo de la pestaña seleccionada. */
 .tab-btn.active {
   background: #dfe8fb;
   color: #1f3f9d;
 }
 
+/* Contenedor de filtros de búsqueda y tipo de reporte. */
 .filters {
   display: grid;
   grid-template-columns: 1fr 160px 110px;
@@ -80,6 +100,7 @@
   margin-bottom: 14px;
 }
 
+/* Estilo de campos de búsqueda y selectores. */
 .filters input,
 .filters select {
   height: 40px;
@@ -90,6 +111,7 @@
   box-sizing: border-box;
 }
 
+/* Botón para aplicar el filtro seleccionado. */
 .filter-btn {
   border: none;
   border-radius: 8px;
@@ -99,15 +121,18 @@
   cursor: pointer;
 }
 
+/* Contenedor responsive para evitar desbordamientos horizontales en tablas. */
 .table-wrapper {
   overflow-x: auto;
 }
 
+/* Tabla principal de reportes. */
 table {
   width: 100%;
   border-collapse: collapse;
 }
 
+/* Estilo común para cabeceras y celdas de la tabla. */
 th,
 td {
   padding: 12px 10px;
@@ -116,36 +141,43 @@ td {
   vertical-align: top;
 }
 
+/* Cabecera de la tabla. */
 th {
   background: #f2f5fa;
   color: #1f3f9d;
   font-size: 0.95rem;
 }
 
+/* Celdas de datos de la tabla. */
 td {
   font-size: 0.92rem;
   color: #222;
 }
 
+/* Celda destacada para datos importantes. */
 .strong-cell {
   font-weight: 700;
 }
 
+/* Contenedor de datos del usuario involucrado. */
 .user-cell {
   display: flex;
   flex-direction: column;
   gap: 2px;
 }
 
+/* Nombre visible del usuario. */
 .user-name {
   font-weight: 600;
 }
 
+/* Nombre de usuario mostrado en formato @usuario. */
 .user-username {
   font-size: 0.82rem;
   color: #7c7c7c;
 }
 
+/* Botón para abrir el detalle de un reporte. */
 .view-btn {
   border: none;
   border-radius: 8px;
@@ -157,6 +189,7 @@ td {
   white-space: nowrap;
 }
 
+/* Texto informativo de paginación. */
 .pagination {
   margin: 14px 0 0;
   text-align: center;
@@ -164,19 +197,21 @@ td {
   font-size: 0.88rem;
 }
 
+/* Adaptación de tarjetas resumen en pantallas medianas. */
 @media (max-width: 1024px) {
   .summary-grid {
     grid-template-columns: 1fr;
   }
 }
 
+/* Adaptación de filtros en pantallas pequeñas. */
 @media (max-width: 768px) {
   .filters {
     grid-template-columns: 1fr;
   }
 }
 
-/* Modal Styles */
+/* Capa oscura que cubre la pantalla al abrir el modal. */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -190,6 +225,7 @@ td {
   z-index: 999;
 }
 
+/* Contenedor principal del modal de detalle. */
 .modal-content {
   background: white;
   border-radius: 12px;
@@ -200,6 +236,7 @@ td {
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
 }
 
+/* Cabecera del modal con título y botón de cierre. */
 .modal-header {
   display: flex;
   justify-content: space-between;
@@ -208,12 +245,14 @@ td {
   border-bottom: 1px solid #ececec;
 }
 
+/* Título principal del modal. */
 .modal-header h2 {
   margin: 0;
   font-size: 1.5rem;
   color: #1f3f9d;
 }
 
+/* Botón para cerrar el modal. */
 .close-btn {
   border: none;
   background: none;
@@ -228,24 +267,29 @@ td {
   justify-content: center;
 }
 
+/* Efecto hover del botón de cierre. */
 .close-btn:hover {
   color: #333;
 }
 
+/* Cuerpo del modal. */
 .modal-body {
   padding: 20px;
 }
 
+/* Bloque de información dentro del detalle del reporte. */
 .detail-section {
   margin-bottom: 24px;
 }
 
+/* Título de cada sección del detalle. */
 .detail-section h3 {
   margin: 0 0 12px;
   color: #1f3f9d;
   font-size: 1.1rem;
 }
 
+/* Cuadrícula de datos del detalle del reporte. */
 .detail-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -253,26 +297,31 @@ td {
   margin-bottom: 12px;
 }
 
+/* Elemento individual de detalle. */
 .detail-item {
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
 
+/* Variante para ocupar todo el ancho de la cuadrícula. */
 .detail-item.full {
   grid-column: 1 / -1;
 }
 
+/* Etiqueta de cada dato del detalle. */
 .detail-item label {
   font-weight: 600;
   color: #555;
   font-size: 0.9rem;
 }
 
+/* Valor textual de cada dato del detalle. */
 .detail-item span {
   color: #222;
 }
 
+/* Bloque de texto largo dentro del detalle. */
 .detail-item p {
   margin: 0;
   padding: 10px;
@@ -281,6 +330,7 @@ td {
   color: #333;
 }
 
+/* Etiqueta visual para representar estados de reportes. */
 .status-badge {
   display: inline-block;
   padding: 4px 10px;
@@ -289,58 +339,69 @@ td {
   font-weight: 600;
 }
 
+/* Estado pendiente del reporte. */
 .status-pending {
   background: #fff3cd;
   color: #856404;
 }
 
+/* Estado de reporte bajo revisión. */
 .status-under_review {
   background: #cfe2ff;
   color: #084298;
 }
 
+/* Estado resuelto del reporte. */
 .status-resolved {
   background: #d1e7dd;
   color: #0f5132;
 }
 
+/* Estado rechazado del reporte. */
 .status-rejected {
   background: #f8d7da;
   color: #842029;
 }
 
+/* Estado visual para usuario bloqueado. */
 .status-blocked {
   color: #dc3545;
   font-weight: 600;
 }
 
+/* Estado visual para usuario activo. */
 .status-active {
   color: #28a745;
   font-weight: 600;
 }
 
+/* Sección de acciones de moderación del reporte. */
 .actions-section {
   background: #f9f9f9;
   padding: 16px;
   border-radius: 8px;
 }
 
+/* Grupo de acciones dentro del modal. */
 .action-group {
   margin-bottom: 16px;
   padding-bottom: 16px;
   border-bottom: 1px solid #e0e0e0;
 }
 
+/* El último grupo de acciones no necesita separación inferior. */
 .action-group:last-child {
   margin-bottom: 0;
   padding-bottom: 0;
   border-bottom: none;
 }
 
+/* Grupo de formulario para resolución o rechazo. */
 .form-group {
   margin-bottom: 12px;
 }
 
+/* Etiqueta de los campos del formulario. */
 .form-group label {
   display: block;
   font-weight: 600;
@@ -349,6 +410,7 @@ td {
   font-size: 0.9rem;
 }
 
+/* Área de texto para resolución y motivo de rechazo. */
 .form-group textarea {
   width: 100%;
   padding: 10px;
@@ -359,6 +421,7 @@ td {
   box-sizing: border-box;
 }
 
+/* Checkbox utilizado para acciones adicionales como banear usuario. */
 .checkbox-item {
   display: flex;
   align-items: center;
@@ -367,11 +430,13 @@ td {
   margin: 10px 0;
 }
 
+/* Tamaño del checkbox dentro del modal. */
 .checkbox-item input[type="checkbox"] {
   width: 18px;
   height: 18px;
 }
 
+/* Agrupación de botones de acción. */
 .button-group {
   display: flex;
   gap: 10px;
@@ -379,6 +444,7 @@ td {
   flex-wrap: wrap;
 }
 
+/* Estilo base para botones del modal. */
 .btn {
   border: none;
   padding: 10px 16px;
@@ -388,40 +454,48 @@ td {
   transition: all 0.3s;
 }
 
+/* Estado deshabilitado de los botones. */
 .btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }
 
+/* Botón para resolver correctamente un reporte. */
 .btn-success {
   background: #28a745;
   color: white;
 }
 
+/* Hover del botón de resolución. */
 .btn-success:hover:not(:disabled) {
   background: #218838;
 }
 
+/* Botón para rechazar un reporte. */
 .btn-danger {
   background: #dc3545;
   color: white;
   width: 100%;
 }
 
+/* Hover del botón de rechazo. */
 .btn-danger:hover:not(:disabled) {
   background: #c82333;
 }
 
+/* Botón secundario para cerrar o marcar revisión. */
 .btn-secondary {
   background: #6c757d;
   color: white;
   flex: 1;
 }
 
+/* Hover del botón secundario. */
 .btn-secondary:hover:not(:disabled) {
   background: #5a6268;
 }
 
+/* Caja informativa para reportes ya resueltos o rechazados. */
 .info-box {
   background: #e7f3ff;
   border-left: 4px solid #2196f3;
@@ -430,12 +504,14 @@ td {
   margin-top: 12px;
 }
 
+/* Texto interno de la caja informativa. */
 .info-box p {
   margin: 6px 0;
   color: #1565c0;
   font-size: 0.9rem;
 }
 
+/* Pie del modal con botón de cierre. */
 .modal-footer {
   padding: 16px 20px;
   border-top: 1px solid #ececec;

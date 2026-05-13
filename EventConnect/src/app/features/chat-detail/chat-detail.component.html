@@ -1,15 +1,34 @@
+<!-- 
+  Aplicación: EventConnect - Plataforma de gestión de eventos
+  Archivo: chat-detail.component.html
+  Descripción: Plantilla HTML para la conversación privada entre usuarios.
+  Autor: Pablo Báscones, Mario Caudevilla, Mario Hernández y David Borrel
+-->
+
+<!-- Cabecera principal de la aplicación -->
 <app-header></app-header>
 
+<!-- Contenedor principal de la página de chat -->
 <div class="chat-page">
+
+  <!-- Contenedor visual que centra la conversación -->
   <div class="chat-wrapper">
+
+    <!-- Estructura principal del chat, mostrada cuando existe una conversación cargada -->
     <div class="chat-shell" *ngIf="conversation; else loadingTpl">
 
+      <!-- Barra superior del chat con botón de volver y datos del otro usuario -->
       <div class="chat-topbar">
+
+        <!-- Botón para regresar a la vista anterior -->
         <button class="back-btn" type="button" (click)="goBack()" title="Volver">
           <span class="material-symbols-rounded">arrow_back</span>
         </button>
 
+        <!-- Bloque de información del usuario con el que se conversa -->
         <div class="chat-user-block">
+
+          <!-- Avatar del otro usuario -->
           <div class="avatar-ring">
             <img
               class="avatar"
@@ -18,6 +37,7 @@
             />
           </div>
 
+          <!-- Nombre y username del otro usuario -->
           <div class="chat-user-info">
             <h2>{{ conversation.otherUser?.name || 'Usuario' }}</h2>
             <p>@{{ conversation.otherUser?.username || 'usuario' }}</p>
@@ -25,11 +45,14 @@
         </div>
       </div>
 
+      <!-- Contenedor principal de mensajes -->
       <div
         #messagesContainer
         class="chat-messages"
         *ngIf="!isLoading; else loadingMessagesTpl"
       >
+
+        <!-- Estado vacío mostrado cuando todavía no hay mensajes -->
         <div *ngIf="messages.length === 0" class="empty-chat-card">
           <div class="empty-icon">
             <span class="material-symbols-rounded">forum</span>
@@ -38,20 +61,32 @@
           <p>Empieza la conversación desde aquí.</p>
         </div>
 
+        <!-- Listado dinámico de mensajes de la conversación -->
         <div
           *ngFor="let msg of messages"
           class="message-row"
           [class.own]="isOwnMessage(msg)"
         >
+
+          <!-- Burbuja individual de mensaje -->
           <div class="message-bubble">
+
+            <!-- Contenido textual del mensaje -->
             <p>{{ msg.content }}</p>
+
+            <!-- Hora formateada del mensaje -->
             <span class="message-time">{{ getMessageTime(msg.createdAt) }}</span>
           </div>
         </div>
       </div>
 
+      <!-- Zona inferior para escribir y enviar mensajes -->
       <div class="chat-input-zone">
+
+        <!-- Contenedor del input y botón de envío -->
         <div class="chat-input-shell">
+
+          <!-- Campo de texto para redactar un nuevo mensaje -->
           <input
             type="text"
             [(ngModel)]="newMessage"
@@ -59,6 +94,8 @@
             (keyup.enter)="sendMessage()"
             autocomplete="off"
           />
+
+          <!-- Botón para enviar el mensaje actual -->
           <button
             class="send-btn"
             type="button"
@@ -75,6 +112,7 @@
   </div>
 </div>
 
+<!-- Plantilla mostrada mientras se carga la conversación -->
 <ng-template #loadingTpl>
   <div class="loading-state">
     <div class="loading-card">
@@ -84,6 +122,7 @@
   </div>
 </ng-template>
 
+<!-- Plantilla mostrada mientras se cargan los mensajes -->
 <ng-template #loadingMessagesTpl>
   <div class="loading-inline">
     <span class="material-symbols-rounded spin">progress_activity</span>

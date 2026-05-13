@@ -1,27 +1,120 @@
-/* To learn more about Typescript configuration file: https://www.typescriptlang.org/docs/handbook/tsconfig-json.html. */
-/* To learn more about Angular compiler options: https://angular.dev/reference/configs/angular-compiler-options. */
+/**
+ * Aplicación: EventConnect - Plataforma de gestión de eventos
+ * Archivo: tsconfig.json
+ * Descripción: Configuración principal de TypeScript del
+ * proyecto Angular.
+ * Define:
+ * - reglas estrictas de compilación
+ * - versión objetivo de JavaScript
+ * - configuración del compilador Angular
+ * - referencias a configuraciones secundarias
+ * Autor: Pablo Báscones, Mario Caudevilla,Mario Hernández y David Borrel
+ */
+
+/* Documentación oficial TypeScript:
+https://www.typescriptlang.org/docs/handbook/tsconfig-json.html */
+
+/* Documentación oficial Angular Compiler:
+https://angular.dev/reference/configs/angular-compiler-options */
+
 {
+  /**
+   * Evita compilación automática al guardar.
+   */
   "compileOnSave": false,
+
   "compilerOptions": {
+
+    /**
+     * Activa modo estricto de TypeScript.
+     */
     "strict": true,
+
+    /**
+     * Obliga a indicar override explícitamente.
+     */
     "noImplicitOverride": true,
+
+    /**
+     * Evita accesos inseguros mediante índices.
+     */
     "noPropertyAccessFromIndexSignature": true,
+
+    /**
+     * Obliga a retornar valor en funciones.
+     */
     "noImplicitReturns": true,
+
+    /**
+     * Evita fallthrough en switch.
+     */
     "noFallthroughCasesInSwitch": true,
+
+    /**
+     * Omite comprobaciones internas de librerías.
+     */
     "skipLibCheck": true,
+
+    /**
+     * Fuerza módulos aislados.
+     */
     "isolatedModules": true,
+
+    /**
+     * Habilita decoradores experimentales.
+     */
     "experimentalDecorators": true,
+
+    /**
+     * Usa helpers compartidos de tslib.
+     */
     "importHelpers": true,
+
+    /**
+     * Versión objetivo de JavaScript.
+     */
     "target": "ES2022",
+
+    /**
+     * Sistema de módulos utilizado.
+     */
     "module": "preserve"
   },
+
+  /**
+   * Configuración específica del compilador Angular.
+   */
   "angularCompilerOptions": {
+
+    /**
+     * Desactiva IDs legacy de i18n.
+     */
     "enableI18nLegacyMessageIdFormat": false,
+
+    /**
+     * Verificación estricta de inyecciones.
+     */
     "strictInjectionParameters": true,
+
+    /**
+     * Verificación estricta de modificadores @Input.
+     */
     "strictInputAccessModifiers": true,
+
+    /**
+     * Activación de templates estrictos.
+     */
     "strictTemplates": true
   },
+
+  /**
+   * Archivos específicos incluidos.
+   */
   "files": [],
+
+  /**
+   * Referencias a configuraciones hijas.
+   */
   "references": [
     {
       "path": "./tsconfig.app.json"

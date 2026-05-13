@@ -1,11 +1,24 @@
+/**
+ * Aplicación: EventConnect - Plataforma de gestión de eventos
+ * Archivo: register.spec.ts
+ * Descripción: Pruebas unitarias básicas del componente RegisterComponent.
+ * Autor: Pablo Báscones, Mario Caudevilla, Mario Hernández y David Borrel
+ */
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router, provideRouter } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { RegisterComponent } from './register.component';
 import { AuthService } from '../../../core/services/auth.service';
 
+// Bloque principal de pruebas del componente RegisterComponent.
+// Aquí se definen todas las pruebas relacionadas con el componente.
 describe('RegisterComponent', () => {
+
+  // Instancia del componente que será utilizada durante las pruebas.
   let component: RegisterComponent;
+
+  // Fixture utilizado para acceder al componente y al DOM asociado.
   let fixture: ComponentFixture<RegisterComponent>;
   let authServiceSpy: { register: ReturnType<typeof vi.fn>; loginWithGoogle: ReturnType<typeof vi.fn> };
   let navigateSpy: ReturnType<typeof vi.fn>;
@@ -37,10 +50,16 @@ describe('RegisterComponent', () => {
     vi.spyOn(router, 'navigate').mockImplementation(navigateSpy as any);
 
     fixture = TestBed.createComponent(RegisterComponent);
+
+    // Obtención de la instancia del componente.
     component = fixture.componentInstance;
   });
 
+  // Prueba unitaria básica.
+  // Verifica que el componente se crea correctamente.
   it('should create', () => {
+
+    // Comprueba que la instancia del componente exista.
     expect(component).toBeTruthy();
   });
 

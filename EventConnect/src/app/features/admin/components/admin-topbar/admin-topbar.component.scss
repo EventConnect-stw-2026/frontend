@@ -1,3 +1,14 @@
+/* 
+  Aplicación: EventConnect - Plataforma de gestión de eventos
+  Archivo: admin-topbar.component.css
+  Descripción: Estilos CSS de la barra superior del panel de administración.
+  Autor: Pablo Báscones, Mario Caudevilla, Mario Hernández y David Borrel
+*/
+
+/* 
+  Contenedor principal de la barra superior.
+  Define el diseño, colores y separación de elementos.
+*/
 .topbar {
   background: #fff;
   border-radius: 14px;
@@ -9,6 +20,9 @@
   margin-bottom: 18px;
 }
 
+/* 
+  Estilo del título principal mostrado en la barra superior.
+*/
 .topbar h1 {
   margin: 0;
   color: #1f3f9d;
@@ -16,6 +30,10 @@
   font-weight: 700;
 }
 
+/* 
+  Contenedor del perfil del administrador.
+  Incluye avatar, nombre y menú desplegable.
+*/
 .admin-chip {
   display: flex;
   align-items: center;
@@ -28,6 +46,10 @@
   cursor: pointer;
 }
 
+/* 
+  Estilo visual del avatar del administrador.
+  Se muestra como un círculo con la inicial del usuario.
+*/
 .avatar {
   width: 28px;
   height: 28px;
@@ -41,6 +63,10 @@
   user-select: none;
 }
 
+/* 
+  Menú desplegable del administrador.
+  Se posiciona debajo del perfil y contiene acciones disponibles.
+*/
 .admin-menu {
   position: absolute;
   top: 110%;
@@ -55,6 +81,11 @@
   flex-direction: column;
   align-items: stretch;
 }
+
+/* 
+  Estilo de los botones del menú desplegable.
+  Se utiliza para acciones como cerrar sesión.
+*/
 .admin-menu button {
   background: none;
   border: none;
@@ -65,6 +96,11 @@
   cursor: pointer;
   transition: background 0.15s;
 }
+
+/* 
+  Efecto visual aplicado al pasar el ratón
+  sobre las opciones del menú desplegable.
+*/
 .admin-menu button:hover {
   background: #f3f5f9;
 }

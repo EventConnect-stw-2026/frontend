@@ -1,3 +1,11 @@
+/**
+ * Aplicación: EventConnect - Plataforma de gestión de eventos
+ * Archivo: event-card.spec.ts
+ * Descripción: Tests unitarios básicos del componente EventCard.
+ * Verifica que el componente se cree correctamente.
+ * Autor: Pablo Báscones, Mario Caudevilla, Mario Hernández y David Borrel
+ */
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { EventCardComponent } from './event-card';
@@ -6,7 +14,12 @@ describe('EventCardComponent', () => {
   let component: EventCardComponent;
   let fixture: ComponentFixture<EventCardComponent>;
 
+  /**
+   * Configuración inicial del entorno de pruebas.
+   * Se importa el componente standalone y se crea la instancia.
+   */
   beforeEach(async () => {
+
     await TestBed.configureTestingModule({
       imports: [EventCardComponent],
       providers: [provideRouter([])]
@@ -16,6 +29,9 @@ describe('EventCardComponent', () => {
     component = fixture.componentInstance;
   });
 
+  /**
+   * Verifica que el componente se cree correctamente.
+   */
   it('should create', () => {
     expect(component).toBeTruthy();
   });

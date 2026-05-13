@@ -1,5 +1,15 @@
+/**
+ * Aplicación: EventConnect - Plataforma de gestión de eventos
+ * Archivo: meetups.component.scss
+ * Descripción: Estilos de la pantalla de quedadas, incluyendo creación,
+ * selección de amigos y eventos, invitaciones, estados, modales y responsive.
+ * Autor: Pablo Báscones, Mario Caudevilla, Mario Hernández y David Borrel
+ */
+
+/* Importación de la fuente principal utilizada en el chat. */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
+// ── Fuente global del componente ───────────────────────────────────────────
 :host, .meetups-page, .meetups-shell, .meetups-hero, .panel, .summary-card, .meetup-card, .modal-content, .modal-header, .modal-body, .modal-actions, .name, .username, .section-header, .empty-state, .category-btn, .primary-btn, .secondary-btn, .accept-btn, .reject-btn, .danger-btn {
   font-family: 'Inter', sans-serif !important;
 }
@@ -9,13 +19,17 @@
   font-family: 'Inter', sans-serif !important;
 }
 
+// ── Página principal ───────────────────────────────────────────────────────
 .meetups-page {
   min-height: 100vh;
   background:
     radial-gradient(circle at top left, rgba(99, 102, 241, 0.10), transparent 28%),
     radial-gradient(circle at top right, rgba(59, 130, 246, 0.10), transparent 24%),
     linear-gradient(180deg, #f8fbff 0%, #f4f7fb 48%, #eef3f9 100%);
-  padding: 7.75rem 1.5rem 3rem; // baja el contenido para que no lo tape el header
+
+  // Baja el contenido para que no quede tapado por el header.
+  padding: 7.75rem 1.5rem 3rem;
+
   box-sizing: border-box;
   font-family: Inter, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   color: #162033;
@@ -26,6 +40,7 @@
   margin: 0 auto;
 }
 
+// ── Hero superior ──────────────────────────────────────────────────────────
 .meetups-hero {
   position: relative;
   display: flex;
@@ -60,6 +75,7 @@
   }
 }
 
+// Etiquetas pequeñas usadas en hero y cabeceras de sección.
 .hero-badge,
 .section-eyebrow {
   display: inline-flex;
@@ -75,6 +91,7 @@
   text-transform: uppercase;
 }
 
+// ── Botones principales ────────────────────────────────────────────────────
 .create-btn,
 .primary-btn,
 .secondary-btn,
@@ -140,6 +157,7 @@
   box-shadow: none;
 }
 
+// ── Pestañas de navegación ─────────────────────────────────────────────────
 .tabs {
   display: flex;
   gap: 0.7rem;
@@ -172,6 +190,7 @@
   }
 }
 
+// ── Resumen de selección ───────────────────────────────────────────────────
 .selection-summary {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -212,6 +231,7 @@
   font-weight: 600;
 }
 
+// ── Layout de creación de quedada ──────────────────────────────────────────
 .meetups-grid {
   display: grid;
   grid-template-columns: 410px 1fr;
@@ -238,6 +258,7 @@
   }
 }
 
+// ── Inputs de búsqueda y formularios ───────────────────────────────────────
 .friends-toolbar {
   margin-bottom: 1.15rem;
 }
@@ -265,6 +286,7 @@
   background: #fff;
 }
 
+// ── Listas de amigos, eventos y quedadas ───────────────────────────────────
 .friends-list,
 .events-list,
 .meetup-list {
@@ -359,6 +381,7 @@
   box-shadow: 0 8px 18px rgba(37, 99, 235, 0.22);
 }
 
+// ── Categorías de eventos ──────────────────────────────────────────────────
 .categories {
   display: flex;
   flex-wrap: wrap;
@@ -391,6 +414,7 @@
   }
 }
 
+// ── Tarjetas de evento ─────────────────────────────────────────────────────
 .event-top {
   display: flex;
   justify-content: space-between;
@@ -457,6 +481,7 @@
   font-family: inherit;
 }
 
+// ── Estados vacíos ─────────────────────────────────────────────────────────
 .empty-state {
   display: grid;
   place-items: center;
@@ -470,6 +495,7 @@
   font-weight: 600;
 }
 
+// ── Paginación ─────────────────────────────────────────────────────────────
 .pagination {
   margin-top: 1.05rem;
   display: flex;
@@ -502,6 +528,7 @@
   }
 }
 
+// ── Tarjetas de quedadas ───────────────────────────────────────────────────
 .meetup-card {
   padding: 1.12rem 1.16rem;
 }
@@ -585,6 +612,7 @@
   margin-top: 0.2rem;
 }
 
+// ── Modal de creación ──────────────────────────────────────────────────────
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -600,34 +628,6 @@
   width: min(560px, 100%);
   padding: 1.4rem;
   animation: modalIn 0.2s ease;
-}
-
-.nav-notification-dot {
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  background: #e53935;
-  display: inline-block;
-  box-shadow: 0 0 0 2px rgba(255,255,255,0.95);
-  flex-shrink: 0;
-}
-
-.organize-btn.has-dot,
-.tab-with-dot {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-}
-
-@keyframes modalIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px) scale(0.985);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
 }
 
 .modal-header {
@@ -683,6 +683,38 @@
   margin-top: 0.7rem;
 }
 
+// ── Indicadores de notificación ────────────────────────────────────────────
+.nav-notification-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #e53935;
+  display: inline-block;
+  box-shadow: 0 0 0 2px rgba(255,255,255,0.95);
+  flex-shrink: 0;
+}
+
+.organize-btn.has-dot,
+.tab-with-dot {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+// Animación de entrada del modal.
+@keyframes modalIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.985);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+// ── Responsive ─────────────────────────────────────────────────────────────
 @media (max-width: 1180px) {
   .meetups-grid {
     grid-template-columns: 1fr;
@@ -691,7 +723,7 @@
 
 @media (max-width: 760px) {
   .meetups-page {
-    padding: 7rem 1rem 2rem;
+    padding: 0.75rem 1rem 2rem;
   }
 
   .meetups-hero {

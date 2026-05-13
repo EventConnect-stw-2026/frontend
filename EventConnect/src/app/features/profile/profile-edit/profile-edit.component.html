@@ -1,12 +1,29 @@
+<!-- 
+  Aplicación: EventConnect - Plataforma de gestión de eventos
+  Archivo: edit-profile.component.html
+  Descripción: Plantilla HTML de la pantalla de edición de perfil, donde el usuario puede modificar
+  sus datos personales, cambiar la contraseña, actualizar el avatar y seleccionar intereses.
+  Autor: Pablo Báscones, Mario Caudevilla, Mario Hernández y David Borrel
+-->
+
+<!-- Cabecera principal de la aplicación -->
 <app-header></app-header>
 
+<!-- Contenido principal de la página de edición de perfil -->
 <main class="edit-profile-page">
   <section class="edit-profile-wrapper">
+
+    <!-- Título principal de la pantalla -->
     <h1 class="page-title">Editar perfil</h1>
 
+    <!-- Formulario reactivo de edición de perfil -->
     <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+
+      <!-- Tarjeta principal con avatar, nombre, email y username -->
       <section class="profile-card">
         <div class="profile-main">
+
+          <!-- Zona de avatar con botón para subir nueva imagen -->
           <div class="avatar-section">
             <div class="avatar-wrapper">
               <img
@@ -14,11 +31,14 @@
                 [alt]="profileForm.value.name || 'Usuario'"
                 class="avatar"
               >
-            </div>            
+            </div>
+
+            <!-- Botón visual asociado al input oculto de imagen -->
             <label class="avatar-edit-btn" for="avatarInput" title="Cambiar foto">
               📷
             </label>
 
+            <!-- Input oculto para seleccionar una nueva imagen de perfil -->
             <input
               id="avatarInput"
               type="file"
@@ -28,7 +48,10 @@
             >
           </div>
 
-          <div class="profile-info">            
+          <!-- Datos principales del perfil -->
+          <div class="profile-info">
+
+            <!-- Campo editable del nombre del usuario -->
             <input
               class="name-input"
               type="text"
@@ -36,6 +59,7 @@
               placeholder="Nombre"
             >
 
+            <!-- Validaciones del campo nombre -->
             <small class="error" *ngIf="name?.touched && name?.errors?.['required']">
               El nombre es obligatorio
             </small>
@@ -44,6 +68,7 @@
               El nombre debe tener al menos 2 caracteres
             </small>
 
+            <!-- Campo de email mostrado como dato no editable -->
             <div class="info-row">
               <span class="icon">✉</span>
               <input
@@ -55,9 +80,11 @@
               >
             </div>
 
+            <!-- Fila de username con modo lectura y modo edición -->
             <div class="info-row username-row">
               <span class="icon">@</span>
 
+              <!-- Input mostrado solo cuando se activa la edición del username -->
               <ng-container *ngIf="isEditingUsername; else usernameText">
                 <input
                   class="inline-input"
@@ -67,10 +94,12 @@
                 >
               </ng-container>
 
+              <!-- Texto del username cuando no se está editando -->
               <ng-template #usernameText>
                 <span class="username-value">{{ profileForm.value.username }}</span>
               </ng-template>
 
+              <!-- Botón para alternar la edición del username -->
               <button
                 type="button"
                 class="edit-icon-btn"
@@ -81,6 +110,7 @@
               </button>
             </div>
 
+            <!-- Validaciones del campo username -->
             <small class="error" *ngIf="username?.touched && username?.errors?.['required']">
               El username es obligatorio
             </small>
@@ -92,9 +122,11 @@
         </div>
       </section>
 
+      <!-- Tarjeta de cambio de contraseña -->
       <section class="password-card">
         <h2>Cambiar contraseña</h2>
 
+        <!-- Campos de contraseña actual, nueva y confirmaciones -->
         <div class="password-grid">
           <div class="password-field">
             <input
@@ -129,6 +161,7 @@
           </div>
         </div>
 
+        <!-- Validaciones de contraseña nueva -->
         <small
           class="error"
           *ngIf="newPassword?.touched && newPassword?.errors?.['minlength']"
@@ -144,10 +177,12 @@
         </small>
       </section>
 
+      <!-- Tarjeta de intereses del usuario -->
       <section class="favorites-card">
         <h2>Tus intereses</h2>
         <p class="favorites-hint">Selecciona los tipos de eventos que más te gustan</p>
 
+        <!-- Listado de categorías/intereses seleccionables -->
         <div class="favorites-grid">
           <button
             type="button"
@@ -159,6 +194,8 @@
           >
             <span class="favorite-svg" [innerHTML]="getSvg(category.key)"></span>
             <span class="favorite-label">{{ category.label }}</span>
+
+            <!-- Check mostrado visualmente cuando el interés está seleccionado -->
             <span class="favorite-check">
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
             </span>
@@ -166,11 +203,13 @@
         </div>
       </section>
 
+      <!-- Mensajes de éxito o error tras guardar los cambios -->
       <div class="messages">
         <p class="success-message" *ngIf="successMessage">{{ successMessage }}</p>
         <p class="error-message" *ngIf="errorMessage">{{ errorMessage }}</p>
       </div>
 
+      <!-- Botones principales del formulario -->
       <div class="actions">
         <button type="button" class="secondary-btn" (click)="goBackToProfile()">
           Cancelar

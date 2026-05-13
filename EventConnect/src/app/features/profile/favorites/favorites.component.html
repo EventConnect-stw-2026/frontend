@@ -1,8 +1,19 @@
+<!-- 
+  Aplicación: EventConnect - Plataforma de gestión de eventos
+  Archivo: favourites.component.html
+  Descripción: Plantilla HTML de la pantalla de favoritos, donde el usuario puede consultar
+  los eventos a los que va a asistir, cancelar asistencia y navegar al detalle del evento.
+  Autor: Pablo Báscones, Mario Caudevilla, Mario Hernández y David Borrel
+-->
+
+<!-- Cabecera principal de la aplicación -->
 <app-header></app-header>
 
+<!-- Contenido principal de la página de favoritos -->
 <main class="page">
   <section class="wrapper">
 
+    <!-- Encabezado de la página con botón de volver y descripción -->
     <div class="page-header">
       <button class="back-btn" (click)="goBack()">
         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
@@ -12,6 +23,7 @@
       <p class="page-subtitle">Eventos a los que vas a asistir</p>
     </div>
 
+    <!-- Estado mostrado mientras se cargan los eventos favoritos -->
     @if (loading) {
       <div class="loading-state">
         <div class="spinner"></div>
@@ -19,6 +31,7 @@
       </div>
     }
 
+    <!-- Estado mostrado si ocurre un error al cargar favoritos -->
     @if (loadError) {
       <div class="error-state">
         <span class="error-icon">⚠</span>
@@ -27,6 +40,7 @@
       </div>
     }
 
+    <!-- Estado vacío cuando el usuario no está apuntado a ningún evento -->
     @if (!loading && !loadError && events.length === 0) {
       <div class="empty-state">
         <span class="empty-icon">♡</span>
@@ -35,41 +49,57 @@
       </div>
     }
 
+    <!-- Listado de eventos favoritos del usuario -->
     @if (!loading && !loadError && events.length > 0) {
       <div class="events-grid">
+
+        <!-- Tarjetas de eventos favoritos paginados -->
         @for (event of paginatedEvents; track event._id) {
           <div class="event-card" (click)="goToEvent(event._id)">
+
+            <!-- Imagen del evento con categoría y etiqueta de gratuidad -->
             <div class="card-image">
               <img [src]="event.imageUrl || 'assets/images/placeholder.svg'" [alt]="event.title" (error)="onImageError($event)">
               <span class="card-category">{{ event.category }}</span>
               @if (event.isFree) { <span class="card-free">Gratis</span> }
             </div>
+
+            <!-- Información resumida del evento -->
             <div class="card-body">
               <h3>{{ event.title }}</h3>
+
+              <!-- Fecha de inicio del evento, si está disponible -->
               @if (event.startDate) {
-                              <p class="card-date">
-                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
-                </svg>
-                {{ event.startDate | date:'dd MMM yyyy · HH:mm' }}
-              </p>
+                <p class="card-date">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                  </svg>
+                  {{ event.startDate | date:'dd MMM yyyy · HH:mm' }}
+                </p>
               }
-                            <p class="card-location">
+
+              <!-- Ubicación del evento -->
+              <p class="card-location">
                 <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
                 </svg>
                 {{ event.locationName }}
               </p>
+
+              <!-- Botón para cancelar la asistencia sin abrir el detalle del evento -->
               <button class="unattend-btn" (click)="unattend($event, event._id)">
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
                 Cancelar asistencia
               </button>
+
+              <!-- Enlace visual hacia la página de detalle del evento -->
               <span class="card-link">Ver más →</span>
             </div>
           </div>
         }
       </div>
 
+      <!-- Controles de paginación de favoritos -->
       @if (totalPages > 1) {
         <div class="pagination">
           <button (click)="prevPage()" [disabled]="page === 1">← Anterior</button>
